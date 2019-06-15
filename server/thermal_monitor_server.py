@@ -13,9 +13,9 @@ Prerequisites:
 
     - Install w1thermsensor package (pip install w1thermsensor)
 
-    - Install aiohttp, aiortc and opencv-python packages (pip install aiohttp aiortc opencv-python)
-
     - Install media codecs (apt install libavdevice-dev libavfilter-dev libopus-dev libvpx-dev pkg-config)
+
+    - Install aiohttp, aiortc and opencv-python packages (pip install aiohttp aiortc opencv-python)
 
 The following w1 therm sensor devices are supported:
     - DS18S20
