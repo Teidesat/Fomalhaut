@@ -2,7 +2,7 @@ import time
 from random import uniform
 from datetime import datetime
 from threading import Thread
-from server.Logger import Logger
+from Logger import Logger
 
 
 class ThermalMonitor:
@@ -29,6 +29,7 @@ class ThermalMonitor:
             self.timestamp = timestamp
 
     def __init__(self, simulate=False, logger=None):
+        self.on_new_temp_listener = None
         self.__logger = logger
         self.__simulate = simulate
         self.__terminate = False
@@ -55,7 +56,6 @@ class ThermalMonitor:
 
     def close(self):
         self.log('Closing thermal monitor service...', Logger.LogLevel.DEBUG)
-        self.stop()
         self.__terminate = True
         self.__sensors_monitor.join()
         self.log('Thermal monitor service closed', Logger.LogLevel.DEBUG)
@@ -65,6 +65,8 @@ class ThermalMonitor:
         self.log(log_msg, Logger.LogLevel.DEBUG)
         self.__temps.append(temp_data)
         self.__log_file.write('%s,%s,%s\n' % (temp_data.timestamp, temp_data.sensor_id, temp_data.temp))
+        if self.on_new_temp_listener is not None:
+            self.on_new_temp_listener(temp_data)
 
     def read_from_sensors(self):
         if not self.__simulate:

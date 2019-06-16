@@ -1,82 +1,42 @@
-var pc = new RTCPeerConnection({
-    sdpSemantics: 'unified-plan'
-});
+let thermalMonitorClient = new ThermalMonitorClient();
 
-// connect video
-pc.addEventListener('track', function(evt) {
-    if (evt.track.kind == 'video') {
-        document.getElementById('video').srcObject = evt.streams[0];
-    }
-});
-
-function createDataChannel(pc) {
-    dc = pc.createDataChannel('dataChannel', parameters);
-    dc.onclose = function() {
-        console.log('Data channel closed');
-    };
-
-    dc.onopen = function() {
-        console.log('Data channel open');
-        dc.send('test');
-    };
-
-    dc.onmessage = function(evt) {
-        console.log('Message received: ' + evt.data);
-    };
+thermalMonitorClient.onVideoReceived = (stream) => {
+    document.getElementById('video').srcObject = stream;
 }
 
-function negotiate() {
-    pc.addTransceiver('video', {direction: 'recvonly'});
-    createDataChannel(pc);
-    return pc.createOffer().then(function(offer) {
-        return pc.setLocalDescription(offer);
-    }).then(function() {
-        // wait for ICE gathering to complete
-        return new Promise(function(resolve) {
-            if (pc.iceGatheringState === 'complete') {
-                resolve();
-            } else {
-                function checkState() {
-                    if (pc.iceGatheringState === 'complete') {
-                        pc.removeEventListener('icegatheringstatechange', checkState);
-                        resolve();
-                    }
-                }
-                pc.addEventListener('icegatheringstatechange', checkState);
-            }
-        });
-    }).then(function() {
-        var offer = pc.localDescription;
-        return fetch('/offer', {
-            body: JSON.stringify({
-                sdp: offer.sdp,
-                type: offer.type,
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            method: 'POST'
-        });
-    }).then(function(response) {
-        return response.json();
-    }).then(function(answer) {
-        return pc.setRemoteDescription(answer);
-    }).catch(function(e) {
-        alert(e);
+thermalMonitorClient.onTempReceived = (temp) => {
+    document.getElementById('temps').value += temp.timestamp + ',' + temp.sensor_id + ',' + temp.temp + '\\\n';
+}
+
+thermalMonitorClient.onAllTempsReceived = (temps) => {
+    document.getElementById('temps').value = 'timestamp,sensor_id,temperature\\\n';
+    temps.forEach(function(temp) {
+        document.getElementById('temps').value += temp.timestamp + ',' + temp.sensor_id + ',' + temp.temp + '\\\n';
     });
 }
 
+document.getElementById('temps').value = 'timestamp,sensor_id,temperature\\\n';
+
 function start() {
     document.getElementById('start').style.display = 'none';
-    negotiate();
+    thermalMonitorClient.start();
     document.getElementById('stop').style.display = 'inline-block';
 }
 
 function stop() {
     document.getElementById('stop').style.display = 'none';
+    thermalMonitorClient.stop();
+    document.getElementById('start').style.display = 'inline-block';
+}
 
-    // close peer connection
-    setTimeout(function() {
-        pc.close();
-    }, 500);
+function start_temps() {
+    thermalMonitorClient.start_temps();
+}
+
+function stop_temps() {
+    thermalMonitorClient.stop_temps();
+}
+
+function get_all_temps() {
+    thermalMonitorClient.request_all_temps();
 }

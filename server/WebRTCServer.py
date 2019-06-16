@@ -2,28 +2,69 @@ import uuid
 import json
 import asyncio
 import platform
+
 from aiohttp import web
+from threading import Thread
 
 from aiortc import RTCPeerConnection, RTCSessionDescription
 from aiortc.contrib.media import MediaPlayer
 
-from server.Logger import Logger
+from Logger import Logger
 
 
 class WebRTCServer:
 
-    def __init__(self, port=80, logger=None):
+    def __init__(self, port=80, ip='localhost', resolution='640x480', logger=None):
+        self.on_new_message_listener = None
         self.__pcs = set()
+        self.__channels = set()
         self.__logger = logger
         self.__port = port
+        self.__ip = ip
+        self.__resolution = resolution
         self.__app = web.Application()
-        self.__app.on_shutdown.append(lambda x: self.on_shutdown(x))
         self.__app.router.add_post('/offer', self.offer)
         self.__app.router.add_static('/', path=str('./public/'))
+        self.__loop = None
+        self.__site = None
 
     def start(self):
-        asyncio.set_event_loop(asyncio.new_event_loop())
-        web.run_app(self.__app, access_log=None, port=self.__port)
+        async def runner():
+            app_runner = web.AppRunner(self.__app)
+            await app_runner.setup()
+            self.__site = web.TCPSite(app_runner, self.__ip, self.__port)
+            await self.__site.start()
+
+        def thread():
+            self.__loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(self.__loop)
+            self.__loop.run_until_complete(runner())
+            self.__loop.run_forever()
+
+        thread = Thread(target=thread, daemon=True)
+        thread.start()
+        self.log('WebRTC server started', Logger.LogLevel.DEBUG)
+
+    def close(self):
+        self.log('Closing WebRTC server...', Logger.LogLevel.DEBUG)
+        if self.__site is not None and self.__loop is not None:
+            async def stop():
+                future = asyncio.run_coroutine_threadsafe(self.on_shutdown(), self.__loop)
+                future.result()
+                self.__loop.stop()
+                self.__site = None
+                self.__loop = None
+
+            loop = asyncio.new_event_loop()
+            loop.run_until_complete(stop())
+
+    def send_to_all(self, message):
+        async def task():
+            for channel in self.__channels:
+                if channel.readyState == 'open':
+                    channel.send(message)
+                    self.log('Message sent to channel %s: %s' % (channel.id, message), Logger.LogLevel.DEBUG)
+        asyncio.run_coroutine_threadsafe(task(), self.__loop)
 
     async def offer(self, request):
         params = await request.json()
@@ -38,10 +79,16 @@ class WebRTCServer:
 
         @pc.on('datachannel')
         def on_datachannel(channel):
+            self.log('%s: Data channel established (%s)' % (pc_id, channel.id), Logger.LogLevel.DEBUG)
+            self.__channels.add(channel)
             @channel.on('message')
             def on_message(message):
-                if isinstance(message, str) and message.startswith('ping'):
-                    channel.send('pong' + message[4:])
+                self.log('Message received from %s: %s' % (pc_id, message), Logger.LogLevel.DEBUG)
+                if isinstance(message, str) and self.on_new_message_listener is not None:
+                    try:
+                        self.on_new_message_listener(json.loads(message))
+                    except ValueError:
+                        self.log('Invalid message received from %s: %s' % (pc_id, message), Logger.LogLevel.ERROR)
 
         @pc.on('iceconnectionstatechange')
         async def on_iceconnectionstatechange():
@@ -51,7 +98,7 @@ class WebRTCServer:
                 self.__pcs.discard(pc)
 
         # open webcam
-        options = {'video_size': '640x480'}
+        options = {'video_size': self.__resolution}
         if platform.system() == 'Darwin':
             player = MediaPlayer('default:none', format='avfoundation', options=options)
         else:
@@ -72,11 +119,12 @@ class WebRTCServer:
                 'type': pc.localDescription.type
             }))
 
-    async def on_shutdown(self, app):
+    async def on_shutdown(self):
         # close peer connections
         coros = [pc.close() for pc in self.__pcs]
         await asyncio.gather(*coros)
         self.__pcs.clear()
+        self.log('WebRTC server closed', Logger.LogLevel.DEBUG)
 
     def log(self, msg, level):
         if self.__logger is not None:
