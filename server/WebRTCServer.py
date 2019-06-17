@@ -99,14 +99,18 @@ class WebRTCServer:
 
         # open webcam
         options = {'video_size': self.__resolution}
-        if platform.system() == 'Darwin':
-            player = MediaPlayer('default:none', format='avfoundation', options=options)
-        else:
-            player = MediaPlayer('/dev/video0', format='v4l2', options=options)
+        player = None
+        try:
+            if platform.system() == 'Darwin':
+                player = MediaPlayer('default:none', format='avfoundation', options=options)
+            else:
+                player = MediaPlayer('/dev/video0', format='v4l2', options=options)
+        except:
+            self.log('No webcam found!', Logger.LogLevel.ERROR)
 
         await pc.setRemoteDescription(offer)
         for t in pc.getTransceivers():
-            if t.kind == 'video' and player.video:
+            if t.kind == 'video' and player is not None and player.video:
                 pc.addTrack(player.video)
 
         answer = await pc.createAnswer()
