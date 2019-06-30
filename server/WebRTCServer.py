@@ -95,6 +95,7 @@ class WebRTCServer:
             self.log('%s: ICE connection state is %s' % (pc_id, pc.iceConnectionState), Logger.LogLevel.DEBUG)
             if pc.iceConnectionState == 'failed':
                 await pc.close()
+                self.log('%s: ICE connection discarded with state %s' % (pc_id, pc.iceConnectionState), Logger.LogLevel.DEBUG)
                 self.__pcs.discard(pc)
 
         # open webcam

@@ -8,18 +8,26 @@ from Logger import Logger
 class ThermalMonitor:
 
     # ----------- ONLY FOR SIMULATION -----------
-    class FakeSensor:
+    class FakeTemperatureSensor:
         def __init__(self, sensor_id):
             self.id = sensor_id
 
         @staticmethod
-        def get_temperature():
+        def get_value():
             return uniform(12, 60)
+    
+    class FakeVoltageSensor:
+        def __init__(self, sensor_id):
+            self.id = sensor_id
+
+        @staticmethod
+        def get_value():
+            return uniform(1, 2)
 
     class FakeW1ThermSensor:
         @staticmethod
         def get_available_sensors():
-            return [ThermalMonitor.FakeSensor(62346), ThermalMonitor.FakeSensor(53245)]
+            return [ThermalMonitor.FakeTemperatureSensor(62346), ThermalMonitor.FakeTemperatureSensor(53245), ThermalMonitor.FakeVoltageSensor(51745)]
     # -------------------------------------------
 
     class TempData:
@@ -79,7 +87,7 @@ class ThermalMonitor:
             if not self.__stopped:
                 for sensor in therm_sensor.get_available_sensors():
                     temp_data = ThermalMonitor.TempData()
-                    temp_data.temp = sensor.get_temperature()
+                    temp_data.temp = sensor.get_value()
                     temp_data.sensor_id = sensor.id
                     temp_data.timestamp = int(round(time.time() * 1000))
                     self.register_new_temperature(temp_data)

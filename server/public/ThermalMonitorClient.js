@@ -32,7 +32,6 @@ class ThermalMonitorClient {
             };
 
             self.dc.onmessage = function(evt) {
-                console.log('Message received: ' + evt.data);
                 let msg = JSON.parse(evt.data);
                 if (msg.type === 'temp' && typeof self.onTempReceived === 'function') {
                     self.onTempReceived(msg.temp);

@@ -1,0 +1,74 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>SensorDataWeb</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+        <link rel="stylesheet" type="text/css" href="styles.css"/>
+    </head>
+
+    <body>
+        <div id="app-root">
+            <div id="app-left-menu-bar">
+                <div id="leftMenuBar">
+                    <img alt="Teidesat image" id="TeidesatLogo" src="assets/teidesatLogo.png">
+                    <ul>
+                        <li class="leftMenuBarButton" onclick="leftMenuButtonSelected(this, 'app-log-window', 'logs')">
+                            <div class="decorator"></div><!--
+                            --><img src="assets/notepadIcon.png" alt="Logs">
+                        </li>
+                        <li class="leftMenuBarButton" onclick="leftMenuButtonSelected(this, 'app-video-window', 'video')">
+                            <div class="decorator"></div><!--
+                            --><img src="assets/cameraIcon.png" alt="Video">
+                        </li>
+                        <li class="leftMenuBarButton" onclick="leftMenuButtonSelected(this, 'app-sensor-window', 'sensors')">
+                            <div class="decorator"></div><!--
+                            --><img src="assets/waveIcon.png" alt="Sensors">
+                        </li>
+                    </ul>
+                </div>
+            </div><!--
+            --><div id="right-window">
+                <div id="app-top-menu-bar">
+                    <div id="topMenuBar">
+                        <h3>DUMMY - RECEIVER</h3>
+                        <strong id="tabName"></strong>
+                    </div>
+                </div>
+                <div id="app-log-window" class="window">
+                    <div id="logs-wrapper">
+                        <button onclick="addLogMessage('ERROR', 'Lost communication with CubeSat')">Add Msg</button>
+                        <ul id="logs-list">
+                            <li class="ERROR"><strong>24 June 2019, 10:00:18 GMT+01:00 - ERROR - </strong><span>Lost communication with CubeSat</span></li>
+                            <li class="WARNING"><strong>24 June 2019, 10:00:18 GMT+01:00 - WARNING - </strong><span>Posible communication lag</span></li>
+                            <li class="NORMAL"><strong>24 June 2019, 10:00:18 GMT+01:00 - </strong><span>Nothing special</span></li>
+                            <li class="SUCCESS"><strong>24 June 2019, 10:00:18 GMT+01:00 - SUCCESS - </strong><span>Achieved optical communication</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="app-video-window" class="window">
+                    <div id="videoWrapper">
+                        <div>
+                            <button id="start" onclick="start()">Start</button>
+                            <button id="stop" onclick="stop()">Stop</button>
+                        </div>                    
+                        <video id="video" autoplay></video>    
+                    </div>
+                </div>
+                <div id="app-sensor-window" class="window">
+                    <div id="sensorsWrapper">
+                        <div id="temperatureSensors"></div>
+                        <div id="voltageSensors"></div>
+                    </div>
+                    <div id="graphWrapper" class="graph">
+                        <div class="hideGraph" onclick="hideSensorGraph()"><img src="assets/rightTriangleIcon.png" alt="Hide"/></div>
+                        <canvas id="graphCanvas" width="1000" height="1000"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="ThermalMonitorClient.js"></script>
+        <script type="text/javascript" src="main.js"></script>
+    </body>
+</html>
