@@ -23,48 +23,48 @@ var sensorGraphName;
 /******************
 WebRTC Monitor
 *******************/
-let thermalMonitorClient = new ThermalMonitorClient();
+let monitorClient = new MonitorClient();
 
-thermalMonitorClient.onVideoReceived = (stream) => 
+monitorClient.onVideoReceived = (stream) =>
 {
     document.getElementById('video').srcObject = stream;
 }
 
-function addNewSensorValue(sensor)
+function addNewSensorValue(sensorData)
 {    
-    document.getElementById(sensor.sensor_id).querySelector(".value strong").innerText = Math.round(sensor.temp * 10) / 10 + " C";
+    document.getElementById(sensorData.sensor_id).querySelector(".value strong").innerText = Math.round(sensorData.value * 10) / 10 + " C";
     
-    if(sensor.sensor_id in sensorValues)
-        sensorValues[sensor.sensor_id].push({ time: sensor.timestamp, value: sensor.temp});
+    if(sensorData.sensor_id in sensorValues)
+        sensorValues[sensorData.sensor_id].push({ time: sensorData.timestamp, value: sensorData.value});
     else
-        sensorValues[sensor.sensor_id] = [{ time: sensor.timestamp, value: sensor.temp}];
+        sensorValues[sensorData.sensor_id] = [{ time: sensorData.timestamp, value: sensorData.value}];
 
-    if(document.getElementById("graphWrapper").classList.contains("show") == true && sensorGraphId == sensor.sensor_id)
+    if(document.getElementById("graphWrapper").classList.contains("show") == true && sensorGraphId == sensorData.sensor_id)
         updateSensorGraph();
 }
 
-thermalMonitorClient.onTempReceived = (temp) => 
+monitorClient.onSensorDataReceived = (sensorData) =>
 {    
-    addNewSensorValue(temp);
+    addNewSensorValue(sensorData);
 }
 
-thermalMonitorClient.onAllTempsReceived = (temps) => 
+monitorClient.onSensorsDataReceived = (sensorsData) =>
 {
-    temps.forEach(function(temp) {
-        addNewSensorValue(temp);
+    sensorsData.forEach(function(sensorData) {
+        addNewSensorValue(sensorData);
     });
 }
 
-thermalMonitorClient.start();
+monitorClient.connect();
 
-function start_temps() 
+function start_monitor()
 {
-    thermalMonitorClient.start_temps();
+    monitorClient.start_monitor();
 }
 
-function stop_temps() 
+function stop_monitor()
 {
-    thermalMonitorClient.stop_temps();
+    monitorClient.stop_monitor();
 }
 
 /******************
@@ -129,9 +129,9 @@ function leftMenuButtonSelected(element, window, title)
     document.getElementById("tabName").innerText = title.toUpperCase();
 
     if(window == "app-sensor-window")
-        start_temps();
+        start_monitor();
     else
-        stop_temps();
+        stop_monitor();
     
     var windows = document.getElementsByClassName("window");
     

@@ -15,18 +15,25 @@
 <body>
 
 <section>
-    <button id="start" onclick="start()">Start</button>
-    <button id="stop" style="display: none" onclick="stop()">Stop</button>
-    <button id="start_temps" onclick="start_temps()">Start temps</button>
-    <button id="stop_temps" onclick="stop_temps()">Stop temps</button>
-    <button id="get_all_temps" onclick="get_all_temps()">Get all temps</button>
+    <button id="start" onclick="connect()">Connect</button>
+    <button id="stop" style="display: none" onclick="disconnect()">Disconnect</button>
+    <button id="start_monitor" onclick="start_monitor()">Start monitor</button>
+    <button id="stop_monitor" onclick="stop_monitor()">Stop monitor</button>
+    <button id="get_all_temps" onclick="get_sensors_data()">Get sensors data</button>
 </section>
 
 <hr>
 
 <section>
-    <h3>Temps</h3>
-    <textarea id="temps" rows="10" cols="100" readonly></textarea>
+    <h3>Sensors</h3>
+    <textarea id="sensors" rows="10" cols="100" readonly></textarea>
+</section>
+
+<hr>
+
+<section>
+    <h3>Log</h3>
+    <textarea id="log" rows="10" cols="100" readonly></textarea>
 </section>
 
 <hr>
@@ -36,7 +43,7 @@
     <video id="video" autoplay></video>
 </section>
 
-<script src="ThermalMonitorClient.js"></script>
+<script src="MonitorClient.js"></script>
 <script src="client.js"></script>
 </body>
 </html>

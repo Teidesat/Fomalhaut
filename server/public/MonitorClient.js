@@ -1,14 +1,14 @@
-class ThermalMonitorClient {
+class MonitorClient {
     constructor() {
         this.pc = null;
         this.dc = null;
         this.onVideoReceived = null;
-        this.onTempReceived = null;
-        this.onAllTempsReceived = null;
+        this.onSensorDataReceived = null;
+        this.onSensorsDataReceived = null;
         this.onMessageReceived = null;
     }
 
-    start() {
+    connect() {
         let self = this;
 
         this.pc = new RTCPeerConnection({
@@ -33,10 +33,10 @@ class ThermalMonitorClient {
 
             self.dc.onmessage = function(evt) {
                 let msg = JSON.parse(evt.data);
-                if (msg.type === 'temp' && typeof self.onTempReceived === 'function') {
-                    self.onTempReceived(msg.temp);
-                } else if (msg.type === 'all_temps' && typeof self.onAllTempsReceived === 'function') {
-                    self.onAllTempsReceived(msg.temps);
+                if (msg.type === 'sensor_data' && typeof self.onSensorDataReceived === 'function') {
+                    self.onSensorDataReceived(msg.sensorData);
+                } else if (msg.type === 'sensors_data' && typeof self.onSensorsDataReceived === 'function') {
+                    self.onSensorsDataReceived(msg.sensorsData);
                 } else if (typeof self.onMessageReceived === 'function') {
                     self.onMessageReceived(msg);
                 }
@@ -87,7 +87,7 @@ class ThermalMonitorClient {
         negotiate(this.pc);
     }
 
-    stop() {
+    disconnect() {
         if (this.pc) {
             let self = this;
             setTimeout(function() {
@@ -98,29 +98,29 @@ class ThermalMonitorClient {
         }
     }
 
-    start_temps() {
+    start_monitor() {
         if (this.dc) {
             this.dc.send(JSON.stringify({
                 type: 'cmd',
-                cmd: 'start_temps'
+                cmd: 'start'
             }));
         }
     }
 
-    stop_temps() {
+    stop_monitor() {
         if (this.dc) {
             this.dc.send(JSON.stringify({
                 type: 'cmd',
-                cmd: 'stop_temps'
+                cmd: 'stop'
             }));
         }
     }
 
-    request_all_temps() {
+    request_sensors_data() {
         if (this.dc) {
             this.dc.send(JSON.stringify({
                 type: 'cmd',
-                cmd: 'request_all_temps'
+                cmd: 'request_sensors_data'
             }));
         }
     }

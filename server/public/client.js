@@ -1,42 +1,48 @@
-let thermalMonitorClient = new ThermalMonitorClient();
+let monitorClient = new MonitorClient();
 
-thermalMonitorClient.onVideoReceived = (stream) => {
+monitorClient.onVideoReceived = (stream) => {
     document.getElementById('video').srcObject = stream;
 }
 
-thermalMonitorClient.onTempReceived = (temp) => {
-    document.getElementById('temps').value += temp.timestamp + ',' + temp.sensor_id + ',' + temp.temp + '\\\n';
+monitorClient.onSensorDataReceived = (sensorData) => {
+    document.getElementById('sensors').value += sensorData.timestamp + ',' + sensorData.sensor_id + ',' + sensorData.type + ',' + sensorData.value + '\\\n';
 }
 
-thermalMonitorClient.onAllTempsReceived = (temps) => {
-    document.getElementById('temps').value = 'timestamp,sensor_id,temperature\\\n';
-    temps.forEach(function(temp) {
-        document.getElementById('temps').value += temp.timestamp + ',' + temp.sensor_id + ',' + temp.temp + '\\\n';
+monitorClient.onSensorsDataReceived = (sensorsData) => {
+    document.getElementById('sensors').value = 'timestamp,sensor_id,type,value\\\n';
+    sensorsData.forEach(function(sensorData) {
+        document.getElementById('sensors').value += sensorData.timestamp + ',' + sensorData.sensor_id + ',' + sensorData.type + ',' + sensorData.value + '\\\n';
     });
 }
 
-document.getElementById('temps').value = 'timestamp,sensor_id,temperature\\\n';
+monitorClient.onMessageReceived = (message) => {
+    if (message.type === 'log') {
+        document.getElementById('log').value += message.value + '\\\n';
+    }
+}
 
-function start() {
+document.getElementById('sensors').value = 'timestamp,sensor_id,type,value\\\n';
+
+function connect() {
     document.getElementById('start').style.display = 'none';
-    thermalMonitorClient.start();
+    monitorClient.connect();
     document.getElementById('stop').style.display = 'inline-block';
 }
 
-function stop() {
+function disconnect() {
     document.getElementById('stop').style.display = 'none';
-    thermalMonitorClient.stop();
+    monitorClient.disconnect();
     document.getElementById('start').style.display = 'inline-block';
 }
 
-function start_temps() {
-    thermalMonitorClient.start_temps();
+function start_monitor() {
+    monitorClient.start_monitor();
 }
 
-function stop_temps() {
-    thermalMonitorClient.stop_temps();
+function stop_monitor() {
+    monitorClient.stop_monitor();
 }
 
-function get_all_temps() {
-    thermalMonitorClient.request_all_temps();
+function get_sensors_data() {
+    monitorClient.request_sensors_data();
 }
