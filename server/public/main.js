@@ -55,6 +55,12 @@ monitorClient.onSensorsDataReceived = (sensorsData) =>
     });
 }
 
+monitorClient.onMessageReceived = (message) => {
+    if (message.type === 'log') {
+        addLogMessage(message.value.substring(1, message.value.indexOf(']')), message.value.substring(message.value.indexOf(']') + 1));
+    }
+}
+
 monitorClient.connect();
 
 function start_monitor()
@@ -155,6 +161,11 @@ function addLogMessage(type, msg)
     li.classList.add(type);
     list.appendChild(li);
 }
+
+addLogMessage('ERROR', 'Lost communication with CubeSat');
+addLogMessage('WARNING', 'Posible communication lag');
+addLogMessage('INFO', 'Nothing special');
+addLogMessage('SUCCESS', 'Achieved optical communication');
 
 function graphButtonSelected(element, id, name)
 {

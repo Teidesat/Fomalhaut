@@ -151,6 +151,11 @@ Log Window
     color: #00529b;
 }
 
+#logs-wrapper .Info {
+    background-color: rgba(189, 229, 248, 0.8);
+    color: #00529b;
+}
+
 #logs-wrapper .Success {
     background-color: rgba(223, 242, 191, 0.8);
     color: #4f8a10;

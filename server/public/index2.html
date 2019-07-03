@@ -4,7 +4,6 @@
         <title>SensorDataWeb</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
         <link rel="stylesheet" type="text/css" href="styles.css"/>
     </head>
 
@@ -38,22 +37,13 @@
                 </div>
                 <div id="app-log-window" class="window">
                     <div id="logs-wrapper">
-                        <button onclick="addLogMessage('ERROR', 'Lost communication with CubeSat')">Add Msg</button>
-                        <ul id="logs-list">
-                            <li class="ERROR"><strong>24 June 2019, 10:00:18 GMT+01:00 - ERROR - </strong><span>Lost communication with CubeSat</span></li>
-                            <li class="WARNING"><strong>24 June 2019, 10:00:18 GMT+01:00 - WARNING - </strong><span>Posible communication lag</span></li>
-                            <li class="NORMAL"><strong>24 June 2019, 10:00:18 GMT+01:00 - </strong><span>Nothing special</span></li>
-                            <li class="SUCCESS"><strong>24 June 2019, 10:00:18 GMT+01:00 - SUCCESS - </strong><span>Achieved optical communication</span></li>
+                        <ul id="logs-list">                            
                         </ul>
                     </div>
                 </div>
                 <div id="app-video-window" class="window">
                     <div id="videoWrapper">
-                        <div>
-                            <button id="start" onclick="start()">Start</button>
-                            <button id="stop" onclick="stop()">Stop</button>
-                        </div>                    
-                        <video id="video" autoplay></video>    
+                        <video id="video" autoplay></video>
                     </div>
                 </div>
                 <div id="app-sensor-window" class="window">
