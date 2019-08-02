@@ -9,7 +9,7 @@ from threading import Thread
 from aiortc import RTCPeerConnection, RTCSessionDescription
 from aiortc.contrib.media import MediaPlayer
 
-from Logger import Logger
+from src.Logger import Logger
 
 
 class WebRTCServer:

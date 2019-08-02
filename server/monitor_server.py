@@ -13,6 +13,8 @@ Prerequisites:
 
     - Install w1thermsensor package (pip install w1thermsensor)
 
+    - Install smbus package if not already installed (apt install python3-smbus)
+
     - Install media codecs (apt install libavdevice-dev libavfilter-dev libopus-dev libvpx-dev pkg-config)
 
     - Install aiohttp, aiortc and opencv-python packages (pip install aiohttp aiortc opencv-python)
@@ -23,6 +25,8 @@ The following w1 therm sensor devices are supported:
     - DS18B20
     - DS28EA00
     - DS1825/MAX31850K
+
+I2C sensors are also supported.
 
 Author: Andrés García Pérez (teidesat11@ull.edu.es)
 """
@@ -35,9 +39,9 @@ import signal
 import json
 from threading import Semaphore
 
-from Logger import Logger
-from Monitor import Monitor
-from WebRTCServer import WebRTCServer
+from src.Logger import Logger
+from src.Monitor import Monitor
+from src.WebRTCServer import WebRTCServer
 
 
 def on_new_sensor_data_listener(sensor_data, server):
@@ -91,8 +95,8 @@ def start_server(simulate, ip, port, resolution, automatic_start, logger):
     server = WebRTCServer(port=port, ip=ip, logger=logger, resolution=resolution)
     server.start()
 
-    monitor.on_new_sensor_data_listener = lambda sensor_data : on_new_sensor_data_listener(sensor_data, server)
-    server.on_new_message_listener = lambda message : on_new_message_listener(message, monitor, server)
+    monitor.on_new_sensor_data_listener = lambda sensor_data: on_new_sensor_data_listener(sensor_data, server)
+    server.on_new_message_listener = lambda message: on_new_message_listener(message, monitor, server)
 
     semaphore = Semaphore(0)
 

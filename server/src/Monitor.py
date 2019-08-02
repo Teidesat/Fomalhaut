@@ -1,38 +1,11 @@
 import time
-from random import uniform
 from datetime import datetime
 from threading import Thread
-from Logger import Logger
+from src.Logger import Logger
+from src.SensorsProvider import SensorsProvider
 
 
 class Monitor:
-
-    # ----------- ONLY FOR SIMULATION -----------
-    class FakeTemperatureSensor:
-        def __init__(self, sensor_id):
-            self.id = sensor_id
-
-        @staticmethod
-        def get_temperature():
-            return uniform(12, 60)
-    
-    class FakeVoltageSensor:
-        def __init__(self, sensor_id):
-            self.id = sensor_id
-
-        @staticmethod
-        def get_value():
-            return uniform(1, 2)
-
-        @staticmethod
-        def get_type():
-            return 'voltage'
-
-    class FakeW1ThermSensor:
-        @staticmethod
-        def get_available_sensors():
-            return [Monitor.FakeTemperatureSensor(62346), Monitor.FakeTemperatureSensor(53245), Monitor.FakeVoltageSensor(51745)]
-    # -------------------------------------------
 
     class SensorData:
         def __init__(self, value=None, sensor_id=None, timestamp=None, type=None):
@@ -82,23 +55,18 @@ class Monitor:
             self.on_new_sensor_data_listener(sensor_data)
 
     def read_from_sensors(self):
-        if not self.__simulate:
-            from w1thermsensor import W1ThermSensor
-            sensors_provider = W1ThermSensor
-        else:
-            sensors_provider = Monitor.FakeW1ThermSensor
-
         while not self.__terminate:
             if not self.__stopped:
-                for sensor in sensors_provider.get_available_sensors():
+                for sensor in SensorsProvider.get_available_sensors(self.__simulate):
                     sensor_data = Monitor.SensorData()
                     try:
                         sensor_data.value = sensor.get_temperature()
+                        sensor_data.sensor_id = sensor.id
                         sensor_data.type = 'temperature'
                     except AttributeError:
                         sensor_data.value = sensor.get_value()
+                        sensor_data.sensor_id = sensor.get_id()
                         sensor_data.type = sensor.get_type()
-                    sensor_data.sensor_id = sensor.id
                     sensor_data.timestamp = int(round(time.time() * 1000))
                     self.register_new_sensor_data(sensor_data)
             time.sleep(1)
