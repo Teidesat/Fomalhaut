@@ -3,6 +3,7 @@ from datetime import datetime
 from threading import Thread
 from src.Logger import Logger
 from src.SensorsProvider import SensorsProvider
+from pathlib import Path
 
 
 class Monitor:
@@ -15,13 +16,14 @@ class Monitor:
             self.type = type
 
     def __init__(self, simulate=False, logger=None):
+        Path('./log').mkdir(exist_ok=True)
         self.on_new_sensor_data_listener = None
         self.__logger = logger
         self.__simulate = simulate
         self.__terminate = False
         self.__stopped = True
         self.__sensors_data = []
-        self.__log_file = open(datetime.now().strftime('%Y-%m-%d_%H%M%S') + '_sensors_data.csv', 'w', 1)
+        self.__log_file = open('log/' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + '_sensors_data.csv', 'w', 1)
         self.__log_file.write('timestamp,sensor_id,type,value\n')
         self.__sensors_monitor = Thread(target=self.read_from_sensors)
         self.__sensors_monitor.start()

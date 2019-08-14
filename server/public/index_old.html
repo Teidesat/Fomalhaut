@@ -1,0 +1,49 @@
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>WebRTC webcam</title>
+    <style>
+    button {
+        padding: 8px 16px;
+    }
+    video {
+        width: 640px;
+    }
+    </style>
+</head>
+<body>
+
+<section>
+    <button id="start" onclick="connect()">Connect</button>
+    <button id="stop" style="display: none" onclick="disconnect()">Disconnect</button>
+    <button id="start_monitor" onclick="start_monitor()">Start monitor</button>
+    <button id="stop_monitor" onclick="stop_monitor()">Stop monitor</button>
+    <button id="get_all_temps" onclick="get_sensors_data()">Get sensors data</button>
+</section>
+
+<hr>
+
+<section>
+    <h3>Sensors</h3>
+    <textarea id="sensors" rows="10" cols="100" readonly></textarea>
+</section>
+
+<hr>
+
+<section>
+    <h3>Log</h3>
+    <textarea id="log" rows="10" cols="100" readonly></textarea>
+</section>
+
+<hr>
+
+<section id="media">
+    <h3>Video</h3>
+    <video id="video" autoplay></video>
+</section>
+
+<script src="MonitorClient.js"></script>
+<script src="client.js"></script>
+</body>
+</html>

@@ -4,6 +4,7 @@ import asyncio
 import platform
 
 from aiohttp import web
+from aiohttp_index import IndexMiddleware
 from threading import Thread
 
 from aiortc import RTCPeerConnection, RTCSessionDescription
@@ -22,7 +23,7 @@ class WebRTCServer:
         self.__port = port
         self.__ip = ip
         self.__resolution = resolution
-        self.__app = web.Application()
+        self.__app = web.Application(middlewares=[IndexMiddleware()])
         self.__app.router.add_post('/offer', self.offer)
         self.__app.router.add_static('/', path=str('./public/'))
         self.__loop = None
