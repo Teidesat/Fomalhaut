@@ -36,17 +36,17 @@ class SensorsProvider:
         sensors = []
         if not simulate:
             from w1thermsensor import W1ThermSensor
-            from . import CPUTempSensor
-            from . import MMA8452QSensor
+            from src.CPUTempSensor import CPUTempSensor
+            from src.MMA8451QSensor import MMA8451QSensor
 
             # 1wire temperature sensors
             sensors.extend(W1ThermSensor.get_available_sensors())
 
             # CPU temperature sensor
-            sensors.append(CPUTempSensor())
+            sensors.append(CPUTempSensor('cpu_temperature'))
 
             # I2C sensors (TODO: add more I2C sensors)
-            sensors.extend([MMA8452QSensor()])
+            sensors.extend([MMA8451QSensor('acelerometer 1')])
         else:
             sensors.extend([SensorsProvider.FakeTemperatureSensor(53245), SensorsProvider.FakeTemperatureSensor(62346), SensorsProvider.FakeVoltageSensor(51745)])
 

@@ -5,14 +5,14 @@ from src.Sensor import Sensor
 
 class I2CSensor(Sensor):
 
-    def __init__(self, i2c_ch=1, address=0x00, value_reg=0x00, value_reg_size=2, config_reg=0x01):
+    def __init__(self, sensor_id, i2c_ch=1, address=0x00, value_reg=0x00, value_reg_size=2, config_reg=0x01):
         self.__bus = smbus.SMBus(i2c_ch)
         self.address = address
         self.value_reg = value_reg
         self.config_reg = config_reg
         self.value_reg_size = value_reg_size
         self.configure_sensor(self.__bus, self.address, self.config_reg)
-        super().__init__()
+        super().__init__(sensor_id=sensor_id)
 
     def get_bus(self):
         return self.__bus

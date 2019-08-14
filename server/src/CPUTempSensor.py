@@ -4,12 +4,9 @@ from src.Sensor import Sensor
 
 class CPUTempSensor(Sensor):
 
-    def __init__(self):
+    def __init__(self, sensor_id):
         self.__cpu = CPUTemperature()
-
-    @staticmethod
-    def get_id():
-        return 'cpu_temperature'
+        super().__init__(sensor_id=sensor_id)
 
     def get_value(self):
         return self.__cpu.temperature
