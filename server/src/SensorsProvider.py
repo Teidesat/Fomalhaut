@@ -38,15 +38,18 @@ class SensorsProvider:
             from w1thermsensor import W1ThermSensor
             from src.CPUTempSensor import CPUTempSensor
             from src.MMA8451QSensor import MMA8451QSensor
+            from src.HMC5883L import HMC5883L
+            from src.BMP180 import BMP180
+            from src.DHT22 import DHT22
 
-            # 1wire temperature sensors
-            sensors.extend(W1ThermSensor.get_available_sensors())
+            # 1wire DS18B20 temperature sensors
+            sensors.extend(W1ThermSensor.get_available_sensors([W1ThermSensor.THERM_SENSOR_DS18B20]))
 
             # CPU temperature sensor
-            sensors.append(CPUTempSensor('cpu_temperature'))
+            sensors.append(CPUTempSensor('cpu temperature'))
 
             # I2C sensors (TODO: add more I2C sensors)
-            sensors.extend([MMA8451QSensor('acelerometer 1')])
+            sensors.extend([MMA8451QSensor('accelerometer 1'), HMC5883L('compass 1'), BMP180('barometer 1'), DHT22('humidity 1')])
         else:
             sensors.extend([SensorsProvider.FakeTemperatureSensor(53245), SensorsProvider.FakeTemperatureSensor(62346), SensorsProvider.FakeVoltageSensor(51745)])
 

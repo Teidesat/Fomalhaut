@@ -34,7 +34,6 @@ class BMP180(I2CSensor):
         self.mc = (calibration_data[18] << 8) + calibration_data[19]
         self. md = (calibration_data[20] << 8) + calibration_data[21]
 
-
     def get_value(self):
         cdata = [0, 0, 0]
 
