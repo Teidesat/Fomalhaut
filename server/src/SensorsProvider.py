@@ -17,17 +17,12 @@ class SensorsProvider:
     class FakeVoltageSensor(Sensor):
 
         def __init__(self, sensor_id):
-            self.__id = sensor_id
+            super().__init__(sensor_id)
 
-        def get_id(self):
-            return self.__id
-
-        @staticmethod
-        def get_value():
+        def get_value(self):
             return uniform(1, 2)
 
-        @staticmethod
-        def get_type():
+        def get_type(self):
             return 'voltage'
     # -------------------------------------------
 

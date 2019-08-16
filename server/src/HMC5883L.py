@@ -6,8 +6,7 @@ class HMC5883L(I2CSensor):
     def __init__(self, sensor_id):
         super().__init__(sensor_id=sensor_id, address=0x1E, value_reg=0x03, value_reg_size=6, config_reg=0x00)
 
-    @staticmethod
-    def configure_sensor(bus, address, config_reg):
+    def configure_sensor(self, bus, address, config_reg):
         # Configuration register A (01110000)
         bus.write_byte_data(address, config_reg, 0x70)
 
@@ -17,8 +16,7 @@ class HMC5883L(I2CSensor):
         # Mode register (continuous)
         bus.write_byte_data(address, config_reg + 2, 0x00)
 
-    @staticmethod
-    def parse_data(data):
+    def parse_data(self, data):
         value = [0, 0, 0]
 
         # X axis
@@ -32,6 +30,5 @@ class HMC5883L(I2CSensor):
 
         return value
 
-    @staticmethod
-    def get_type():
+    def get_type(self):
         return 'compass'

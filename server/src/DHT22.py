@@ -11,6 +11,5 @@ class DHT22(Sensor):
     def get_value(self):
         return dht.read_retry(dht.DHT22, self.gpio_pin)
 
-    @staticmethod
-    def get_type():
+    def get_type(self):
         return 'humidity'

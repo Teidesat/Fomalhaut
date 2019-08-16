@@ -11,6 +11,5 @@ class CPUTempSensor(Sensor):
     def get_value(self):
         return self.__cpu.temperature
 
-    @staticmethod
-    def get_type():
+    def get_type(self):
         return 'temperature'

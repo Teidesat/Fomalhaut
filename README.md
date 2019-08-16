@@ -21,12 +21,12 @@ The humidity and temperature sensor DHT22 and I2C sensors are also supported.
 ## Prerequisites
 
 - Raspberry Pi with a recent version of Raspbian and 1-wire and I2C interfaces enabled (raspi-config)
-- Python 3.4+
-- Install w1thermsensor package (pip install w1thermsensor)
-- Install Adafruit Python DHT Sensor Library (pip install Adafruit_DHT)
+- Python 3.4+ with pip3
+- Install w1thermsensor package (pip3 install w1thermsensor)
+- Install Adafruit Python DHT Sensor Library (pip3 install Adafruit_DHT)
 - Install smbus package if not already installed (apt install python3-smbus)
 - Install media codecs (apt install libavdevice-dev libavfilter-dev libopus-dev libvpx-dev pkg-config)
-- Install aiohttp, aiortc and opencv-python packages (pip install aiohttp aiortc opencv-python)
+- Install aiohttp, aiortc and opencv-python packages (pip3 install aiohttp aiortc opencv-python)
 
 ## Tools and resources used
 

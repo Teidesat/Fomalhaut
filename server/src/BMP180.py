@@ -35,8 +35,6 @@ class BMP180(I2CSensor):
         self. md = (calibration_data[20] << 8) + calibration_data[21]
 
     def get_value(self):
-        cdata = [0, 0, 0]
-
         # Start temperature measurement (4.5 ms)
         self.get_bus().write_byte_data(self.address, self.config_reg, 0x2E)
 
@@ -55,26 +53,33 @@ class BMP180(I2CSensor):
         data = self.get_bus().read_i2c_block_data(self.address, self.value_reg, 3)
         up = ((data[0] << 16) + (data[1] << 8) + data[2]) >> (8 - self.oss)
 
-        cdata[0] = self.calculate_temperature(ut)
-        cdata[1] = self.calculate_pressure(up)
+        return self.parse_data([ut, up])
+
+    def parse_data(self, data):
+        cdata = [0, 0, 0]
+
+        cdata[0] = self.calculate_temperature(data[0])
+        cdata[1] = self.calculate_pressure(data[0], data[1])
         cdata[2] = self.calculate_altitude(cdata[1])
 
         return cdata
 
-    def calculate_temperature(self, ut):
+    def calculate_b5(self, ut):
         x1 = (ut - self.ac6) * self.ac5 / 2**15
         x2 = self.mc * 2**11 / (x1 + self.md)
-        b5 = x1 + x2
-        return ((b5 + 8) / 2**4) / 10
+        return x1 + x2
 
-    def calculate_pressure(self, up):
-        b6 = self.b5 - 4000
+    def calculate_temperature(self, ut):
+        return ((self.calculate_b5(ut) + 8) / 2**4) / 10
+
+    def calculate_pressure(self, up, ut):
+        b6 = self.calculate_b5(ut) - 4000
         x1 = (self.b2 * (b6 * b6 / 2**12)) / 2**11
         x2 = self.ac2 * b6 / 2**11
         x3 = x1 + x2
         b3 = (((self.ac1 * 4 + x3) << self.oss) + 2) / 4
         x1 = self.ac3 * b6 / 2**13
-        x2 = (self.b1 * (b6 * b6 / 2**12)) / 2 **16
+        x2 = (self.b1 * (b6 * b6 / 2**12)) / 2**16
         x3 = ((x1 + x2) + 2) / 2**2
         b4 = self.ac4 * (x3 + 32768) / 2**15
         b7 = (up - b3) * (50000 >> self.oss)
@@ -90,6 +95,5 @@ class BMP180(I2CSensor):
     def calculate_altitude(self, p):
         return 44330 * (1 - (p / self.sea_level_pressure)**(1/5.255))
 
-    @staticmethod
-    def get_type():
+    def get_type(self):
         return 'barometer'
