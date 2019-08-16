@@ -6,16 +6,13 @@ its main function is to monitor them using the data provided by the different se
 and send the data to the control panel for storage and further analysis.
 
 Prerequisites:
-    - Python 3.4+
+    - Raspberry Pi with a recent version of Raspbian and 1-wire and I2C interfaces enabled (sudo raspi-config)
 
-    - (For w1thermsensor) On the Raspberry Pi, add dtoverlay=w1-gpio (for regular connection)
-    or dtoverlay=w1-gpio,pullup="y" (for parasitic connection) to /boot/config.txt.
-    The default data pin is GPIO4 (RaspPi connector pin 7), but that can be changed from 4
-    to x with dtoverlay=w1-gpio,gpiopin=x
+    - Python 3.4+
 
     - Install w1thermsensor package (pip install w1thermsensor)
 
-    - Install Adafruit Python DHT Sensor Library (sudo pip install Adafruit_DHT)
+    - Install Adafruit Python DHT Sensor Library (pip install Adafruit_DHT)
 
     - Install smbus package if not already installed (apt install python3-smbus)
 
