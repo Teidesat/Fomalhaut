@@ -24,7 +24,7 @@ class Monitor:
         self.__stopped = True
         self.__sensors_data = []
         self.__log_file = open('log/' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + '_sensors_data.csv', 'w', 1)
-        self.__log_file.write('timestamp,sensor_id,type,value\n')
+        self.__log_file.write('timestamp;sensor_id;type;value\n')
         self.__sensors_monitor = Thread(target=self.read_from_sensors)
         self.__sensors_monitor.start()
 
@@ -49,10 +49,19 @@ class Monitor:
         self.__log('Monitor service closed', Logger.LogLevel.DEBUG)
 
     def register_new_sensor_data(self, sensor_data):
-        log_msg = 'Time: %s Sensor: %s Type: %s Value: %.3f' % (sensor_data.timestamp, sensor_data.sensor_id, sensor_data.type, sensor_data.value)
+        log_msg = 'SENSOR DATA: timestamp: %s, sensor_id: %s, type: %s' % (sensor_data.timestamp, sensor_data.sensor_id, sensor_data.type)
+
+        if type(sensor_data.value) is list:
+            log_msg += ', values: %s' % ', '.join('{:0.3f}'.format(i) for i in sensor_data.value)
+        elif type(sensor_data.value) is float:
+            log_msg += ', value: %.3f' % sensor_data.value
+        else:
+            self.__log('Invalid value format retrieved from sensor %s' % sensor_data.sensor_id, Logger.LogLevel.WARNING)
+            log_msg += ', value: INVALID VALUE'
+
         self.__log(log_msg, Logger.LogLevel.DEBUG)
         self.__sensors_data.append(sensor_data)
-        self.__log_file.write('%s,%s,%s,%s\n' % (sensor_data.timestamp, sensor_data.sensor_id, sensor_data.type, sensor_data.value))
+        self.__log_file.write('%s;%s;%s;%s\n' % (sensor_data.timestamp, sensor_data.sensor_id, sensor_data.type, sensor_data.value))
         if self.on_new_sensor_data_listener is not None:
             self.on_new_sensor_data_listener(sensor_data)
 

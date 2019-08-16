@@ -89,7 +89,7 @@ class WebRTCServer:
                     try:
                         self.on_new_message_listener(json.loads(message))
                     except ValueError:
-                        self.__log('Invalid message received from %s: %s' % (pc_id, message), Logger.LogLevel.ERROR)
+                        self.__log('Invalid message received from %s: %s' % (pc_id, message), Logger.LogLevel.WARNING)
 
         @pc.on('iceconnectionstatechange')
         async def on_iceconnectionstatechange():
@@ -108,7 +108,7 @@ class WebRTCServer:
             else:
                 player = MediaPlayer('/dev/video0', format='v4l2', options=options)
         except:
-            self.__log('No webcam found!', Logger.LogLevel.ERROR)
+            self.__log('No webcam found', Logger.LogLevel.WARNING)
 
         await pc.setRemoteDescription(offer)
         for t in pc.getTransceivers():

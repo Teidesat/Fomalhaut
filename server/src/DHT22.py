@@ -1,3 +1,4 @@
+import time
 import Adafruit_DHT as dht
 from src.Sensor import Sensor
 
@@ -6,10 +7,16 @@ class DHT22(Sensor):
 
     def __init__(self, sensor_id):
         self.gpio_pin = 4
+        self.get_value()
         super().__init__(sensor_id=sensor_id)
 
     def get_value(self):
-        return dht.read_retry(dht.DHT22, self.gpio_pin)
+        humidity, temp = dht.read(dht.DHT22, self.gpio_pin)
+        if humidity is None or temp is None:
+            time.sleep(.200)
+            return list(dht.read(dht.DHT22, self.gpio_pin))
+        else:
+            return [humidity, temp]
 
     def get_type(self):
         return 'humidity'

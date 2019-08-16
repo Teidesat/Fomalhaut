@@ -4,7 +4,6 @@ from src.Logger import Logger
 
 
 class SensorsProvider:
-
     # ----------- ONLY FOR SIMULATION -----------
     class FakeTemperatureSensor:
 
@@ -14,6 +13,17 @@ class SensorsProvider:
         @staticmethod
         def get_temperature():
             return uniform(12, 60)
+
+    class FakeHumiditySensor(Sensor):
+
+        def __init__(self, sensor_id):
+            super().__init__(sensor_id)
+
+        def get_value(self):
+            return [uniform(20, 95), uniform(12, 60)]
+
+        def get_type(self):
+            return 'humidity'
 
     class FakeVoltageSensor(Sensor):
 
@@ -25,6 +35,7 @@ class SensorsProvider:
 
         def get_type(self):
             return 'voltage'
+
     # -------------------------------------------
 
     @staticmethod
@@ -49,7 +60,8 @@ class SensorsProvider:
             # I2C sensors (TODO: add more I2C sensors)
 
         else:
-            sensors.extend([SensorsProvider.FakeTemperatureSensor(53245), SensorsProvider.FakeTemperatureSensor(62346), SensorsProvider.FakeVoltageSensor(51745)])
+            sensors.extend([SensorsProvider.FakeTemperatureSensor(53245), SensorsProvider.FakeTemperatureSensor(62346),
+                            SensorsProvider.FakeVoltageSensor(51745), SensorsProvider.FakeHumiditySensor(32344)])
 
         return sensors
 
