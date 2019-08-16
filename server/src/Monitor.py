@@ -35,22 +35,22 @@ class Monitor:
         return self.__sensors_data[-1] if len(self.__sensors_data) > 0 else None
 
     def start(self):
-        self.log('Monitor service started', Logger.LogLevel.DEBUG)
+        self.__log('Monitor service started', Logger.LogLevel.DEBUG)
         self.__stopped = False
 
     def stop(self):
-        self.log('Monitor service stopped', Logger.LogLevel.DEBUG)
+        self.__log('Monitor service stopped', Logger.LogLevel.DEBUG)
         self.__stopped = True
 
     def close(self):
-        self.log('Closing monitor service...', Logger.LogLevel.DEBUG)
+        self.__log('Closing monitor service...', Logger.LogLevel.DEBUG)
         self.__terminate = True
         self.__sensors_monitor.join()
-        self.log('Monitor service closed', Logger.LogLevel.DEBUG)
+        self.__log('Monitor service closed', Logger.LogLevel.DEBUG)
 
     def register_new_sensor_data(self, sensor_data):
         log_msg = 'Time: %s Sensor: %s Type: %s Value: %.3f' % (sensor_data.timestamp, sensor_data.sensor_id, sensor_data.type, sensor_data.value)
-        self.log(log_msg, Logger.LogLevel.DEBUG)
+        self.__log(log_msg, Logger.LogLevel.DEBUG)
         self.__sensors_data.append(sensor_data)
         self.__log_file.write('%s,%s,%s,%s\n' % (sensor_data.timestamp, sensor_data.sensor_id, sensor_data.type, sensor_data.value))
         if self.on_new_sensor_data_listener is not None:
@@ -59,7 +59,7 @@ class Monitor:
     def read_from_sensors(self):
         while not self.__terminate:
             if not self.__stopped:
-                for sensor in SensorsProvider.get_available_sensors(self.__simulate):
+                for sensor in SensorsProvider.get_available_sensors(self.__simulate, logger=self.__logger):
                     sensor_data = Monitor.SensorData()
                     try:
                         sensor_data.value = sensor.get_temperature()
@@ -75,6 +75,6 @@ class Monitor:
 
         self.__log_file.close()
 
-    def log(self, msg, level):
+    def __log(self, msg, level):
         if self.__logger is not None:
             self.__logger.log(msg, level)

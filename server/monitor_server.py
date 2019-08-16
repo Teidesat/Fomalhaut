@@ -10,19 +10,23 @@ Prerequisites:
 
     - Python 3.4+ with pip3 (apt install python3-pip)
 
-    - Install w1thermsensor package (pip3 install w1thermsensor)
+    - Install the following python modules (as system modules) and packages:
 
-    - Install Adafruit Python DHT Sensor Library (pip3 install Adafruit_DHT)
+        - Install w1thermsensor package (pip3 install w1thermsensor)
 
-    - Install smbus package if not already installed (apt install python3-smbus)
+        - Install gpiozero package (pip3 install gpiozero)
 
-    - Install dependencies for some python modules compilation (apt install libffi-dev libsrtp2-dev pkg-config)
+        - Install Adafruit Python DHT Sensor Library (pip3 install Adafruit_DHT)
 
-    - Install media codecs (apt install libavdevice-dev libavfilter-dev libopus-dev libvpx-dev)
+        - Install smbus package if not already installed (apt install python3-smbus)
 
-    - Install aiohttp, aiohttp_index, aiortc and opencv-python packages (pip3 install aiohttp aiohttp_index aiortc opencv-python)
+        - Install dependencies for some python modules compilation (apt install libffi-dev libsrtp2-dev pkg-config)
 
-    - Install colorama package (pip3 install colorama)
+        - Install media codecs (apt install libavdevice-dev libavfilter-dev libopus-dev libvpx-dev)
+
+        - Install aiohttp, aiohttp_index, aiortc and opencv-python packages (pip3 install aiohttp aiohttp_index aiortc)
+
+        - Install colorama package (pip3 install colorama)
 
 The following w1 therm sensor devices are supported:
     - DS18S20

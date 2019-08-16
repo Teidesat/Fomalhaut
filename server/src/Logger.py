@@ -8,6 +8,7 @@ class Logger:
     class LogLevel(Enum):
         DEBUG = auto()
         INFO = auto()
+        WARNING = auto()
         ERROR = auto()
 
     def __init__(self, debug=False):
@@ -21,5 +22,7 @@ class Logger:
         else:
             if level == Logger.LogLevel.INFO:
                 print('%s[%s] %s%s' % (Fore.GREEN, level.name, msg, Style.RESET_ALL))
-            else:
+            elif level == Logger.LogLevel.ERROR:
                 print('%s[%s] %s%s' % (Fore.RED, level.name, msg, Style.RESET_ALL))
+            else:
+                print('%s[%s] %s%s' % (Fore.YELLOW, level.name, msg, Style.RESET_ALL))

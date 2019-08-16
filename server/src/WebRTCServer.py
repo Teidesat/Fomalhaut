@@ -44,10 +44,10 @@ class WebRTCServer:
 
         thread = Thread(target=thread, daemon=True)
         thread.start()
-        self.log('WebRTC server started', Logger.LogLevel.DEBUG)
+        self.__log('WebRTC server started', Logger.LogLevel.DEBUG)
 
     def close(self):
-        self.log('Closing WebRTC server...', Logger.LogLevel.DEBUG)
+        self.__log('Closing WebRTC server...', Logger.LogLevel.DEBUG)
         if self.__site is not None and self.__loop is not None:
             async def stop():
                 future = asyncio.run_coroutine_threadsafe(self.on_shutdown(), self.__loop)
@@ -64,7 +64,7 @@ class WebRTCServer:
             for channel in self.__channels:
                 if channel.readyState == 'open':
                     channel.send(message)
-                    self.log('Message sent to channel %s: %s' % (channel.id, message), Logger.LogLevel.DEBUG)
+                    self.__log('Message sent to channel %s: %s' % (channel.id, message), Logger.LogLevel.DEBUG)
         asyncio.run_coroutine_threadsafe(task(), self.__loop)
 
     async def offer(self, request):
@@ -76,27 +76,27 @@ class WebRTCServer:
         pc = RTCPeerConnection()
         pc_id = 'PeerConnection(%s)' % uuid.uuid4()
         self.__pcs.add(pc)
-        self.log('%s: created for %s' % (pc_id, request.remote), Logger.LogLevel.DEBUG)
+        self.__log('%s: created for %s' % (pc_id, request.remote), Logger.LogLevel.DEBUG)
 
         @pc.on('datachannel')
         def on_datachannel(channel):
-            self.log('%s: Data channel established (%s)' % (pc_id, channel.id), Logger.LogLevel.DEBUG)
+            self.__log('%s: Data channel established (%s)' % (pc_id, channel.id), Logger.LogLevel.DEBUG)
             self.__channels.add(channel)
             @channel.on('message')
             def on_message(message):
-                self.log('Message received from %s: %s' % (pc_id, message), Logger.LogLevel.DEBUG)
+                self.__log('Message received from %s: %s' % (pc_id, message), Logger.LogLevel.DEBUG)
                 if isinstance(message, str) and self.on_new_message_listener is not None:
                     try:
                         self.on_new_message_listener(json.loads(message))
                     except ValueError:
-                        self.log('Invalid message received from %s: %s' % (pc_id, message), Logger.LogLevel.ERROR)
+                        self.__log('Invalid message received from %s: %s' % (pc_id, message), Logger.LogLevel.ERROR)
 
         @pc.on('iceconnectionstatechange')
         async def on_iceconnectionstatechange():
-            self.log('%s: ICE connection state is %s' % (pc_id, pc.iceConnectionState), Logger.LogLevel.DEBUG)
+            self.__log('%s: ICE connection state is %s' % (pc_id, pc.iceConnectionState), Logger.LogLevel.DEBUG)
             if pc.iceConnectionState == 'failed':
                 await pc.close()
-                self.log('%s: ICE connection discarded with state %s' % (pc_id, pc.iceConnectionState), Logger.LogLevel.DEBUG)
+                self.__log('%s: ICE connection discarded with state %s' % (pc_id, pc.iceConnectionState), Logger.LogLevel.DEBUG)
                 self.__pcs.discard(pc)
 
         # open webcam
@@ -108,7 +108,7 @@ class WebRTCServer:
             else:
                 player = MediaPlayer('/dev/video0', format='v4l2', options=options)
         except:
-            self.log('No webcam found!', Logger.LogLevel.ERROR)
+            self.__log('No webcam found!', Logger.LogLevel.ERROR)
 
         await pc.setRemoteDescription(offer)
         for t in pc.getTransceivers():
@@ -130,8 +130,8 @@ class WebRTCServer:
         coros = [pc.close() for pc in self.__pcs]
         await asyncio.gather(*coros)
         self.__pcs.clear()
-        self.log('WebRTC server closed', Logger.LogLevel.DEBUG)
+        self.__log('WebRTC server closed', Logger.LogLevel.DEBUG)
 
-    def log(self, msg, level):
+    def __log(self, msg, level):
         if self.__logger is not None:
             self.__logger.log(msg, level)
