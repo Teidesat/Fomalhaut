@@ -25,6 +25,7 @@ class Monitor:
         self.__sensors_data = []
         self.__log_file = open('log/' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + '_sensors_data.csv', 'w', 1)
         self.__log_file.write('timestamp;sensor_id;type;value\n')
+        self.__sensors = SensorsProvider.get_available_sensors(self.__simulate, logger=self.__logger)
         self.__sensors_monitor = Thread(target=self.read_from_sensors)
         self.__sensors_monitor.start()
 
@@ -35,11 +36,11 @@ class Monitor:
         return self.__sensors_data[-1] if len(self.__sensors_data) > 0 else None
 
     def start(self):
-        self.__log('Monitor service started', Logger.LogLevel.DEBUG)
+        self.__log('Monitor service started', Logger.LogLevel.INFO)
         self.__stopped = False
 
     def stop(self):
-        self.__log('Monitor service stopped', Logger.LogLevel.DEBUG)
+        self.__log('Monitor service stopped', Logger.LogLevel.INFO)
         self.__stopped = True
 
     def close(self):
@@ -68,7 +69,7 @@ class Monitor:
     def read_from_sensors(self):
         while not self.__terminate:
             if not self.__stopped:
-                for sensor in SensorsProvider.get_available_sensors(self.__simulate, logger=self.__logger):
+                for sensor in self.__sensors:
                     sensor_data = Monitor.SensorData()
                     try:
                         sensor_data.value = sensor.get_temperature()
@@ -79,6 +80,10 @@ class Monitor:
                         sensor_data.sensor_id = sensor.get_id()
                         sensor_data.type = sensor.get_type()
                     sensor_data.timestamp = int(round(time.time() * 1000))
+                    if sensor_data.value is None:
+                        sensor_data.value = -999
+                    elif type(sensor_data.value) is list:
+                        sensor_data.value = [-999 if v is None else v for v in sensor_data.value]
                     self.register_new_sensor_data(sensor_data)
             time.sleep(1)
 

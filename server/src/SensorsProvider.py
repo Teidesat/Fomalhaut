@@ -68,8 +68,9 @@ class SensorsProvider:
     @staticmethod
     def __add_sensor(sensor, sensors, name, logger):
         try:
+            SensorsProvider.__log(logger, 'Loading \'%s\' sensor...' % name, Logger.LogLevel.INFO)
             sensors.append(sensor(name))
-            SensorsProvider.__log(logger, 'Loaded \'%s\' sensor' % name, Logger.LogLevel.DEBUG)
+            SensorsProvider.__log(logger, 'Loaded \'%s\' sensor' % name, Logger.LogLevel.INFO)
         except:
             SensorsProvider.__log(logger, 'Failed to load \'%s\' sensor' % name, Logger.LogLevel.WARNING)
 

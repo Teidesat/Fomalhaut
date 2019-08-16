@@ -7,7 +7,9 @@ class DHT22(Sensor):
 
     def __init__(self, sensor_id):
         self.gpio_pin = 4
-        self.get_value()
+        humidity, temp = dht.read_retry(dht.DHT22, self.gpio_pin)
+        if humidity is None or temp is None:
+            raise Exception('Unable to connect')
         super().__init__(sensor_id=sensor_id)
 
     def get_value(self):

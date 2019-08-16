@@ -14,8 +14,6 @@ Prerequisites:
 
         - Install w1thermsensor package (pip3 install w1thermsensor)
 
-        - Install gpiozero package (pip3 install gpiozero)
-
         - Install Adafruit Python DHT Sensor Library (pip3 install Adafruit_DHT)
 
         - Install smbus package if not already installed (apt install python3-smbus)

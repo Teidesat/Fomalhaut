@@ -24,7 +24,6 @@ The humidity and temperature sensor DHT22 and I2C sensors are also supported.
 - Python 3.4+ with pip3 (apt install python3-pip)
 - Install the following python modules (as system modules) and packages:
     - Install w1thermsensor package (pip3 install w1thermsensor)
-    - Install gpiozero package (pip3 install gpiozero)
     - Install Adafruit Python DHT Sensor Library (pip3 install Adafruit_DHT)
     - Install smbus package if not already installed (apt install python3-smbus)
     - Install dependencies for some python modules compilation (apt install libffi-dev libsrtp2-dev pkg-config)
