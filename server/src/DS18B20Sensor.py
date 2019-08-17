@@ -14,4 +14,4 @@ class DS18B20Sensor(Sensor):
         return 'temperature'
 
     def get_id(self):
-        return super().get_id() + ' (%d)' % self.__sensor.id
+        return super().get_id() + ' (%s)' % self.__sensor.id
