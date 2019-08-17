@@ -72,21 +72,12 @@ class Monitor:
                 for sensor in self.__sensors:
                     sensor_data = Monitor.SensorData()
                     try:
-                        try:
-                            sensor_data.value = sensor.get_temperature()
-                        except:
-                            self.__log('Error while trying to read the sensor \'%s\'' % sensor.id, Logger.LogLevel.WARNING)
-                            sensor_data.value = None
-                        sensor_data.sensor_id = sensor.id
-                        sensor_data.type = 'temperature'
-                    except AttributeError:
-                        try:
-                            sensor_data.value = sensor.get_value()
-                        except:
-                            self.__log('Error while trying to read the sensor \'%s\'' % sensor.get_id(), Logger.LogLevel.WARNING)
-                            sensor_data.value = None
-                        sensor_data.sensor_id = sensor.get_id()
-                        sensor_data.type = sensor.get_type()
+                        sensor_data.value = sensor.get_value()
+                    except:
+                        self.__log('Error while trying to read the sensor \'%s\'' % sensor.get_id(), Logger.LogLevel.WARNING)
+                        sensor_data.value = None
+                    sensor_data.sensor_id = sensor.get_id()
+                    sensor_data.type = sensor.get_type()
                     sensor_data.timestamp = int(round(time.time() * 1000))
 
                     if sensor_data.value is None:

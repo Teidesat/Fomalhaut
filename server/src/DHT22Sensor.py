@@ -3,7 +3,7 @@ import Adafruit_DHT as dht
 from src.Sensor import Sensor
 
 
-class DHT22(Sensor):
+class DHT22Sensor(Sensor):
 
     def __init__(self, sensor_id):
         self.gpio_pin = 4

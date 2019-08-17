@@ -2,7 +2,7 @@ import time
 from src.I2CSensor import I2CSensor
 
 
-class BMP180(I2CSensor):
+class BMP180Sensor(I2CSensor):
 
     def __init__(self, sensor_id):
         self.oss = 3

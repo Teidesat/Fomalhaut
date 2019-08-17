@@ -1,7 +1,7 @@
 from src.I2CSensor import I2CSensor
 
 
-class HMC5883L(I2CSensor):
+class HMC5883LSensor(I2CSensor):
 
     def __init__(self, sensor_id):
         super().__init__(sensor_id=sensor_id, address=0x1E, value_reg=0x03, value_reg_size=6, config_reg=0x00)
