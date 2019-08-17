@@ -17,7 +17,7 @@ class BMP180Sensor(I2CSensor):
         self.b2 = 0
         self.mb = 0
         self.mc = 0
-        self. md = 0
+        self.md = 0
         super().__init__(sensor_id=sensor_id, address=0x77, value_reg=0xF6, config_reg=0xF4)
 
     def configure_sensor(self, bus, address, config_reg):
@@ -32,7 +32,7 @@ class BMP180Sensor(I2CSensor):
         self.b2 = (calibration_data[14] << 8) + calibration_data[15]
         self.mb = (calibration_data[16] << 8) + calibration_data[17]
         self.mc = (calibration_data[18] << 8) + calibration_data[19]
-        self. md = (calibration_data[20] << 8) + calibration_data[21]
+        self.md = (calibration_data[20] << 8) + calibration_data[21]
 
     def get_value(self):
         # Start temperature measurement (4.5 ms)
@@ -59,14 +59,14 @@ class BMP180Sensor(I2CSensor):
         cdata = [0, 0, 0]
 
         cdata[0] = self.calculate_temperature(data[0])
-        cdata[1] = self.calculate_pressure(data[0], data[1])
+        cdata[1] = self.calculate_pressure(data[1], data[0])
         cdata[2] = self.calculate_altitude(cdata[1])
 
         return cdata
 
     def calculate_b5(self, ut):
-        x1 = (ut - self.ac6) * self.ac5 / 2**15
-        x2 = self.mc * 2**11 / (x1 + self.md)
+        x1 = int((ut - self.ac6) * self.ac5 / 2**15)
+        x2 = int(self.mc * 2**11 / (x1 + self.md))
         return x1 + x2
 
     def calculate_temperature(self, ut):
@@ -74,8 +74,8 @@ class BMP180Sensor(I2CSensor):
 
     def calculate_pressure(self, up, ut):
         b6 = self.calculate_b5(ut) - 4000
-        x1 = (self.b2 * (b6 * b6 / 2**12)) / 2**11
-        x2 = self.ac2 * b6 / 2**11
+        x1 = int((self.b2 * (b6 * b6 / 2**12)) / 2**11)
+        x2 = int(self.ac2 * b6 / 2**11)
         x3 = x1 + x2
         b3 = (((self.ac1 * 4 + x3) << self.oss) + 2) / 4
         x1 = self.ac3 * b6 / 2**13
