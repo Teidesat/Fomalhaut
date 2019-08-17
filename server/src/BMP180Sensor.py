@@ -34,18 +34,6 @@ class BMP180Sensor(I2CSensor):
         self.mc = super().cpl2((calibration_data[18] << 8) + calibration_data[19], 16)
         self.md = super().cpl2((calibration_data[20] << 8) + calibration_data[21], 16)
 
-        print('ac1: %d' % self.ac1)
-        print('ac2: %d' % self.ac2)
-        print('ac3: %d' % self.ac3)
-        print('ac4: %d' % self.ac4)
-        print('ac5: %d' % self.ac5)
-        print('ac6: %d' % self.ac6)
-        print('b1: %d' % self.b1)
-        print('b2: %d' % self.b2)
-        print('mb: %d' % self.mb)
-        print('mc: %d' % self.mc)
-        print('md: %d' % self.md)
-
     def get_value(self):
         # Start temperature measurement (4.5 ms)
         self.get_bus().write_byte_data(self.address, self.config_reg, 0x2E)
@@ -65,9 +53,6 @@ class BMP180Sensor(I2CSensor):
         data = self.get_bus().read_i2c_block_data(self.address, self.value_reg, 3)
         up = ((data[0] << 16) + (data[1] << 8) + data[2]) >> (8 - self.oss)
 
-        print('UT: %d' % ut)
-        print('UP: %d' % up)
-
         return self.parse_data([ut, up])
 
     def parse_data(self, data):
@@ -76,8 +61,6 @@ class BMP180Sensor(I2CSensor):
         cdata[0] = self.calculate_temperature(data[0])
         cdata[1] = self.calculate_pressure(data[1], data[0])
         cdata[2] = self.calculate_altitude(cdata[1])
-
-        print('cdata: ' + str(cdata))
 
         return cdata
 
