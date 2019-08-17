@@ -92,9 +92,9 @@ def on_new_message_listener(message, monitor, server):
         }))
 
 
-def start_server(simulate, ip, port, resolution, automatic_start, logger):
+def start_server(simulate, period, ip, port, resolution, automatic_start, logger):
     logger.log('Starting server...', Logger.LogLevel.INFO)
-    monitor = Monitor(simulate=simulate, logger=logger)
+    monitor = Monitor(simulate=simulate, period=period, logger=logger)
 
     if automatic_start:
         monitor.start()
@@ -125,6 +125,7 @@ def main():
     parser.add_argument('-d', '--debug', action='store_true', help='enable debug mode')
     parser.add_argument('-s', '--simulate', action='store_true', help='simulate the sensors')
     parser.add_argument('-r', '--resolution', default='640x480', help='video size (default: 640x480)')
+    parser.add_argument('-p', '--period', help='sensor reading period in ms (default: 1000)', default=1000)
     parser.add_argument('--ip', help='listening ip (default: 127.0.0.1)', default='127.0.0.1')
     parser.add_argument('--port', help='listening port (default: 9090)', default=9090)
     parser.add_argument('-a', '--automatic-start', action='store_true',
@@ -142,7 +143,7 @@ def main():
             logger.log('Must have root access', Logger.LogLevel.ERROR)
             sys.exit(1)
 
-    start_server(args.simulate, args.ip, args.port, args.resolution, args.automatic_start, logger)
+    start_server(args.simulate, args.period, args.ip, args.port, args.resolution, args.automatic_start, logger)
     sys.exit(0)
 
 

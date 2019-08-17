@@ -15,11 +15,12 @@ class Monitor:
             self.timestamp = timestamp
             self.type = type
 
-    def __init__(self, simulate=False, logger=None):
+    def __init__(self, simulate=False, period=1000, logger=None):
         Path('./log').mkdir(exist_ok=True)
         self.on_new_sensor_data_listener = None
         self.__logger = logger
         self.__simulate = simulate
+        self.__period = float(period)
         self.__terminate = False
         self.__stopped = True
         self.__sensors_data = []
@@ -67,26 +68,29 @@ class Monitor:
             self.on_new_sensor_data_listener(sensor_data)
 
     def read_from_sensors(self):
+        last_time = 0
         while not self.__terminate:
             if not self.__stopped:
-                for sensor in self.__sensors:
-                    sensor_data = Monitor.SensorData()
-                    try:
-                        sensor_data.value = sensor.get_value()
-                    except:
-                        self.__log('Error while trying to read the sensor \'%s\'' % sensor.get_id(), Logger.LogLevel.WARNING)
-                        sensor_data.value = None
-                    sensor_data.sensor_id = sensor.get_id()
-                    sensor_data.type = sensor.get_type()
-                    sensor_data.timestamp = int(round(time.time() * 1000))
+                if (time.time() - last_time) * 1000 >= self.__period:
+                    last_time = time.time()
+                    for sensor in self.__sensors:
+                        sensor_data = Monitor.SensorData()
+                        try:
+                            sensor_data.value = sensor.get_value()
+                        except:
+                            self.__log('Error while trying to read the sensor \'%s\'' % sensor.get_id(), Logger.LogLevel.WARNING)
+                            sensor_data.value = None
+                        sensor_data.sensor_id = sensor.get_id()
+                        sensor_data.type = sensor.get_type()
+                        sensor_data.timestamp = int(round(time.time() * 1000))
 
-                    if sensor_data.value is None:
-                        sensor_data.value = -999
-                    elif type(sensor_data.value) is list:
-                        sensor_data.value = [-999 if v is None else v for v in sensor_data.value]
+                        if sensor_data.value is None:
+                            sensor_data.value = -999.0
+                        elif type(sensor_data.value) is list:
+                            sensor_data.value = [-999.0 if v is None else v for v in sensor_data.value]
 
-                    self.register_new_sensor_data(sensor_data)
-            time.sleep(1)
+                        self.register_new_sensor_data(sensor_data)
+            time.sleep(.05)
 
         self.__log_file.close()
 
