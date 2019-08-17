@@ -22,17 +22,17 @@ class BMP180Sensor(I2CSensor):
 
     def configure_sensor(self, bus, address, config_reg):
         calibration_data = bus.read_i2c_block_data(address, 0xAA, 22)
-        self.ac1 = (calibration_data[0] << 8) + calibration_data[1]
-        self.ac2 = (calibration_data[2] << 8) + calibration_data[3]
-        self.ac3 = (calibration_data[4] << 8) + calibration_data[5]
+        self.ac1 = super().cpl2((calibration_data[0] << 8) + calibration_data[1], 16)
+        self.ac2 = super().cpl2((calibration_data[2] << 8) + calibration_data[3], 16)
+        self.ac3 = super().cpl2((calibration_data[4] << 8) + calibration_data[5], 16)
         self.ac4 = (calibration_data[6] << 8) + calibration_data[7]
         self.ac5 = (calibration_data[8] << 8) + calibration_data[9]
         self.ac6 = (calibration_data[10] << 8) + calibration_data[11]
-        self.b1 = (calibration_data[12] << 8) + calibration_data[13]
-        self.b2 = (calibration_data[14] << 8) + calibration_data[15]
-        self.mb = (calibration_data[16] << 8) + calibration_data[17]
-        self.mc = (calibration_data[18] << 8) + calibration_data[19]
-        self.md = (calibration_data[20] << 8) + calibration_data[21]
+        self.b1 = super().cpl2((calibration_data[12] << 8) + calibration_data[13], 16)
+        self.b2 = super().cpl2((calibration_data[14] << 8) + calibration_data[15], 16)
+        self.mb = super().cpl2((calibration_data[16] << 8) + calibration_data[17], 16)
+        self.mc = super().cpl2((calibration_data[18] << 8) + calibration_data[19], 16)
+        self.md = super().cpl2((calibration_data[20] << 8) + calibration_data[21], 16)
 
         print('ac1: %d' % self.ac1)
         print('ac2: %d' % self.ac2)
