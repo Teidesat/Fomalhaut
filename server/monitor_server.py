@@ -136,12 +136,11 @@ def main():
 
     if not args.simulate:
         if platform.system() != 'Linux':
-            logger.log('OS not compatible', Logger.LogLevel.ERROR)
-            sys.exit(1)
+            logger.log('OS not compatible for some sensors', Logger.LogLevel.WARNING)
 
-        if os.getuid() != 0:
-            logger.log('Must have root access', Logger.LogLevel.ERROR)
-            sys.exit(1)
+        # if os.getuid() != 0:
+        #    logger.log('Must have root access', Logger.LogLevel.ERROR)
+        #    sys.exit(1)
 
     start_server(args.simulate, args.period, args.ip, args.port, args.resolution, args.automatic_start, logger)
     sys.exit(0)

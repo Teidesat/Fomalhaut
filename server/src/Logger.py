@@ -18,11 +18,10 @@ class Logger:
     def log(self, msg, level=LogLevel.INFO):
         if level == Logger.LogLevel.DEBUG:
             if self.__debug:
-                print('%s[%s] %s%s' % (Fore.BLUE, level.name, msg, Style.RESET_ALL))
+                print('{:s}[{:^7s}] {:s}{:s}'.format(Fore.CYAN, level.name, msg, Style.RESET_ALL))
+        elif level == Logger.LogLevel.INFO:
+                print('{:s}[{:^7s}] {:s}{:s}'.format(Fore.GREEN, level.name, msg, Style.RESET_ALL))
+        elif level == Logger.LogLevel.ERROR:
+            print('{:s}[{:^7s}] {:s}{:s}'.format(Fore.RED, level.name, msg, Style.RESET_ALL))
         else:
-            if level == Logger.LogLevel.INFO:
-                print('%s[%s] %s%s' % (Fore.GREEN, level.name, msg, Style.RESET_ALL))
-            elif level == Logger.LogLevel.ERROR:
-                print('%s[%s] %s%s' % (Fore.RED, level.name, msg, Style.RESET_ALL))
-            else:
-                print('%s[%s] %s%s' % (Fore.YELLOW, level.name, msg, Style.RESET_ALL))
+            print('{:s}[{:^7s}] {:s}{:s}'.format(Fore.YELLOW, level.name, msg, Style.RESET_ALL))
