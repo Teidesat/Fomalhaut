@@ -7,7 +7,7 @@ from aiohttp import web
 from aiohttp_index import IndexMiddleware
 from threading import Thread
 
-from aiortc import RTCPeerConnection, RTCSessionDescription
+from aiortc import RTCPeerConnection, RTCSessionDescription, VideoStreamTrack
 from aiortc.contrib.media import MediaPlayer
 
 from src.Logger import Logger
@@ -99,21 +99,11 @@ class WebRTCServer:
                 self.__log('%s: ICE connection discarded with state %s' % (pc_id, pc.iceConnectionState), Logger.LogLevel.DEBUG)
                 self.__pcs.discard(pc)
 
-        # open webcam
-        options = {'video_size': self.__resolution}
-        player = None
-        try:
-            if platform.system() == 'Darwin':
-                player = MediaPlayer('default:none', format='avfoundation', options=options)
-            else:
-                player = MediaPlayer('/dev/video0', format='v4l2', options=options)
-        except:
-            self.__log('No webcam found', Logger.LogLevel.WARNING)
-
+        player = VideoStreamTrack();
+        
         await pc.setRemoteDescription(offer)
         for t in pc.getTransceivers():
-            if t.kind == 'video' and player is not None and player.video:
-                pc.addTrack(player.video)
+            pc.addTrack(player)
 
         answer = await pc.createAnswer()
         await pc.setLocalDescription(answer)

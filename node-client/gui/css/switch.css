@@ -1,0 +1,47 @@
+.switch * {
+    margin: 0;
+    padding: 0;
+}
+
+.switch {
+    display: inline-block;
+    margin-top: 6px;
+}
+
+.switch input {
+    display: none;
+}
+
+.switch small {
+    display: inline-block;
+    width: 32px;
+    height: 16px;
+    background: var(--pal-700);
+    border-radius: 30px;
+    position: relative;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.switch small:before {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: var(--pal-100);
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: .3s;
+    box-shadow: -3px 0 3px rgba(0,0,0,0.1);
+}
+
+.switch input:checked ~ small {
+    background: var(--pal-ok);
+    transition: .3s;
+}
+
+.switch input:checked ~ small:before {
+    transform: translate(16px, 0px);
+    transition: .3s;
+}
