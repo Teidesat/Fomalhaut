@@ -25,7 +25,7 @@ class WebRTCServer:
         self.__resolution = resolution
         self.__app = web.Application(middlewares=[IndexMiddleware()])
         self.__app.router.add_post('/offer', self.offer)
-        self.__app.router.add_static('/', path=str('./public/'))
+        # self.__app.router.add_static('/', path=str('./public/'))
         self.__loop = None
         self.__site = None
 
@@ -100,7 +100,7 @@ class WebRTCServer:
                 self.__pcs.discard(pc)
 
         player = VideoStreamTrack();
-        
+
         await pc.setRemoteDescription(offer)
         for t in pc.getTransceivers():
             pc.addTrack(player)
