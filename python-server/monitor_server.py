@@ -101,20 +101,22 @@ def on_new_message_listener(message, monitor, analyzer, server):
     else:
         server.send_to_all('"Unkown message or command"', request_id)
 
+def wait_for_server_close(server):
+    time.sleep(1)
+    while server.is_running():
+        time.sleep(1)
 
 def start_server(simulate, period, ip, port, resolution, automatic_start, logger):
-    logger.log('Starting server...', Logger.LogLevel.INFO)
     monitor = Monitor(simulate=simulate, period=period, logger=logger)
     analyzer = CameraAnalyzer(on_new_frame_target_fps=0, logger=logger)
 
+    import threading
     if automatic_start:
-        pass
         monitor.start()
         analyzer.start()
 
     server = WebRTCServer(port=port, ip=ip, logger=logger, resolution=resolution)
     server.start()
-    logger.log('Server started', Logger.LogLevel.INFO)
 
     logger.on_new_log_listener     = lambda message: on_new_log_listener(message, server)
     analyzer.on_new_frame_listener = lambda ret, frame: on_new_frame_listener(ret, frame, server)
@@ -124,24 +126,13 @@ def start_server(simulate, period, ip, port, resolution, automatic_start, logger
         logger.on_new_log_listener     = None
         analyzer.on_new_frame_listener = None
         server.on_new_message_listener = None
-        logger.log('Closing server...', Logger.LogLevel.INFO)
         monitor.stop()
         analyzer.stop()
-        analyzer.close()
-        monitor.close()
-        server.close()
-        logger.log('Server closed', Logger.LogLevel.INFO)
+        server.stop()
 
     signal.signal(signal.SIGINT, terminate)
     signal.signal(signal.SIGTERM, terminate)
-
-    try:
-        signal.pause()
-    except AttributeError:
-        time.sleep(1)
-        while server.is_running: # Workaround for windows
-            time.sleep(1)
-
+    wait_for_server_close(server)
 
 def main():
     parser = argparse.ArgumentParser(description='Monitor server.')

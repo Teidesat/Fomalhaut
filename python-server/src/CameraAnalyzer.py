@@ -5,21 +5,20 @@ from copy import deepcopy
 from threading import Thread, Lock
 from src.Logger import Logger
 from src.FPS import FPS
+from src.Service import Service
 
 
-class CameraAnalyzer:
+class CameraAnalyzer(Service):
 
     def __init__(self, on_new_frame_target_fps=0, logger=None):
+        super().__init__(service_name="Camera", logger=logger)
         self.on_new_frame_listener = None
-        self.__logger = logger
         self.__stats = {}
         self.__lock = Lock()
 
-        # Thread
-        self.__terminate = False
-        self.__stopped = True
-        self.__analyzer = Thread(target=self.read_from_camera)
-        self.__analyzer.start()
+        # Camera
+        self.__cap = cv2.VideoCapture(0)
+        self.__target_fps = self.__cap.get(cv2.CAP_PROP_FPS)
 
         # FPS control
         self.__fps = FPS()
@@ -27,26 +26,6 @@ class CameraAnalyzer:
         self.__next_frame_ms = -1
         self.__on_new_frame_next_ms = -1
         self.__on_new_frame_target_fps = on_new_frame_target_fps
-
-    def start(self):
-        if not self.__stopped:
-            self.__log('Camera service is already running', Logger.LogLevel.INFO)
-        else:
-            self.__log('Camera service started', Logger.LogLevel.INFO)
-            self.__stopped = False
-
-    def stop(self):
-        if self.__stopped:
-            self.__log('Camera service is already stopped', Logger.LogLevel.INFO)
-        else:
-            self.__log('Camera service stopped', Logger.LogLevel.INFO)
-            self.__stopped = True
-
-    def close(self):
-        self.__log('Closing camera service...', Logger.LogLevel.DEBUG)
-        self.__terminate = True
-        self.__analyzer.join()
-        self.__log('Camera service closed', Logger.LogLevel.DEBUG)
 
     def get_available_cameras(self):
         index = 0
@@ -61,39 +40,31 @@ class CameraAnalyzer:
             index += 1
         return arr
 
-    def read_from_camera(self):
-        cap = cv2.VideoCapture(0)
-        self.__target_fps = cap.get(cv2.CAP_PROP_FPS)
+    def service_run(self):
+        # Read frame
+        t0 = time.time()
+        ret, frame = self.__cap.read()
 
-        while not self.__terminate:
-            if not self.__stopped:
+        if ret == False:
+            raise Exception('TODO: No more frames !')
 
-                # Read frame
-                t0 = time.time()
-                ret, frame = cap.read()
+        # Process frame
+        t1 = time.time()
+        self.__process_frame(frame)
 
-                if ret == False:
-                    raise Exception('TODO: No more frames !')
+        # Wait time to sync frame
+        t2 = time.time()
+        self.__sync_frame(1. / self.__target_fps)
 
-                # Process frame
-                t1 = time.time()
-                self.__process_frame(frame)
+        # Frame Listenner
+        t3 = time.time()
+        self.__on_new_frame_skip(ret, frame)
 
-                # Wait time to sync frame
-                t2 = time.time()
-                self.__sync_frame(1. / self.__target_fps)
+        # Stats
+        t4 = time.time()
+        self.__set_stats(t1 - t0, t2 - t1, t3 - t2, t4 - t3)
 
-                # Frame Listenner
-                t3 = time.time()
-                self.__on_new_frame_skip(ret, frame)
-
-                # Stats
-                t4 = time.time()
-                self.__set_stats(t1 - t0, t2 - t1, t3 - t2, t4 - t3)
-
-                self.__fps.update()
-            else:
-                time.sleep(.05)
+        self.__fps.update()
 
     def __set_stats(self, t_read, t_process, t_sync, t_listener):
         """ Thread safe """
@@ -144,7 +115,3 @@ class CameraAnalyzer:
 
     def __process_frame(self, frame):
         pass
-
-    def __log(self, msg, level):
-        if self.__logger is not None:
-            self.__logger.log(msg, level)
