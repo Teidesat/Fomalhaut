@@ -37,46 +37,43 @@
 
     <div class="content-wrapper">
     <div class="left-bar no-selectable">
-        <div><i id='camera-icon' class="material-icons">camera</i></div>
-        <div><i id='sensors-icon' class="material-icons icon-disabled">memory</i></div>
-        <div><i id='logs-icon' class="material-icons icon-disabled">history</i></div>
-        <div><i id='info-icon' class="material-icons icon-disabled">info</i></div>
+        <div><i id="camera-icon" class="material-icons">camera</i></div>
+        <div><i id="sensors-icon" class="material-icons icon-disabled">memory</i></div>
+        <div><i id="logs-icon" class="material-icons icon-disabled">history</i></div>
+        <div><i id="info-icon" class="material-icons icon-disabled">info</i></div>
     </div>
     <div class="content">
         <section id="camera-section" class="content-section">
             <video id="camera-preview" autoplay></video>
         </section>
-        <section id="logs-section" class="content-section hidden">
+        <section id="logs-section" class="hidden content-section">
             <div id="logs-list">
-                <div class='log-info'><i class='material-icons'>info</i>hola</div>
-                <div class='log-debug'><i class='material-icons'>info</i>(Debug) hola</div>
-                <div class='log-warning'><i class='material-icons'>warning</i>warning</div>
-                <div class='log-error'><i class='material-icons'>error</i>error</div>
+                <div class="log-info"><i class="material-icons">info</i>hola</div>
+                <div class="log-debug"><i class="material-icons">info</i>(Debug) hola</div>
+                <div class="log-warning"><i class="material-icons">warning</i>warning</div>
+                <div class="log-error"><i class="material-icons">error</i>error</div>
             </div>
         </section>
-        <!-- <section>
-            <button id="start" onclick="connectMonitor()">Connect</button>
-            <button id="stop" onclick="disconnectMonitor()">Disconnect</button>
-            <button id="start_monitor" onclick="startMonitor()">Start monitor</button>
-            <button id="stop_monitor" onclick="stopMonitor()">Stop monitor</button>
-            <button id="get_all_temps" onclick="getSensorsDataMonitor()">Get sensors data</button>
+        <section id="sensors-section" class="content-section hidden">
+            <div class="sensors-section-flexbox"> <!-- display: flex must be set in a child, because hidden class uses dispaly: none -->
+                <div id="sensors-data-list"></div>
+                <div class="sensors-options-and-chart">
+                    <div class="sensors-options">
+                         <button type="button" onclick="startMonitor()">Start monitor</button>
+                         <button type="button" onclick="stopMonitor()">Stop monitor</button>
+                    </div>
+                    <div class="sensors-chart-container">
+                        <canvas id="sensors-chart"></canvas>
+                    </div>
+                </div>
+            </div>
         </section>
-        <section>
-            <h3>Sensors</h3>
-            <textarea id="sensors" rows="10" cols="100" readonly></textarea>
+        <section id="info-section" class="content-section hidden">
         </section>
-        <section>
-            <h3>Log</h3>
-            <textarea id="log" rows="10" cols="100" readonly></textarea>
-        </section>
-        <section id="media">
-            <h3>Video</h3>
-            <video id="video" autoplay></video>
-        </section> -->
-        <!-- <div class="camera-preview"> </div -->
     </div>
     </div>
 
+    <script src="external/chart.js@2.8.0" charset="utf-8"></script>
     <script src="js/MonitorClient.js" charset="utf-8"></script>
     <script src="js/main.js" charset="utf-8"></script>
 </body>

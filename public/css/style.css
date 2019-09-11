@@ -13,6 +13,8 @@
     --separation: 5px;
     --left-bar-width: 40px;
     --left-bar-padding: 5px;
+    --sensors-width: 280px;
+    --sensors-options-height: 50px;
 
     --pal-900: #0b0e13;
     --pal-800: #141a23;
@@ -242,6 +244,105 @@ html, body {
     height: 100%;
     width: 100%;
     border: 1px dashed #000;
+}
+
+/* Sensors ------------------------------------------------------------------ */
+#sensors-section {
+    color: black;
+}
+
+.sensors-section-flexbox {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.sensors-options-and-chart {
+    width: calc(100% - var(--sensors-width));
+    height: 100%;
+    padding: calc(var(--separation) * 2);
+    padding-right: 0px;
+}
+
+.sensors-options {
+    width: 100%;
+    height: var(--sensors-options-height);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.sensors-chart-container {
+    position: relative;
+    width: 100%;
+    height: calc(100% - var(--sensors-options-height));
+}
+
+#sensors-chart {
+}
+
+#sensors-data-list {
+    width: var(--sensors-width);
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ddd;
+    padding-right: calc(var(--separation) * 2);
+}
+
+.sensor-card {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #ddd;
+    padding-bottom: calc(var(--separation) * 2);
+    padding-top: calc(var(--separation) * 2);
+}
+
+.sensor-card:last-child {
+    border-bottom: 1px solid #ddd;
+}
+
+.sensor-card-icon {
+    width: 40px;
+    min-width: 40px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.sensor-card-checkbox {
+    width: 40px;
+    min-width: 40px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.sensor-card-name {
+    width: calc(100% - 40px - 40px - 80px);
+    min-width: calc(100% - 40px - 40px - 80px);
+}
+
+.sensor-card-values {
+    width: 80px;
+    min-width: 80px;
+}
+
+.sensor-card-value {
+    font-size: 0.9em;
+}
+
+.sensor-card-type {
+    text-transform: capitalize;
+}
+
+.sensor-card-time, .sensor-card-id {
+    color: #555;
+    font-size: 0.8em;
+}
+
+.sensor-card-id::before {
+    content: "# ";
 }
 
 /* Logs --------------------------------------------------------------------- */

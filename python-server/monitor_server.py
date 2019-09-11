@@ -43,81 +43,104 @@ import platform
 import argparse
 import sys
 import signal
+import time
 import json
 from threading import Semaphore
 
 from src.Logger import Logger
 from src.Monitor import Monitor
+from src.CameraAnalyzer import CameraAnalyzer
 from src.WebRTCServer import WebRTCServer
 
-
-def on_new_sensor_data_listener(sensor_data, server):
-    server.send_to_all(json.dumps({
-        'type': 'sensor_data',
-        'sensorData': {
-            'timestamp': sensor_data.timestamp,
-            'sensor_id': sensor_data.sensor_id,
-            'type': sensor_data.type,
-            'value': sensor_data.value
-        }
-    }))
+def on_new_log_listener(message, server):
+    server.send_to_all(json.dumps(message))
 
 
-def on_new_message_listener(message, monitor, server):
+def on_new_frame_listener(ret, frame, server):
+    server.add_frame_to_queue(frame)
+
+
+def on_new_message_listener(message, monitor, analyzer, server):
+    request_id = message['request_id'] if ('request_id' in message.keys()) else None
+
     if message['type'] == 'cmd':
-        if message['cmd'] == 'start':
+        if message['cmd'] == 'start_monitor':
             monitor.start()
-        elif message['cmd'] == 'stop':
+            server.send_to_all('"ok"', request_id)
+        elif message['cmd'] == 'is_monitor_running':
+            server.send_to_all('"' + str(monitor.is_running()) + '"', request_id)
+        elif message['cmd'] == 'stop_monitor':
             monitor.stop()
-        elif message['cmd'] == 'request_sensors_data':
-            sensors_data = monitor.get_sensors_data()
-            parsed_sensors_data = []
+            server.send_to_all('"ok"', request_id)
 
-            for sensor_data in sensors_data:
-                parsed_sensors_data.append({
-                    'timestamp': sensor_data.timestamp,
-                    'sensor_id': sensor_data.sensor_id,
-                    'type': sensor_data.type,
-                    'value': sensor_data.value
-                })
+    elif message['type'] == 'set':
+        if message['data'] == 'camera_id':
+            pass
 
-            server.send_to_all(json.dumps({
-                'type': 'sensors_data',
-                'sensorsData': parsed_sensors_data
-            }))
+    elif message['type'] == 'get':
+        if message['data'] == 'video_stats':
+            server.send_to_all(analyzer.get_stats(), request_id)
 
-        server.send_to_all(json.dumps({
-            'type': 'log',
-            'value': '[INFO] Command "' + message['cmd'] + '" received'
-        }))
+        elif message['data'] == 'available_cameras':
+            server.send_to_all(analyzer.get_available_cameras(), request_id)
+
+        elif message['data'] == 'sensors_data':
+            sensors_data = monitor.get_last_sensors_data()
+            if not monitor.is_running() or sensors_data is None:
+                server.send_to_all({}, request_id)
+            else:
+                parsed_sensors_data = []
+                for sensor_data in sensors_data:
+                    parsed_sensors_data.append({
+                        'timestamp': sensor_data.timestamp,
+                        'sensor_id': sensor_data.sensor_id,
+                        'type': sensor_data.type,
+                        'value': sensor_data.value
+                    })
+                server.send_to_all(parsed_sensors_data, request_id)
+    else:
+        server.send_to_all('"Unkown message or command"', request_id)
 
 
 def start_server(simulate, period, ip, port, resolution, automatic_start, logger):
     logger.log('Starting server...', Logger.LogLevel.INFO)
     monitor = Monitor(simulate=simulate, period=period, logger=logger)
+    analyzer = CameraAnalyzer(on_new_frame_target_fps=0, logger=logger)
 
     if automatic_start:
+        pass
         monitor.start()
+        analyzer.start()
 
     server = WebRTCServer(port=port, ip=ip, logger=logger, resolution=resolution)
     server.start()
+    logger.log('Server started', Logger.LogLevel.INFO)
 
-    monitor.on_new_sensor_data_listener = lambda sensor_data: on_new_sensor_data_listener(sensor_data, server)
-    server.on_new_message_listener = lambda message: on_new_message_listener(message, monitor, server)
-
-    semaphore = Semaphore(0)
+    logger.on_new_log_listener     = lambda message: on_new_log_listener(message, server)
+    analyzer.on_new_frame_listener = lambda ret, frame: on_new_frame_listener(ret, frame, server)
+    server.on_new_message_listener = lambda message: on_new_message_listener(message, monitor, analyzer, server)
 
     def terminate(sig, frame):
+        logger.on_new_log_listener     = None
+        analyzer.on_new_frame_listener = None
+        server.on_new_message_listener = None
         logger.log('Closing server...', Logger.LogLevel.INFO)
+        monitor.stop()
+        analyzer.stop()
+        analyzer.close()
         monitor.close()
         server.close()
-        semaphore.release()
+        logger.log('Server closed', Logger.LogLevel.INFO)
+
     signal.signal(signal.SIGINT, terminate)
     signal.signal(signal.SIGTERM, terminate)
 
-    logger.log('Server started', Logger.LogLevel.INFO)
-    semaphore.acquire()
-    logger.log('Server closed', Logger.LogLevel.INFO)
+    try:
+        signal.pause()
+    except AttributeError:
+        time.sleep(1)
+        while server.is_running: # Workaround for windows
+            time.sleep(1)
 
 
 def main():

@@ -23,7 +23,7 @@ class Monitor:
         self.__period = float(period)
         self.__terminate = False
         self.__stopped = True
-        self.__sensors_data = []
+        self.__sensors_data = [] # TODO wouldnt this fill the memory eventually ?
         self.__log_file = open('log/' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + '_sensors_data.csv', 'w', 1)
         self.__log_file.write('timestamp;sensor_id;type;value\n')
         self.__sensors = SensorsProvider.get_available_sensors(self.__simulate, logger=self.__logger)
@@ -33,16 +33,35 @@ class Monitor:
     def get_sensors_data(self):
         return self.__sensors_data
 
+    def get_last_sensors_data(self):
+        # TODO use lock to prevent race conditions
+        """
+        Data is saved in the sensors in order. We just need to retrieve the last
+        n data points, where n is the number of sensors.
+        """
+        if len(self.__sensors) == 0 or len(self.__sensors_data) < len(self.__sensors):
+            return None
+        return self.__sensors_data[-len(self.__sensors):]
+
+    def is_running(self):
+        return not self.__stopped
+
     def get_last_sensor_data(self):
         return self.__sensors_data[-1] if len(self.__sensors_data) > 0 else None
 
     def start(self):
-        self.__log('Monitor service started', Logger.LogLevel.INFO)
-        self.__stopped = False
+        if not self.__stopped:
+            self.__log('Monitor service is already running', Logger.LogLevel.INFO)
+        else:
+            self.__log('Monitor service started', Logger.LogLevel.INFO)
+            self.__stopped = False
 
     def stop(self):
-        self.__log('Monitor service stopped', Logger.LogLevel.INFO)
-        self.__stopped = True
+        if self.__stopped:
+            self.__log('Monitor service is already stopped', Logger.LogLevel.INFO)
+        else:
+            self.__log('Monitor service stopped', Logger.LogLevel.INFO)
+            self.__stopped = True
 
     def close(self):
         self.__log('Closing monitor service...', Logger.LogLevel.DEBUG)

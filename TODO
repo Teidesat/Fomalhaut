@@ -1,0 +1,8 @@
+- Make sure messages are only sent back to the corresponding client
+- Red marker to let user know there is a new Log
+- Last log shows at the bottom
+- Start / Stop local Server
+- Config page:
+    - Automatic start local server always
+    - Automatic send start monitoring command
+    - Automatic send start camera command

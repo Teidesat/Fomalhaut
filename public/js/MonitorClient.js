@@ -1,4 +1,10 @@
 class MonitorClient {
+    /*
+    get video_stats
+    get sensors_data
+    cmd start_monitor
+    cmd stop_monitor
+    */
 
     // -------------------------------------------------------------------------
     constructor() {
@@ -10,6 +16,10 @@ class MonitorClient {
         this.onDCOpen              = () => {};
         this.onVideoReceived       = console.log;
         this.onMessageReceived     = console.log;
+
+        this.MAX_ID = 99999999;
+        this.request_id = 0;
+        this.request_queue = [];
     }
 
     // -------------------------------------------------------------------------
@@ -51,15 +61,54 @@ class MonitorClient {
     }
 
     // -------------------------------------------------------------------------
+    __parseSdp(sdp) {
+        let sdpLines = sdp.split('\r\n');
+        let newSdpLines = []
+        let h264 = null;
+
+        for (let i = 0; i < sdpLines.length; ++i) {
+            let m = sdpLines[i].match(/a=rtpmap:(\d+)\s(.*?)\//);
+            if (m !== null && m[2] == 'H264') {
+                h264 = m[1];
+                break;
+            }
+        }
+
+        if (h264 == null) {
+            return sdp;
+        }
+
+        for (let i = 0; i < sdpLines.length; ++i) {
+            let m1 = sdpLines[i].match(/m=video\s\d+\s.*?\s/);
+            let m2 = sdpLines[i].match(/a=(.*?):(\d+)/);
+            if (m1 !== null) {
+                sdpLines[i] = m1[0] + h264;
+            }
+            if (m2 === null) {
+                newSdpLines.push(sdpLines[i]);
+            } else if (m2[1] != "fmtp" &&  m2[1] != "rtpmap" && m2[1] != "rtcp-fb") {
+                newSdpLines.push(sdpLines[i]);
+            } else if (m2[2] == h264) {
+                newSdpLines.push(sdpLines[i]);
+            }
+        }
+
+        return newSdpLines.join('\r\n');
+    }
+
+    // -------------------------------------------------------------------------
     __negotiate(host, port) {
         this.pc.addTransceiver('video', {direction: 'recvonly'});
         this.dc = this.pc.createDataChannel('datachannel');
-        this.dc.onclose = this.onDCClose;
-        this.dc.onopen = this.onDCOpen;
-        this.dc.onmessage = evt => { this.onMessageReceived(JSON.parse(evt.data)); }
+        this.dc.onclose = () => this.onDCClose();
+        this.dc.onopen = () => this.onDCOpen();
+        this.dc.onmessage = evt => { this.__onMessageReceived(JSON.parse(evt.data)); }
 
         return this.pc.createOffer()
-            .then(offer => this.pc.setLocalDescription(offer))
+            .then(offer => {
+                offer.sdp = this.__parseSdp(offer.sdp);
+                this.pc.setLocalDescription(offer);
+            })
             .then(() => {
                 return new Promise(resolve => {
                     if (this.pc.iceGatheringState === 'complete') {
@@ -123,32 +172,67 @@ class MonitorClient {
     }
 
     // -------------------------------------------------------------------------
-    startMonitor() {
-        if (this.dc) {
-            this.dc.send(JSON.stringify({
-                type: 'cmd',
-                cmd: 'start'
-            }));
-        }
+    cmd(cmd) {
+        return this.request({
+            type: 'cmd',
+            cmd: cmd
+        }, true)
     }
 
     // -------------------------------------------------------------------------
-    stopMonitor() {
-        if (this.dc) {
-            this.dc.send(JSON.stringify({
-                type: 'cmd',
-                cmd: 'stop'
-            }));
-        }
+    get(data) {
+        return this.request({
+            type: 'get',
+            data: data
+        }, true)
     }
 
     // -------------------------------------------------------------------------
-    requestSensorsData() {
-        if (this.dc) {
-            this.dc.send(JSON.stringify({
-                type: 'cmd',
-                cmd: 'request_sensors_data'
-            }));
+    __is_empty(o) {
+        return Object.entries(o).length === 0 && o.constructor === Object
+    }
+
+    // -------------------------------------------------------------------------
+    request(object, expect_response) {
+        if (++this.request_id > this.MAX_ID) {
+            this.request_id = 0;
         }
+        object.request_id = this.request_id;
+
+        return new Promise((resolve, reject) => {
+            if (!this.dc) {
+                reject(Error('Can\'t retrieve video stats, data channel is closed'))
+            }
+            else {
+                if (expect_response) {
+                    this.request_queue.push({
+                        'request_id': object.request_id,
+                        'callback': payload => this.__is_empty(payload) ? reject('Payload was empty for ' + object.request_id) : resolve(payload)
+                    });
+                } else {
+                    resolve()
+                }
+                this.dc.send(JSON.stringify(object));
+            }
+        });
+    }
+
+    // -------------------------------------------------------------------------
+    __onMessageReceived(msg) {
+        // Default message
+        if (msg.request_id == null) {
+            this.onMessageReceived(msg);
+            return;
+        }
+        // Mensaje is a response
+        for (var i = this.request_queue.length - 1; i >= 0; i--) {
+            if (this.request_queue[i].request_id === msg.request_id) {
+                this.request_queue[i].callback(msg.payload);
+                this.request_queue.splice(i, 1);
+                return;
+            }
+        }
+        // Mensaje is a response but id is not found
+        Error('Message received as a response with id ' + msg.request_id + ' but id was not found: ' + JSON.stringify(msg))
     }
 }

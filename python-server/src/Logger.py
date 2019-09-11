@@ -13,6 +13,7 @@ class Logger:
 
     def __init__(self, debug=False):
         self.__debug = debug
+        self.on_new_log_listener = None
         init_colorama()
 
     def log(self, msg, level=LogLevel.INFO):
@@ -25,3 +26,10 @@ class Logger:
             print('{:s}[{:^7s}] {:s}{:s}'.format(Fore.RED, level.name, msg, Style.RESET_ALL))
         else:
             print('{:s}[{:^7s}] {:s}{:s}'.format(Fore.YELLOW, level.name, msg, Style.RESET_ALL))
+
+        if self.on_new_log_listener is not None and level != Logger.LogLevel.DEBUG:
+            self.on_new_log_listener({
+                'type': 'log',
+                'level': level.name,
+                'value': msg
+            })

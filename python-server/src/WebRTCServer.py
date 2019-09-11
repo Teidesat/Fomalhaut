@@ -2,21 +2,60 @@ import uuid
 import json
 import asyncio
 import platform
+import cv2
+import fractions
+import time
 
 from aiohttp import web
 from aiohttp_index import IndexMiddleware
 from threading import Thread
 
+from aiortc.codecs import get_capabilities
 from aiortc import RTCPeerConnection, RTCSessionDescription, VideoStreamTrack
 from aiortc.contrib.media import MediaPlayer
+
+from av import VideoFrame
+from queue import Queue
 
 from src.Logger import Logger
 
 
 class WebRTCServer:
 
+    class CameraPreview(VideoStreamTrack):
+
+        kind = 'video'
+
+        def __init__(self, max_size=3):
+            super().__init__()
+            self.__frame_queue = Queue()
+            self.__max_size = max_size
+            self.__start = -1
+
+        def add_frame(self, frame):
+            if self.__frame_queue.qsize() > self.__max_size:
+                self.__frame_queue.get()
+            self.__frame_queue.put(frame)
+
+        async def recv(self):
+            try:
+                super_frame = await super().recv() # TODO
+                frame = self.__frame_queue.get()
+
+                if self.__start == -1:
+                    self.__start = time.time()
+
+                av_frame = VideoFrame.from_ndarray(frame, format="bgr24")
+                av_frame.pts = super_frame.pts#time.time() - self.__start
+                av_frame.time_base = super_frame.time_base#fractions.Fraction(1, 1000)
+            except Exception as e:
+                print(e)
+            return av_frame
+
     def __init__(self, port=80, ip='localhost', resolution='640x480', logger=None):
         self.on_new_message_listener = None
+        self.is_running = False
+        self.__camera_preview = WebRTCServer.CameraPreview()
         self.__pcs = set()
         self.__channels = set()
         self.__logger = logger
@@ -25,9 +64,12 @@ class WebRTCServer:
         self.__resolution = resolution
         self.__app = web.Application(middlewares=[IndexMiddleware()])
         self.__app.router.add_post('/offer', self.offer)
-        # self.__app.router.add_static('/', path=str('./public/'))
+        self.__app.router.add_static('/', path=str('../public/'))
         self.__loop = None
         self.__site = None
+
+    def add_frame_to_queue(self, frame):
+        self.__camera_preview.add_frame(frame)
 
     def start(self):
         async def runner():
@@ -40,11 +82,12 @@ class WebRTCServer:
             self.__loop = asyncio.new_event_loop()
             asyncio.set_event_loop(self.__loop)
             self.__loop.run_until_complete(runner())
+            self.is_running = True
             self.__loop.run_forever()
 
         thread = Thread(target=thread, daemon=True)
         thread.start()
-        self.__log('WebRTC server started', Logger.LogLevel.DEBUG)
+        self.__log('WebRTC server started %s:%d' % (self.__ip, self.__port), Logger.LogLevel.INFO)
 
     def close(self):
         self.__log('Closing WebRTC server...', Logger.LogLevel.DEBUG)
@@ -55,11 +98,23 @@ class WebRTCServer:
                 self.__loop.stop()
                 self.__site = None
                 self.__loop = None
+                self.is_running = False
 
             loop = asyncio.new_event_loop()
             loop.run_until_complete(stop())
 
-    def send_to_all(self, message):
+    def send_to_all(self, message, request_id=None):
+        if not self.is_running:
+            return
+
+        if request_id is not None:
+            payload = message
+            message = {
+                'request_id': request_id,
+                'payload': payload
+            }
+        message = json.dumps(message)
+
         async def task():
             for channel in self.__channels:
                 if channel.readyState == 'open':
@@ -99,11 +154,11 @@ class WebRTCServer:
                 self.__log('%s: ICE connection discarded with state %s' % (pc_id, pc.iceConnectionState), Logger.LogLevel.DEBUG)
                 self.__pcs.discard(pc)
 
-        player = VideoStreamTrack();
-
+        #player = MediaPlayer('src/test_video.mp4', options={'framerate': '30', 'video_size': '1920x1080'})
         await pc.setRemoteDescription(offer)
         for t in pc.getTransceivers():
-            pc.addTrack(player)
+            #pc.addTrack(player.video)
+            pc.addTrack(self.__camera_preview)
 
         answer = await pc.createAnswer()
         await pc.setLocalDescription(answer)
