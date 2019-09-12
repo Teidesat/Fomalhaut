@@ -6,3 +6,4 @@
     - Automatic start local server always
     - Automatic send start monitoring command
     - Automatic send start camera command
+- Logger as a service, so messages may not be written at the same time if two threads log at the same time

@@ -6,19 +6,24 @@ from abc import ABC, abstractmethod
 
 class ServiceLoop(Thread):
 
-    def __init__(self, target, delay=0.5):
+    def __init__(self, target, on_error=None, delay=0.5):
         super().__init__()
         self.__terminate = False
         self.__target = target
         self.__delay = delay
+        self.on_error = on_error
 
     def stop(self):
         self.__terminate = True
 
     def run(self):
-        time.sleep(self.__delay)
-        while not self.__terminate:
-            self.__target()
+        try:
+            time.sleep(self.__delay)
+            while not self.__terminate:
+                self.__target()
+        except Exception as err:
+            if self.on_error:
+                self.on_error(err)
 
 
 class BaseService(ABC):
@@ -37,7 +42,7 @@ class BaseService(ABC):
         if self.__service_loop:
             logger.info('%s service is already running' % self.service_name)
         else:
-            self.__service_loop = ServiceLoop(self.service_run)
+            self.__service_loop = ServiceLoop(self.service_run, self.on_error)
             self.__service_loop.start()
             self.on_start()
             logger.info('%s service started' % self.service_name)
@@ -61,3 +66,6 @@ class BaseService(ABC):
 
     def on_stop(self):
         pass
+
+    def on_error(self, err):
+        logger.error('%s service stopped unexpectedly, %s' % (self.service_name, str(err)))

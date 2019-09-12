@@ -117,8 +117,8 @@ def start_server(simulate, period, ip, port, resolution, automatic_start):
 
     server.start()
     if automatic_start:
-        monitor.start()
         analyzer.start()
+        monitor.start()
 
     def terminate(sig, frame):
         logger.on_new_log_listener     = None
