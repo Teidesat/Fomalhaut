@@ -1,13 +1,13 @@
 import time
 from datetime import datetime
 from threading import Thread
-from src.Logger import Logger
-from src.Service import Service
-from src.SensorsProvider import SensorsProvider
+from src.utils.Logger import Logger
+from src.services.BaseService import BaseService
+from src.sensors.SensorsProvider import SensorsProvider
 from pathlib import Path
 
 
-class Monitor(Service):
+class MonitorService(BaseService):
 
     class SensorData:
         def __init__(self, value=None, sensor_id=None, timestamp=None, type=None):
@@ -68,7 +68,7 @@ class Monitor(Service):
         if (time.time() - self.__last_time) * 1000 >= self.__period:
             self.__last_time = time.time()
             for sensor in self.__sensors:
-                sensor_data = Monitor.SensorData()
+                sensor_data = MonitorService.SensorData()
                 try:
                     sensor_data.value = sensor.get_value()
                 except:

@@ -17,11 +17,11 @@ from aiortc.contrib.media import MediaPlayer
 from av import VideoFrame
 from queue import Queue
 
-from src.Service import Service
-from src.Logger import Logger
+from src.services.BaseService import BaseService
+from src.utils.Logger import Logger
 
 
-class WebRTCServer(Service):
+class WebRTCServerService(BaseService):
 
     class CameraPreview(VideoStreamTrack):
 
@@ -56,7 +56,7 @@ class WebRTCServer(Service):
     def __init__(self, port=80, ip='localhost', resolution='640x480', logger=None):
         super().__init__(service_name="WebRTCServer", logger=logger)
         self.on_new_message_listener = None
-        self.__camera_preview = WebRTCServer.CameraPreview()
+        self.__camera_preview = WebRTCServerService.CameraPreview()
         self.__pcs = set() # Peer connections
         self.__channels = set()
         self.__port = port

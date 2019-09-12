@@ -1,9 +1,7 @@
 import time
-from datetime import datetime
 from threading import Thread
-from src.Logger import Logger
-from src.SensorsProvider import SensorsProvider
-from pathlib import Path
+from src.utils.Logger import Logger
+from abc import ABC, abstractmethod
 
 
 class ServiceLoop(Thread):
@@ -23,7 +21,7 @@ class ServiceLoop(Thread):
             self.__target()
 
 
-class Service:
+class BaseService(ABC):
 
     def __init__(self, delay=0.5, service_name=None, logger=None):
         self.service_name = service_name or 'Unnamed'
@@ -59,6 +57,7 @@ class Service:
         if self.__logger is not None:
             self.__logger.log(msg, level)
 
+    @abstractmethod
     def service_run(self):
         pass
 

@@ -1,9 +1,9 @@
 import time
 import Adafruit_DHT as dht
-from src.Sensor import Sensor
+from src.sensors.BaseSensor import BaseSensor
 
 
-class DHT22Sensor(Sensor):
+class DHT22Sensor(BaseSensor):
 
     def __init__(self, sensor_id):
         self.gpio_pin = 18

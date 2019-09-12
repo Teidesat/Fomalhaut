@@ -1,9 +1,9 @@
 import smbus
 from abc import abstractmethod
-from src.Sensor import Sensor
+from src.sensors.BaseSensor import BaseSensor
 
 
-class I2CSensor(Sensor):
+class I2CSensor(BaseSensor):
 
     def __init__(self, sensor_id, i2c_ch=1, address=0x00, value_reg=0x00, value_reg_size=2, config_reg=0x01):
         self.__bus = smbus.SMBus(i2c_ch)

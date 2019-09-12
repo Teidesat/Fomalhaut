@@ -1,11 +1,11 @@
 from random import uniform
-from src.Sensor import Sensor
-from src.Logger import Logger
+from src.sensors.BaseSensor import BaseSensor
+from src.utils.Logger import Logger
 
 
 class SensorsProvider:
     # ----------- ONLY FOR SIMULATION -----------
-    class FakeTemperatureSensor(Sensor):
+    class FakeTemperatureSensor(BaseSensor):
 
         def __init__(self, sensor_id):
             super().__init__(sensor_id)
@@ -16,7 +16,7 @@ class SensorsProvider:
         def get_type(self):
             return 'temperature'
 
-    class FakeHumiditySensor(Sensor):
+    class FakeHumiditySensor(BaseSensor):
 
         def __init__(self, sensor_id):
             super().__init__(sensor_id)
@@ -27,7 +27,7 @@ class SensorsProvider:
         def get_type(self):
             return 'humidity'
 
-    class FakeVoltageSensor(Sensor):
+    class FakeVoltageSensor(BaseSensor):
 
         def __init__(self, sensor_id):
             super().__init__(sensor_id)

@@ -35,7 +35,7 @@ The following w1 therm sensor devices are supported:
 
 The humidity and temperature sensor DHT22 and I2C sensors are also supported.
 
-Author: Andrés García Pérez (teidesat11@ull.edu.es)
+Authors: Andrés García Pérez (teidesat11@ull.edu.es), Jorge Sierra Acosta (teidesat06@ull.edu.es)
 """
 
 import os
@@ -45,12 +45,11 @@ import sys
 import signal
 import time
 import json
-from threading import Semaphore
 
-from src.Logger import Logger
-from src.Monitor import Monitor
-from src.CameraAnalyzer import CameraAnalyzer
-from src.WebRTCServer import WebRTCServer
+from src.utils.Logger import Logger
+from src.services.MonitorService import MonitorService
+from src.services.CameraService import CameraService
+from src.services.WebRTCServerService import WebRTCServerService
 
 def on_new_log_listener(message, server):
     server.send_to_all(json.dumps(message))
@@ -107,16 +106,14 @@ def wait_for_server_close(server):
         time.sleep(1)
 
 def start_server(simulate, period, ip, port, resolution, automatic_start, logger):
-    monitor = Monitor(simulate=simulate, period=period, logger=logger)
-    analyzer = CameraAnalyzer(on_new_frame_target_fps=0, logger=logger)
+    monitor  = MonitorService(simulate=simulate, period=period, logger=logger)
+    analyzer = CameraService(on_new_frame_target_fps=0, logger=logger)
+    server   = WebRTCServerService(port=port, ip=ip, logger=logger, resolution=resolution)
 
-    import threading
     if automatic_start:
         monitor.start()
         analyzer.start()
-
-    server = WebRTCServer(port=port, ip=ip, logger=logger, resolution=resolution)
-    server.start()
+    server.start() # Server service needs to always be active
 
     logger.on_new_log_listener     = lambda message: on_new_log_listener(message, server)
     analyzer.on_new_frame_listener = lambda ret, frame: on_new_frame_listener(ret, frame, server)

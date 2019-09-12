@@ -1,7 +1,7 @@
-from src.Sensor import Sensor
+from src.sensors.BaseSensor import BaseSensor
 
 
-class DS18B20Sensor(Sensor):
+class DS18B20Sensor(BaseSensor):
 
     def __init__(self, sensor_id, sensor):
         self.__sensor = sensor

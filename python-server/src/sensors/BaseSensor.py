@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class Sensor(ABC):
+class BaseSensor(ABC):
 
     def __init__(self, sensor_id):
         self.__id = sensor_id

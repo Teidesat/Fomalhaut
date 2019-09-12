@@ -3,12 +3,12 @@ import time
 import numpy as np
 from copy import deepcopy
 from threading import Thread, Lock
-from src.Logger import Logger
-from src.FPS import FPS
-from src.Service import Service
+from src.utils.Logger import Logger
+from src.utils.FPSMeter import FPSMeter
+from src.services.BaseService import BaseService
 
 
-class CameraAnalyzer(Service):
+class CameraService(BaseService):
 
     def __init__(self, on_new_frame_target_fps=0, logger=None):
         super().__init__(service_name="Camera", logger=logger)
@@ -21,7 +21,7 @@ class CameraAnalyzer(Service):
         self.__target_fps = self.__cap.get(cv2.CAP_PROP_FPS)
 
         # FPS control
-        self.__fps = FPS()
+        self.__fps = FPSMeter()
         self.__target_fps = -1
         self.__next_frame_ms = -1
         self.__on_new_frame_next_ms = -1

@@ -1,7 +1,7 @@
-from src.Sensor import Sensor
+from src.sensors.BaseSensor import BaseSensor
 
 
-class CPUTempSensor(Sensor):
+class CPUTempSensor(BaseSensor):
 
     def __init__(self, sensor_id):
         self.__temp_file = open('/sys/class/thermal/thermal_zone0/temp', 'r')

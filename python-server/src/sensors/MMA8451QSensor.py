@@ -1,4 +1,4 @@
-from src.I2CSensor import I2CSensor
+from src.sensors.I2CSensor import I2CSensor
 
 
 class MMA8451QSensor(I2CSensor):

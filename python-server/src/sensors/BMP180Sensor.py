@@ -1,5 +1,5 @@
 import time
-from src.I2CSensor import I2CSensor
+from src.sensors.I2CSensor import I2CSensor
 
 
 class BMP180Sensor(I2CSensor):

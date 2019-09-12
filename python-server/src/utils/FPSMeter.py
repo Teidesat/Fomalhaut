@@ -1,6 +1,6 @@
 import time
 
-class FPS:
+class FPSMeter:
     def __init__(self, target=0, seconds=1):
         self.start = time.time()
         self.seconds = seconds
