@@ -46,10 +46,11 @@ import signal
 import time
 import json
 
-from src.utils.Logger import Logger
+from src.utils.Logger import default_logger as logger
 from src.services.MonitorService import MonitorService
 from src.services.CameraService import CameraService
 from src.WebRTCServer import WebRTCServer
+
 
 def on_new_log_listener(message, server):
     server.send_to_all(json.dumps(message))
@@ -105,10 +106,10 @@ def wait_for_server_close(server):
     while server.is_running():
         time.sleep(1)
 
-def start_server(simulate, period, ip, port, resolution, automatic_start, logger):
-    monitor  = MonitorService(simulate=simulate, period=period, logger=logger)
-    analyzer = CameraService(on_new_frame_target_fps=0, logger=logger)
-    server   = WebRTCServer(port=port, ip=ip, logger=logger, resolution=resolution)
+def start_server(simulate, period, ip, port, resolution, automatic_start):
+    monitor  = MonitorService(simulate=simulate, period=period)
+    analyzer = CameraService(on_new_frame_target_fps=0)
+    server   = WebRTCServer(port=port, ip=ip, resolution=resolution)
 
     logger.on_new_log_listener     = lambda message: on_new_log_listener(message, server)
     analyzer.on_new_frame_listener = lambda ret, frame: on_new_frame_listener(ret, frame, server)
@@ -143,17 +144,17 @@ def main():
                         help='start the monitor service automatically at the start')
     parser.set_defaults(debug=False, simulate=False, cli=False, automatic_start=False)
     args = parser.parse_args()
-    logger = Logger(args.debug)
+    logger.show_debug = args.debug
 
     if not args.simulate:
         if platform.system() != 'Linux':
-            logger.log('OS not compatible for some sensors', Logger.LogLevel.WARNING)
+            logger.warn('OS not compatible for some sensors')
 
         # if os.getuid() != 0:
-        #    logger.log('Must have root access', Logger.LogLevel.ERROR)
+        #    logger.error('Must have root access')
         #    sys.exit(1)
 
-    start_server(args.simulate, args.period, args.ip, args.port, args.resolution, args.automatic_start, logger)
+    start_server(args.simulate, args.period, args.ip, args.port, args.resolution, args.automatic_start)
     sys.exit(0)
 
 

@@ -3,15 +3,15 @@ import time
 import numpy as np
 from copy import deepcopy
 from threading import Thread, Lock
-from src.utils.Logger import Logger
+from src.utils.Logger import default_logger as logger
 from src.utils.FPSMeter import FPSMeter
 from src.services.BaseService import BaseService
 
 
 class CameraService(BaseService):
 
-    def __init__(self, on_new_frame_target_fps=0, logger=None):
-        super().__init__(service_name="Camera", logger=logger)
+    def __init__(self, on_new_frame_target_fps=0):
+        super().__init__(service_name="Camera")
         self.on_new_frame_listener = None
         self.__stats = {}
         self.__lock = Lock()

@@ -1,7 +1,8 @@
 import time
 from datetime import datetime
 from threading import Thread
-from src.utils.Logger import Logger
+from src.utils.Logger import default_logger as logger
+from src.utils.CSVWriter import CSVWriter
 from src.services.BaseService import BaseService
 from src.sensors.SensorsProvider import SensorsProvider
 from pathlib import Path
@@ -16,20 +17,17 @@ class MonitorService(BaseService):
             self.timestamp = timestamp
             self.type = type
 
-    def __init__(self, simulate=False, period=1000, logger=None):
-        super().__init__(service_name="Monitor", logger=logger)
+    def __init__(self, simulate=False, period=1000):
+        super().__init__(service_name="Monitor")
         Path('./log').mkdir(exist_ok=True)
         self.on_new_sensor_data_listener = None
         self.__simulate = simulate
         self.__period = float(period)
         self.__sensors_data = [] # TODO wouldnt this fill the memory eventually ?
-        self.__log_file = open('log/' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + '_sensors_data.csv', 'w', 1)
-        self.__log_file.write('timestamp;sensor_id;type;value\n')
-        self.__sensors = SensorsProvider.get_available_sensors(self.__simulate, logger)
+        self.__csv_file = CSVWriter('log/' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + '_sensors_data.csv')
+        self.__csv_file.write_row(['timestamp', 'sensor_id', 'type;value'])
+        self.__sensors = SensorsProvider.get_available_sensors(self.__simulate)
         self.__last_time = 0
-
-    def __del__(self):
-        self.__log_file.close()
 
     def get_sensors_data(self):
         return self.__sensors_data
@@ -55,12 +53,12 @@ class MonitorService(BaseService):
         elif type(sensor_data.value) is float:
             log_msg += ', value: %.3f' % sensor_data.value
         else:
-            self.log('Invalid value format retrieved from sensor %s' % sensor_data.sensor_id, Logger.LogLevel.WARNING)
+            logger.warn('Invalid value format retrieved from sensor %s' % sensor_data.sensor_id)
             log_msg += ', value: INVALID VALUE'
 
-        self.log(log_msg, Logger.LogLevel.DEBUG)
+        logger.debug(log_msg)
         self.__sensors_data.append(sensor_data)
-        self.__log_file.write('%s;%s;%s;%s\n' % (sensor_data.timestamp, sensor_data.sensor_id, sensor_data.type, sensor_data.value))
+        self.__csv_file.write_row([sensor_data.timestamp, sensor_data.sensor_id, sensor_data.type, sensor_data.value])
         if self.on_new_sensor_data_listener is not None:
             self.on_new_sensor_data_listener(sensor_data)
 
@@ -72,7 +70,7 @@ class MonitorService(BaseService):
                 try:
                     sensor_data.value = sensor.get_value()
                 except:
-                    self.log('Error while trying to read the sensor \'%s\'' % sensor.get_id(), Logger.LogLevel.WARNING)
+                    logger.warn('Error while trying to read the sensor \'%s\'' % sensor.get_id())
                     sensor_data.value = None
                 sensor_data.sensor_id = sensor.get_id()
                 sensor_data.type = sensor.get_type()

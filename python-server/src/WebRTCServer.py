@@ -17,7 +17,7 @@ from aiortc.contrib.media import MediaPlayer
 from av import VideoFrame
 from queue import Queue
 
-from src.utils.Logger import Logger
+from src.utils.Logger import default_logger as logger
 
 
 class WebRTCServer:
@@ -52,13 +52,12 @@ class WebRTCServer:
                 print(e)
             return av_frame
 
-    def __init__(self, port=80, ip='localhost', resolution='640x480', logger=None):
+    def __init__(self, port=80, ip='localhost', resolution='640x480'):
         self.on_new_message_listener = None
         self.__is_running = False
         self.__camera_preview = WebRTCServer.CameraPreview()
         self.__pcs = set()
         self.__channels = set()
-        self.__logger = logger
         self.__port = port
         self.__ip = ip
         self.__resolution = resolution
@@ -90,10 +89,10 @@ class WebRTCServer:
 
         thread = Thread(target=thread, daemon=True)
         thread.start()
-        self.__log('WebRTC server started %s:%d' % (self.__ip, self.__port), Logger.LogLevel.INFO)
+        logger.info('WebRTC server started %s:%d' % (self.__ip, self.__port))
 
-    def close(self):
-        self.__log('Closing WebRTC server...', Logger.LogLevel.DEBUG)
+    def stop(self):
+        logger.debug('Closing WebRTC server...')
         if self.__site is not None and self.__loop is not None:
             async def stop():
                 future = asyncio.run_coroutine_threadsafe(self.on_shutdown(), self.__loop)
@@ -122,7 +121,7 @@ class WebRTCServer:
             for channel in self.__channels:
                 if channel.readyState == 'open':
                     channel.send(message)
-                    self.__log('Message sent to channel %s: %s' % (channel.id, message), Logger.LogLevel.DEBUG)
+                    logger.debug('Message sent to channel %s: %s' % (channel.id, message))
         asyncio.run_coroutine_threadsafe(task(), self.__loop)
 
     async def offer(self, request):
@@ -134,27 +133,27 @@ class WebRTCServer:
         pc = RTCPeerConnection()
         pc_id = 'PeerConnection(%s)' % uuid.uuid4()
         self.__pcs.add(pc)
-        self.__log('%s: created for %s' % (pc_id, request.remote), Logger.LogLevel.DEBUG)
+        logger.debug('%s: created for %s' % (pc_id, request.remote))
 
         @pc.on('datachannel')
         def on_datachannel(channel):
-            self.__log('%s: Data channel established (%s)' % (pc_id, channel.id), Logger.LogLevel.DEBUG)
+            logger.debug('%s: Data channel established (%s)' % (pc_id, channel.id))
             self.__channels.add(channel)
             @channel.on('message')
             def on_message(message):
-                self.__log('Message received from %s: %s' % (pc_id, message), Logger.LogLevel.DEBUG)
+                logger.debug('Message received from %s: %s' % (pc_id, message))
                 if isinstance(message, str) and self.on_new_message_listener is not None:
                     try:
                         self.on_new_message_listener(json.loads(message))
                     except ValueError:
-                        self.__log('Invalid message received from %s: %s' % (pc_id, message), Logger.LogLevel.WARNING)
+                        logger.warn('Invalid message received from %s: %s' % (pc_id, message))
 
         @pc.on('iceconnectionstatechange')
         async def on_iceconnectionstatechange():
-            self.__log('%s: ICE connection state is %s' % (pc_id, pc.iceConnectionState), Logger.LogLevel.DEBUG)
+            logger.debug('%s: ICE connection state is %s' % (pc_id, pc.iceConnectionState))
             if pc.iceConnectionState == 'failed':
                 await pc.close()
-                self.__log('%s: ICE connection discarded with state %s' % (pc_id, pc.iceConnectionState), Logger.LogLevel.DEBUG)
+                logger.debug('%s: ICE connection discarded with state %s' % (pc_id, pc.iceConnectionState))
                 self.__pcs.discard(pc)
 
         #player = MediaPlayer('src/test_video.mp4', options={'framerate': '30', 'video_size': '1920x1080'})
@@ -178,8 +177,4 @@ class WebRTCServer:
         coros = [pc.close() for pc in self.__pcs]
         await asyncio.gather(*coros)
         self.__pcs.clear()
-        self.__log('WebRTC server closed', Logger.LogLevel.DEBUG)
-
-    def __log(self, msg, level):
-        if self.__logger is not None:
-            self.__logger.log(msg, level)
+        logger.info('WebRTC server closed')

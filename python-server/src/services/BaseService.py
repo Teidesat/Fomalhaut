@@ -1,6 +1,6 @@
 import time
 from threading import Thread
-from src.utils.Logger import Logger
+from src.utils.Logger import default_logger as logger
 from abc import ABC, abstractmethod
 
 
@@ -23,9 +23,8 @@ class ServiceLoop(Thread):
 
 class BaseService(ABC):
 
-    def __init__(self, delay=0.5, service_name=None, logger=None):
+    def __init__(self, delay=0.5, service_name=None):
         self.service_name = service_name or 'Unnamed'
-        self.__logger = logger
         self.__delay = delay
         self.__service_loop = None
 
@@ -36,26 +35,22 @@ class BaseService(ABC):
 
     def start(self):
         if self.__service_loop:
-            self.log('%s service is already running' % self.service_name, Logger.LogLevel.INFO)
+            logger.info('%s service is already running' % self.service_name)
         else:
             self.__service_loop = ServiceLoop(self.service_run)
             self.__service_loop.start()
             self.on_start()
-            self.log('%s service started' % self.service_name, Logger.LogLevel.INFO)
+            logger.info('%s service started' % self.service_name)
 
     def stop(self):
         if not self.__service_loop:
-            self.log('%s service is already stopped' % self.service_name, Logger.LogLevel.INFO)
+            logger.info('%s service is already stopped' % self.service_name)
         else:
             self.__service_loop.stop()
             self.__service_loop.join()
             self.on_stop()
             self.__service_loop = None
-            self.log('%s service stopped' % self.service_name, Logger.LogLevel.INFO)
-
-    def log(self, msg, level):
-        if self.__logger is not None:
-            self.__logger.log(msg, level)
+            logger.info('%s service stopped' % self.service_name)
 
     @abstractmethod
     def service_run(self):

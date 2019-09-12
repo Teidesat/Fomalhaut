@@ -1,35 +1,75 @@
-from enum import Enum, auto
 from colorama import init as init_colorama
 from colorama import Fore, Style
+from pathlib import Path
+from time import gmtime, strftime
 
 
 class Logger:
 
-    class LogLevel(Enum):
-        DEBUG = auto()
-        INFO = auto()
-        WARNING = auto()
-        ERROR = auto()
-
-    def __init__(self, debug=False):
-        self.__debug = debug
+    def __init__(self, name, show_date=True, show_name=True, show_level=True, show_debug=False, file=None):
+        self.name = name
+        self.show_debug = show_debug
+        self.show_date  = show_date
+        self.show_name  = show_name
+        self.show_level = show_level
         self.on_new_log_listener = None
-        init_colorama()
+        self.__file_path = None
+        self.__file = None
+        self.set_file(file)
 
-    def log(self, msg, level=LogLevel.INFO):
-        if level == Logger.LogLevel.DEBUG:
-            if self.__debug:
-                print('{:s}[{:^7s}] {:s}{:s}'.format(Fore.CYAN, level.name, msg, Style.RESET_ALL))
-        elif level == Logger.LogLevel.INFO:
-                print('{:s}[{:^7s}] {:s}{:s}'.format(Fore.GREEN, level.name, msg, Style.RESET_ALL))
-        elif level == Logger.LogLevel.ERROR:
-            print('{:s}[{:^7s}] {:s}{:s}'.format(Fore.RED, level.name, msg, Style.RESET_ALL))
-        else:
-            print('{:s}[{:^7s}] {:s}{:s}'.format(Fore.YELLOW, level.name, msg, Style.RESET_ALL))
+    def __del__(self):
+        if self.__file:
+            self.__file.close()
 
-        if self.on_new_log_listener is not None and level != Logger.LogLevel.DEBUG:
+    def set_file(self, file):
+        if self.__file:
+            self.__file.close()
+        if file:
+            self.__file_path = Path(file)
+            if not self.__file_path.exists() or self.__file_path.is_file():
+                self.__file = self.__file_path.open('a+')
+
+    def debug(self, msg):
+        if self.show_debug:
+            self.__log(Fore.CYAN, 'debug', msg)
+
+    def info(self, msg):
+        self.__log(Fore.GREEN, 'info', msg)
+
+    def error(self, msg):
+        self.__log(Fore.RED, 'error', msg)
+
+    def warn(self, msg):
+        self.__log(Fore.YELLOW, 'warn', msg)
+
+    def __log(self, color, level, msg):
+        line = ''
+        if self.show_date:
+            line += strftime('%d-%m-%y %H:%M:%S ', gmtime())
+        if self.show_name or self.show_level:
+            line += '['
+        if self.show_name:
+            line += self.name
+        if self.show_name and self.show_level:
+            line += ':'
+        if self.show_level:
+            line += '{:5s}'.format(level)
+        if self.show_name or self.show_level:
+            line += '] '
+
+        line += msg
+        print('{:s}{:s}{:s}'.format(color, line, Style.RESET_ALL))
+
+        if self.__file:
+            self.__file.write(line + '\n')
+            # Maybe file should be checked to not be of size > x. And make a new file if so
+
+        if self.on_new_log_listener and level != 'debug':
             self.on_new_log_listener({
                 'type': 'log',
-                'level': level.name,
+                'level': level,
                 'value': msg
             })
+
+init_colorama()
+default_logger = Logger(name='root')
