@@ -49,7 +49,7 @@ import json
 from src.utils.Logger import Logger
 from src.services.MonitorService import MonitorService
 from src.services.CameraService import CameraService
-from src.services.WebRTCServerService import WebRTCServerService
+from src.WebRTCServer import WebRTCServer
 
 def on_new_log_listener(message, server):
     server.send_to_all(json.dumps(message))
@@ -108,16 +108,16 @@ def wait_for_server_close(server):
 def start_server(simulate, period, ip, port, resolution, automatic_start, logger):
     monitor  = MonitorService(simulate=simulate, period=period, logger=logger)
     analyzer = CameraService(on_new_frame_target_fps=0, logger=logger)
-    server   = WebRTCServerService(port=port, ip=ip, logger=logger, resolution=resolution)
-
-    if automatic_start:
-        monitor.start()
-        analyzer.start()
-    server.start() # Server service needs to always be active
+    server   = WebRTCServer(port=port, ip=ip, logger=logger, resolution=resolution)
 
     logger.on_new_log_listener     = lambda message: on_new_log_listener(message, server)
     analyzer.on_new_frame_listener = lambda ret, frame: on_new_frame_listener(ret, frame, server)
     server.on_new_message_listener = lambda message: on_new_message_listener(message, monitor, analyzer, server)
+
+    server.start()
+    if automatic_start:
+        monitor.start()
+        analyzer.start()
 
     def terminate(sig, frame):
         logger.on_new_log_listener     = None
