@@ -58,6 +58,7 @@ class WebRTCServer:
         self.__camera_preview = WebRTCServer.CameraPreview()
         self.__pcs = set()
         self.__channels = set()
+        self.__request_id_channels = {}
         self.__port = port
         self.__ip = ip
         self.__resolution = resolution
@@ -105,16 +106,13 @@ class WebRTCServer:
             loop = asyncio.new_event_loop()
             loop.run_until_complete(stop())
 
-    def send_to_all(self, message, request_id=None):
+    def send_to_all(self, message):
         if not self.__is_running:
             return
 
-        if request_id is not None:
-            payload = message
-            message = {
-                'request_id': request_id,
-                'payload': payload
-            }
+        message = {
+            'payload': message
+        }
         message = json.dumps(message)
 
         async def task():
@@ -122,6 +120,25 @@ class WebRTCServer:
                 if channel.readyState == 'open':
                     channel.send(message)
                     logger.debug('Message sent to channel %s: %s' % (channel.id, message))
+        asyncio.run_coroutine_threadsafe(task(), self.__loop)
+
+    def send_to_request_id(self, message, request_id=None):
+        if not self.__is_running or request_id is None:
+            return
+
+        message = {
+            'request_id': request_id,
+            'payload': message
+        }
+        message = json.dumps(message)
+
+        async def task():
+            if request_id in self.__request_id_channels:
+                channel = self.__request_id_channels[request_id]
+                if channel.readyState == 'open':
+                    channel.send(message)
+                    logger.debug('Message sent to channel %s: %s' % (channel.id, message))
+                    self.__request_id_channels.pop(request_id)
         asyncio.run_coroutine_threadsafe(task(), self.__loop)
 
     async def offer(self, request):
@@ -142,11 +159,16 @@ class WebRTCServer:
             @channel.on('message')
             def on_message(message):
                 logger.debug('Message received from %s: %s' % (pc_id, message))
-                if isinstance(message, str) and self.on_new_message_listener is not None:
-                    try:
-                        self.on_new_message_listener(json.loads(message))
-                    except ValueError:
-                        logger.warn('Invalid message received from %s: %s' % (pc_id, message))
+                try:
+                    parsed_message = json.loads(message)
+                    request_id = parsed_message['request_id'] if ('request_id' in parsed_message.keys()) else None
+                    if request_id is not None:
+                        self.__request_id_channels[request_id] = channel
+
+                    if parsed_message and self.on_new_message_listener is not None:
+                        self.on_new_message_listener(parsed_message, request_id)
+                except ValueError:
+                    logger.warn('Invalid message received from %s: %s' % (pc_id, message))
 
         @pc.on('iceconnectionstatechange')
         async def on_iceconnectionstatechange():
@@ -156,10 +178,10 @@ class WebRTCServer:
                 logger.debug('%s: ICE connection discarded with state %s' % (pc_id, pc.iceConnectionState))
                 self.__pcs.discard(pc)
 
-        #player = MediaPlayer('src/test_video.mp4', options={'framerate': '30', 'video_size': '1920x1080'})
+        # player = MediaPlayer('src/test_video.mp4', options={'framerate': '30', 'video_size': '1920x1080'})
         await pc.setRemoteDescription(offer)
         for t in pc.getTransceivers():
-            #pc.addTrack(player.video)
+            # pc.addTrack(player.video)
             pc.addTrack(self.__camera_preview)
 
         answer = await pc.createAnswer()
