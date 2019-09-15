@@ -119,7 +119,7 @@ class WebRTCServer:
             for channel in self.__channels:
                 if channel.readyState == 'open':
                     channel.send(message)
-                    logger.debug('Message sent to channel %s: %s' % (channel.id, message))
+                    logger.trace('Message sent to channel %s: %s' % (channel.id, message))
         asyncio.run_coroutine_threadsafe(task(), self.__loop)
 
     def send_to_request_id(self, message, request_id=None):
@@ -137,7 +137,7 @@ class WebRTCServer:
                 channel = self.__request_id_channels[request_id]
                 if channel.readyState == 'open':
                     channel.send(message)
-                    logger.debug('Message sent to channel %s: %s' % (channel.id, message))
+                    logger.trace('Message sent to channel %s: %s' % (channel.id, message))
                     self.__request_id_channels.pop(request_id)
         asyncio.run_coroutine_threadsafe(task(), self.__loop)
 
@@ -158,7 +158,7 @@ class WebRTCServer:
             self.__channels.add(channel)
             @channel.on('message')
             def on_message(message):
-                logger.debug('Message received from %s: %s' % (pc_id, message))
+                logger.trace('Message received from %s: %s' % (pc_id, message))
                 try:
                     parsed_message = json.loads(message)
                     request_id = parsed_message['request_id'] if ('request_id' in parsed_message.keys()) else None

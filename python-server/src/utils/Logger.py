@@ -6,8 +6,9 @@ from time import gmtime, strftime
 
 class Logger:
 
-    def __init__(self, name, show_date=True, show_name=True, show_level=True, show_debug=False, file=None):
+    def __init__(self, name, show_date=True, show_name=True, show_level=True, show_debug=False, show_trace=False, file=None):
         self.name = name
+        self.show_trace = show_trace
         self.show_debug = show_debug
         self.show_date  = show_date
         self.show_name  = show_name
@@ -32,6 +33,10 @@ class Logger:
     def debug(self, msg):
         if self.show_debug:
             self.__log(Fore.CYAN, 'debug', msg)
+
+    def trace(self, msg):
+        if self.show_trace:
+            self.__log(Fore.CYAN, 'trace', msg)
 
     def info(self, msg):
         self.__log(Fore.GREEN, 'info', msg)
@@ -64,7 +69,7 @@ class Logger:
             self.__file.write(line + '\n')
             # Maybe file should be checked to not be of size > x. And make a new file if so
 
-        if self.on_new_log_listener and level != 'debug':
+        if self.on_new_log_listener and level != 'debug' and level != 'trace':
             self.on_new_log_listener({
                 'type': 'log',
                 'level': level,

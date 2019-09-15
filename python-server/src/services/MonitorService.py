@@ -56,7 +56,7 @@ class MonitorService(BaseService):
             logger.warn('Invalid value format retrieved from sensor %s' % sensor_data.sensor_id)
             log_msg += ', value: INVALID VALUE'
 
-        logger.debug(log_msg)
+        logger.trace(log_msg)
         self.__sensors_data.append(sensor_data)
         self.__csv_file.write_row([sensor_data.timestamp, sensor_data.sensor_id, sensor_data.type, sensor_data.value])
         if self.on_new_sensor_data_listener is not None:

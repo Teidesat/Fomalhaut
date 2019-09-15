@@ -148,6 +148,7 @@ def start_server(simulate, period, ip, port, resolution, automatic_start):
 def main():
     parser = argparse.ArgumentParser(description='Monitor server.')
     parser.add_argument('-d', '--debug', action='store_true', help='enable debug mode')
+    parser.add_argument('-t', '--trace', action='store_true', help='enable trace mode')
     parser.add_argument('-s', '--simulate', action='store_true', help='simulate the sensors')
     parser.add_argument('-r', '--resolution', default='640x480', help='video size (default: 640x480)')
     parser.add_argument('-p', '--period', help='sensor reading period in ms (default: 1000)', default=1000)
@@ -158,6 +159,7 @@ def main():
     parser.set_defaults(debug=False, simulate=False, cli=False, automatic_start=False)
     args = parser.parse_args()
     logger.show_debug = args.debug
+    logger.show_trace = args.trace
 
     if not args.simulate:
         if platform.system() != 'Linux':
