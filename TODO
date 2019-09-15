@@ -14,7 +14,9 @@
     - Automatic send start camera command
 
 - Sensors:
-    Alerts when a sensor is out of range
+    - Alerts when a sensor is out of range
+    - Options to change the Monitor update period (on the client and on the server)
+    - Options to change the maximum plot length (on the client)
 
 - Camera:
     - Currently, the first available camera (index=0) is the only one selected when the service starts:
@@ -51,7 +53,9 @@
     contain the pts and time_base properties. Currently these properties are set using the av.frame properties from the super class VideoStreamTrack which
     is not guaranteed to be correct. The pts and time_base properties should be independent from the VideoStreamTrack class.
 
-- STK
+- STK outputs a txt with some plot info. Build a new tab to load this info and show it in a plot
+    - Add option to download plot as png (?)
+    - Nota: Hablar con Eloi o Gabri (Preferiblemente Eloi)
 
 - Update description with the requirements to install aiortc for python in windows
 

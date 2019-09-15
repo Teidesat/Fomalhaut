@@ -144,8 +144,9 @@ let sensorsDataList = document.getElementById('sensors-data-list');
 let sensorsData = {};
 let timestamps = [];
 let MAX_ARRAY_SIZE = 30;
-let UNCHECKED_ICON = '<i class="material-icons">radio_button_unchecked</i>';
-let CHECKED_ICON = '<i class="material-icons">radio_button_checked</i>';
+let VECTOR = 'xyzwt';
+let UNCHECKED_ICON = '<i class="material-icons">check_box_outline_blank</i>';
+let CHECKED_ICON = '<i class="material-icons">check_box</i>';
 
 let activeSensorId = null;
 let sensorsCtx = document.getElementById('sensors-chart').getContext('2d');
@@ -173,25 +174,26 @@ function capitalize(s) {
 }
 
 function getTypeIcon(type) {
-    if (type === 'temperature') return 'assets/sensors/temperature.svg';
-    if (type === 'humidity')    return 'assets/sensors/humidity.svg';
-    if (type === 'altitude')    return 'assets/sensors/altitude.svg';
-    if (type === 'gps')         return 'assets/sensors/gps.svg';
-    if (type === 'pressure')    return 'assets/sensors/pressure.svg';
-    if (type === 'voltage')     return 'assets/sensors/voltage.svg';
+    if (type === 'temperature')   return 'assets/sensors/temperature.svg';
+    if (type === 'humidity')      return 'assets/sensors/humidity.svg';
+    if (type === 'altitude')      return 'assets/sensors/altitude.svg';
+    if (type === 'gps')           return 'assets/sensors/gps.svg';
+    if (type === 'pressure')      return 'assets/sensors/pressure.svg';
+    if (type === 'voltage')       return 'assets/sensors/voltage.svg';
+    if (type === 'compass')       return 'assets/sensors/compass.svg';
+    if (type === 'accelerometer') return 'assets/sensors/accelerometer.svg';
+    if (type === 'gyro')          return 'assets/sensors/gyro.svg';
+    if (type === 'latitude')      return 'assets/sensors/latitude.svg';
+    if (type === 'longitude')     return 'assets/sensors/longitude.svg';
 
     return 'assets/sensors/generic.svg';
 }
 
-function pickColor(type, opacity=1) {
-    if (type === 'temperature') return 'rgba(245,  66,  66,' + opacity + ')';
-    if (type === 'humidity')    return 'rgba( 66, 197, 245,' + opacity + ')';
-    if (type === 'altitude')    return 'rgba( 66, 245,  81,' + opacity + ')';
-    if (type === 'gps')         return 'rgba(144,  66, 245,' + opacity + ')';
-    if (type === 'pressure')    return 'rgba( 66, 108, 245,' + opacity + ')';
-    if (type === 'voltage')     return 'rgba(108, 245,  66,' + opacity + ')';
-
-    return 'rgba(50, 50, 50,' + opacity + ')';
+function randomRGB(type) {
+    keys  = Object.keys(DARKER_COLORS);
+    index = Math.floor(Math.random() * keys.length);
+    key   = keys[index];
+    return hexToRgb(DARKER_COLORS[key]);
 }
 
 function newDataSensor(sensor) {
@@ -210,8 +212,12 @@ function newDataSensor(sensor) {
     if (!sensorData) {
         sensorsData[ID] = {
             'values': [],
+            'id': sensor.sensor_id,
             'type': sensor.type,
             'unit': sensor.unit,
+            'color': randomRGB(),
+            'chbox_element': null,
+            'chbox_checked': false
         };
         sensorData = sensorsData[ID];
 
@@ -219,7 +225,6 @@ function newDataSensor(sensor) {
         icon   = document.createElement('DIV');
         name   = document.createElement('DIV');
         values = document.createElement('DIV');
-        chbox  = document.createElement('DIV');
         id     = document.createElement('DIV');
         type   = document.createElement('DIV');
         value  = document.createElement('DIV');
@@ -230,23 +235,32 @@ function newDataSensor(sensor) {
         icon.classList.add('sensor-card-icon');
         name.classList.add('sensor-card-name');
         values.classList.add('sensor-card-values');
-        chbox.classList.add('sensor-card-checkbox');
         id.classList.add('sensor-card-id');
         type.classList.add('sensor-card-type');
         value.classList.add('sensor-card-value');
         //time.classList.add('sensor-card-time');
         icon.innerHTML = '<img src="' + getTypeIcon(sensor.type) + '" />';
-        chbox.innerHTML = UNCHECKED_ICON;
-        chbox.onclick = () => setChartData(ID);
 
         card.appendChild(icon);
         card.appendChild(name);
         card.appendChild(values);
-        card.appendChild(chbox);
         name.appendChild(type);
         name.appendChild(id);
         //values.appendChild(time);
         values.appendChild(value);
+
+        if (!isNaN(sensor.value)) {
+            chbox = document.createElement('DIV');
+            chbox.classList.add('sensor-card-checkbox');
+            card.appendChild(chbox);
+            chbox.innerHTML = Object.keys(sensorsData).length == 1 ? CHECKED_ICON : UNCHECKED_ICON;
+            chbox.onclick = () => {
+                sensorData['chbox_checked'] = !sensorData['chbox_checked'];
+                updateChartData();
+            }
+            sensorData['chbox_checked'] = Object.keys(sensorsData).length == 1
+            sensorData['chbox_element'] = chbox
+        }
         sensorsDataList.appendChild(card);
     } else {
         card   = document.getElementById('sensor-card-' + ID);
@@ -264,13 +278,6 @@ function newDataSensor(sensor) {
     type.innerHTML  = sensor.type;
     value.innerHTML = sensorValueToStr(sensor.value, sensor.unit);
     sensorData['values'].push(sensor.value)
-
-    if (Object.keys(sensorsData).length == 1) {
-        chbox.innerHTML = CHECKED_ICON;
-        setChartData(ID);
-    } else if (ID === activeSensorId) {
-        setChartData(ID, false);
-    }
 }
 
 function sensorValueToStr(value, unit) {
@@ -279,7 +286,6 @@ function sensorValueToStr(value, unit) {
     return value.toFixed(2) + ' ' + unit;
 }
 
-let VECTOR = 'xyzwt'
 function vectorToStr(vector, unit, toFixed=-1) {
     txt = '';
     for (let i = 0; i < vector.length; ++i) {
@@ -290,33 +296,30 @@ function vectorToStr(vector, unit, toFixed=-1) {
     return txt;
 }
 
-function setChartData(sensorId, animation=true) {
-    if (activeSensorId) {
-        card = document.getElementById('sensor-card-' + activeSensorId);
-        chbox = getFirstChildByClassName(card, "sensor-card-checkbox");
-        chbox.innerHTML = UNCHECKED_ICON;
+function updateChartData(animation=true) {
+    let datasets = [];
+    for (const [ _, sensor ] of Object.entries(sensorsData)) {
+        if (sensor['chbox_element']) {
+            sensor['chbox_element'].innerHTML = sensor['chbox_checked'] ? CHECKED_ICON : UNCHECKED_ICON;
+        }
+        if (sensor['chbox_checked']) {
+            let rgb = sensor['color'];
+            datasets.push({
+                label: `#${sensor.id} (${sensor['unit']})`,
+                data: sensor['values'],
+                backgroundColor: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.04)`,
+                borderColor: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`,
+                borderWidth: 1
+            });
+        }
     }
-    activeSensorId = sensorId;
-    card = document.getElementById('sensor-card-' + activeSensorId);
-    chbox = getFirstChildByClassName(card, "sensor-card-checkbox");
-    chbox.innerHTML = CHECKED_ICON;
 
-    let sensorData = sensorsData[sensorId];
     sensorsChart.data = {
         labels: timestamps,
-        datasets: [{
-            label: capitalize(sensorData['type']) + ' (' + sensorData['unit'] + ')',
-            data: sensorData['values'],
-            backgroundColor: pickColor(sensorData['type'], 0.2),
-            borderColor: pickColor(sensorData['type'], 1),
-            borderWidth: 1
-        }]
+        datasets: datasets
     }
-    if (animation) {
-        sensorsChart.update();
-    } else {
-        sensorsChart.update(0);
-    }
+
+    sensorsChart.update(0);
 }
 
 function updateSensors() {
@@ -346,6 +349,7 @@ function updateSensors() {
                         sensorsData[sensorId]['values'] = sensorData['values'].slice(-MAX_ARRAY_SIZE, sensorData['values'].length);
                     }
                 }
+                updateChartData();
             });
         })
         .catch(console.log)

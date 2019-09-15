@@ -14,7 +14,10 @@
     --separation: 5px;
     --left-bar-width: 40px;
     --left-bar-padding: 5px;
-    --sensors-width: 320px;
+    --sensors-width: 290px;
+    --sensors-values-width: 80px;
+    --sensors-chbox-width: 35px;
+    --sensors-icon-width: 40px;
     --sensors-options-height: 50px;
 
     --pal-900: #0b0e13;
@@ -324,8 +327,7 @@ html, body {
     height: calc(100% - var(--sensors-options-height));
 }
 
-#sensors-chart {
-}
+#sensors-chart {}
 
 #sensors-data-list {
     width: var(--sensors-width);
@@ -350,28 +352,28 @@ html, body {
 }
 
 .sensor-card-icon {
-    width: 40px;
-    min-width: 40px;
+    width: var(--sensors-icon-width);
+    min-width: var(--sensors-icon-width);
     text-align: center;
     vertical-align: middle;
 }
 
 .sensor-card-checkbox {
-    width: 40px;
-    min-width: 40px;
+    width: var(--sensors-chbox-width);
+    min-width: var(--sensors-chbox-width);
     text-align: center;
     vertical-align: middle;
     cursor: pointer;
 }
 
 .sensor-card-name {
-    width: calc(100% - 40px - 40px - 100px);
-    min-width: calc(100% - 40px - 40px - 100px);
+    width: calc(100% - var(--sensors-icon-width) - var(--sensors-chbox-width) - var(--sensors-values-width));
+    min-width: calc(100% - var(--sensors-icon-width) - var(--sensors-chbox-width) - var(--sensors-values-width));
 }
 
 .sensor-card-values {
-    width: 100px;
-    min-width: 100px;
+    width: var(--sensors-values-width);
+    min-width: var(--sensors-values-width);
 }
 
 .sensor-card-value {
@@ -392,6 +394,25 @@ html, body {
     content: "# ";
 }
 
+/* Scrollbars --------------------------------------------------------------- */
+
+#sensors-data-list::-webkit-scrollbar-track, #logs-list::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+#sensors-data-list::-webkit-scrollbar, #logs-list::-webkit-scrollbar {
+	width: 5px;
+	background-color: #F5F5F5;
+}
+
+#sensors-data-list::-webkit-scrollbar-thumb, #logs-list::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: var(--pal-600);
+}
+
 /* Logs --------------------------------------------------------------------- */
 #logs-list {
     height: 100%;
@@ -403,23 +424,6 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-}
-
-#logs-list::-webkit-scrollbar-track {
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	border-radius: 10px;
-	background-color: #F5F5F5;
-}
-
-#logs-list::-webkit-scrollbar {
-	width: 12px;
-	background-color: #F5F5F5;
-}
-
-#logs-list::-webkit-scrollbar-thumb {
-	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: var(--pal-800);
 }
 
 #logs-list div {
