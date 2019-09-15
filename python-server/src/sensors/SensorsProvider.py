@@ -65,6 +65,8 @@ class SensorsProvider:
             HMC5883LSensor_ok, HMC5883LSensor = SensorsProvider.try_import_sensor_module('src.sensors.HMC5883LSensor', 'HMC5883LSensor')
             BMP180Sensor_ok, BMP180Sensor     = SensorsProvider.try_import_sensor_module('src.sensors.BMP180Sensor', 'BMP180Sensor')
             DHT22Sensor_ok, DHT22Sensor       = SensorsProvider.try_import_sensor_module('src.sensors.DHT22Sensor', 'DHT22Sensor')
+            MPU6050Sensor_ok, MPU6050Sensor = SensorsProvider.try_import_sensor_module('src.sensors.MPU6050Sensor', 'MPU6050Sensor')
+            NEO6MGPSSensor_ok, NEO6MGPSSensor = SensorsProvider.try_import_sensor_module('src.sensors.NEO6MGPSSensor', 'NEO6MGPSSensor')
 
             if W1ThermSensor_ok:
                 # All 1wire DS18B20 temperature sensors
@@ -78,7 +80,8 @@ class SensorsProvider:
             if HMC5883LSensor_ok: SensorsProvider.__add_sensor(HMC5883LSensor, sensors, 'compass', logger)
             if BMP180Sensor_ok:   SensorsProvider.__add_sensor(BMP180Sensor, sensors, 'barometer', logger)
             if DHT22Sensor_ok:    SensorsProvider.__add_sensor(DHT22Sensor, sensors, 'humidity and temperature', logger)
-            # I2C sensors (TODO: add more I2C sensors)
+            if MPU6050Sensor_ok:    SensorsProvider.__add_sensor(MPU6050Sensor, sensors, 'accelerometer', logger)
+            if NEO6MGPSSensor_ok:    SensorsProvider.__add_sensor(NEO6MGPSSensor, sensors, 'gps', logger)
 
         else:
             sensors.extend([SensorsProvider.FakeTemperatureSensor(53245), SensorsProvider.FakeTemperatureSensor(62346),

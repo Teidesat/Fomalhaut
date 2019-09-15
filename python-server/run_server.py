@@ -6,7 +6,11 @@ its main function is to monitor them using the data provided by the different se
 and send the data to the control panel for storage and further analysis.
 
 Prerequisites:
-    - Raspberry Pi with a recent version of Raspbian and 1-wire and I2C interfaces enabled (sudo raspi-config)
+    - Raspberry Pi with a recent version of Raspbian
+
+    - 1-wire and I2C interfaces enabled (sudo raspi-config)
+
+    - Serial interface disabled and SPI interface enabled (sudo raspi-config)
 
     - Python 3.4+ with pip3 (apt install python3-pip)
 
@@ -22,9 +26,13 @@ Prerequisites:
 
         - Install media codecs (apt install libavdevice-dev libavfilter-dev libopus-dev libvpx-dev)
 
-        - Install aiohttp, aiohttp_index, aiortc and opencv-python packages (pip3 install aiohttp aiohttp_index aiortc)
+        - Install aiohttp, aiohttp_index, aiortc and opencv-python packages (pip3 install aiohttp aiohttp_index aiortc opencv-python)
+
+        - Install gpsd gpsd-clients and python-gps packages (apt install gpsd gpsd-clients python-gps)
 
         - Install colorama package (pip3 install colorama)
+
+        - Install serial and pynmea2 package (pip3 install serial pynmea2)
 
 The following w1 therm sensor devices are supported:
     - DS18S20
@@ -33,7 +41,11 @@ The following w1 therm sensor devices are supported:
     - DS28EA00
     - DS1825/MAX31850K
 
-The humidity and temperature sensor DHT22 and I2C sensors are also supported.
+The humidity and temperature sensor DHT22, I2C sensors and serial GPS(1) are also supported.
+
+(1): to use the GPS the serial port must be open and the GPSD service must be running before the execution of the monitor server:
+- Start the serial port: stty -F /dev/ttyAMA0 9600
+- Start GPSD: sudo gpsd /dev/ttyAMA0 -F /var/run/gpsd.sock
 
 Authors: Andrés García Pérez (teidesat11@ull.edu.es), Jorge Sierra Acosta (teidesat06@ull.edu.es)
 """
@@ -60,18 +72,16 @@ def on_new_frame_listener(ret, frame, server):
     server.add_frame_to_queue(frame)
 
 
-def on_new_message_listener(message, monitor, analyzer, server):
-    request_id = message['request_id'] if ('request_id' in message.keys()) else None
-
+def on_new_message_listener(message, request_id, monitor, analyzer, server):
     if message['type'] == 'cmd':
         if message['cmd'] == 'start_monitor':
             monitor.start()
-            server.send_to_all('"ok"', request_id)
+            server.send_to_request_id('"ok"', request_id)
         elif message['cmd'] == 'is_monitor_running':
-            server.send_to_all('"' + str(monitor.is_running()) + '"', request_id)
+            server.send_to_request_id('"' + str(monitor.is_running()) + '"', request_id)
         elif message['cmd'] == 'stop_monitor':
             monitor.stop()
-            server.send_to_all('"ok"', request_id)
+            server.send_to_request_id('"ok"', request_id)
 
     elif message['type'] == 'set':
         if message['data'] == 'camera_id':
@@ -79,15 +89,15 @@ def on_new_message_listener(message, monitor, analyzer, server):
 
     elif message['type'] == 'get':
         if message['data'] == 'video_stats':
-            server.send_to_all(analyzer.get_stats(), request_id)
+            server.send_to_request_id(analyzer.get_stats(), request_id)
 
         elif message['data'] == 'available_cameras':
-            server.send_to_all(analyzer.get_available_cameras(), request_id)
+            server.send_to_request_id(analyzer.get_available_cameras(), request_id)
 
         elif message['data'] == 'sensors_data':
             sensors_data = monitor.get_last_sensors_data()
             if not monitor.is_running() or sensors_data is None:
-                server.send_to_all({}, request_id)
+                server.send_to_request_id({}, request_id)
             else:
                 parsed_sensors_data = []
                 for sensor_data in sensors_data:
@@ -97,14 +107,16 @@ def on_new_message_listener(message, monitor, analyzer, server):
                         'type': sensor_data.type,
                         'value': sensor_data.value
                     })
-                server.send_to_all(parsed_sensors_data, request_id)
+                server.send_to_request_id(parsed_sensors_data, request_id)
     else:
-        server.send_to_all('"Unkown message or command"', request_id)
+        server.send_to_request_id('"Unknown message or command"', request_id)
+
 
 def wait_for_server_close(server):
     time.sleep(1)
     while server.is_running():
         time.sleep(1)
+
 
 def start_server(simulate, period, ip, port, resolution, automatic_start):
     monitor  = MonitorService(simulate=simulate, period=period)
@@ -113,7 +125,7 @@ def start_server(simulate, period, ip, port, resolution, automatic_start):
 
     logger.on_new_log_listener     = lambda message: on_new_log_listener(message, server)
     analyzer.on_new_frame_listener = lambda ret, frame: on_new_frame_listener(ret, frame, server)
-    server.on_new_message_listener = lambda message: on_new_message_listener(message, monitor, analyzer, server)
+    server.on_new_message_listener = lambda message, request_id: on_new_message_listener(message, request_id, monitor, analyzer, server)
 
     server.start()
     if automatic_start:
@@ -131,6 +143,7 @@ def start_server(simulate, period, ip, port, resolution, automatic_start):
     signal.signal(signal.SIGINT, terminate)
     signal.signal(signal.SIGTERM, terminate)
     wait_for_server_close(server)
+
 
 def main():
     parser = argparse.ArgumentParser(description='Monitor server.')

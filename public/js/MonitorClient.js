@@ -17,8 +17,6 @@ class MonitorClient {
         this.onVideoReceived       = console.log;
         this.onMessageReceived     = console.log;
 
-        this.MAX_ID = 99999999;
-        this.request_id = 0;
         this.request_queue = [];
     }
 
@@ -27,8 +25,7 @@ class MonitorClient {
         if (this.pc === null || this.pc === undefined) {
             this.status = 'disconnected';
             console.log(this.status);
-        }
-        else {
+        } else {
             let gState = this.pc.iceGatheringState;
             let cState = this.pc.iceConnectionState;
             let sState = this.pc.signalingState;
@@ -194,16 +191,12 @@ class MonitorClient {
 
     // -------------------------------------------------------------------------
     request(object, expect_response) {
-        if (++this.request_id > this.MAX_ID) {
-            this.request_id = 0;
-        }
-        object.request_id = this.request_id;
+        object.request_id = this.__uidv4();
 
         return new Promise((resolve, reject) => {
             if (!this.dc) {
                 reject(Error('Can\'t retrieve video stats, data channel is closed'))
-            }
-            else {
+            } else {
                 if (expect_response) {
                     this.request_queue.push({
                         'request_id': object.request_id,
@@ -224,7 +217,7 @@ class MonitorClient {
             this.onMessageReceived(msg);
             return;
         }
-        // Mensaje is a response
+        // Message is a response
         for (var i = this.request_queue.length - 1; i >= 0; i--) {
             if (this.request_queue[i].request_id === msg.request_id) {
                 this.request_queue[i].callback(msg.payload);
@@ -232,7 +225,13 @@ class MonitorClient {
                 return;
             }
         }
-        // Mensaje is a response but id is not found
+        // Message is a response but id is not found
         Error('Message received as a response with id ' + msg.request_id + ' but id was not found: ' + JSON.stringify(msg))
+    }
+
+    __uidv4() {
+        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        )
     }
 }
