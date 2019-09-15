@@ -44,6 +44,12 @@
 
     - Tracking, todo...
 
+    - When the Server is receiving the frames through the WebRTCServer.CameraPreview class, the function recv() should return an av.frame which must
+    contain the pts and time_base properties. Currently these properties are set using the av.frame properties from the super class VideoStreamTrack which
+    is not guaranteed to be correct. The pts and time_base properties should be independent from the VideoStreamTrack class.
+
 - STK
 
 - Update description with the requirements to install aiortc for python in windows
+
+- Server does not properly close (Stream does not end while waiting for frames?)
