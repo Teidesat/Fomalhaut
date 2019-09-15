@@ -11,7 +11,7 @@ from src.services.BaseService import BaseService
 class CameraService(BaseService):
 
     def __init__(self, on_new_frame_target_fps=0):
-        super().__init__(service_name="Camera")
+        super().__init__(service_name='Camera')
         self.on_new_frame_listener = None
         self.__stats = {}
         self.__lock = Lock()
@@ -19,10 +19,15 @@ class CameraService(BaseService):
         # Camera
         self.__cap = cv2.VideoCapture(0)
         self.__target_fps = self.__cap.get(cv2.CAP_PROP_FPS)
+        self.__default_frame = cv2.imread('assets/default_Frame.png')
+        self.__default_target_fps = 30
+
+        if not self.__cap.isOpened():
+            logger.warn('Could not open video capture device')
+            self.__target_fps = self.__default_target_fps
 
         # FPS control
         self.__fps = FPSMeter()
-        self.__target_fps = -1
         self.__next_frame_ms = -1
         self.__on_new_frame_next_ms = -1
         self.__on_new_frame_target_fps = on_new_frame_target_fps
@@ -45,12 +50,17 @@ class CameraService(BaseService):
         t0 = time.time()
         ret, frame = self.__cap.read()
 
-        if ret == False:
-            raise Exception('TODO: No more frames !')
-
-        # Process frame
+        # ret == False means that camera was unexpectedly disconnected !
+        # Pick the default "no camera" message frame if that's the case
+        # otherwise process the frame normally
         t1 = time.time()
-        self.__process_frame(frame)
+        if ret == False:
+            if self.__cap.isOpened():
+                self.__target_fps = self.__default_target_fps
+                self.__cap.release()
+            frame = self.__default_frame
+        else:
+            self.__process_frame(frame)
 
         # Wait time to sync frame
         t2 = time.time()
