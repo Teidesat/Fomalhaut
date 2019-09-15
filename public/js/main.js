@@ -142,6 +142,7 @@ function addLog(value) {
 // Sensors ---------------------------------------------------------------------
 let sensorsDataList = document.getElementById('sensors-data-list');
 let sensorsData = {};
+let timestamps = [];
 let MAX_ARRAY_SIZE = 30;
 let UNCHECKED_ICON = '<i class="material-icons">radio_button_unchecked</i>';
 let CHECKED_ICON = '<i class="material-icons">radio_button_checked</i>';
@@ -193,16 +194,9 @@ function pickColor(type, opacity=1) {
     return 'rgba(50, 50, 50,' + opacity + ')';
 }
 
-function getUnits(type) {
-    if (type === 'temperature') return 'ºC';
-    if (type === 'humidity')    return '%';
-    if (type === 'voltage')     return 'V';
-
-    return '';
-}
-
 function newDataSensor(sensor) {
-    let sensorData = sensorsData[sensor.sensor_id];
+    let ID = sensor.sensor_id + sensor.type;
+    let sensorData = sensorsData[ID];
     let card   = null;
     let icon   = null;
     let name   = null;
@@ -214,11 +208,12 @@ function newDataSensor(sensor) {
     let time   = null;
 
     if (!sensorData) {
-        sensorsData[sensor.sensor_id] = {
-            'x': [], 'y': [],
-            'type': sensor.type
+        sensorsData[ID] = {
+            'values': [],
+            'type': sensor.type,
+            'unit': sensor.unit,
         };
-        sensorData = sensorsData[sensor.sensor_id];
+        sensorData = sensorsData[ID];
 
         card   = document.createElement('DIV');
         icon   = document.createElement('DIV');
@@ -228,9 +223,9 @@ function newDataSensor(sensor) {
         id     = document.createElement('DIV');
         type   = document.createElement('DIV');
         value  = document.createElement('DIV');
-        time   = document.createElement('DIV');
+        //time   = document.createElement('DIV');
 
-        card.id = 'sensor-card-' + sensor.sensor_id;
+        card.id = 'sensor-card-' + ID;
         card.classList.add('sensor-card');
         icon.classList.add('sensor-card-icon');
         name.classList.add('sensor-card-name');
@@ -239,10 +234,10 @@ function newDataSensor(sensor) {
         id.classList.add('sensor-card-id');
         type.classList.add('sensor-card-type');
         value.classList.add('sensor-card-value');
-        time.classList.add('sensor-card-time');
+        //time.classList.add('sensor-card-time');
         icon.innerHTML = '<img src="' + getTypeIcon(sensor.type) + '" />';
         chbox.innerHTML = UNCHECKED_ICON;
-        chbox.onclick = () => setChartData(sensor.sensor_id);
+        chbox.onclick = () => setChartData(ID);
 
         card.appendChild(icon);
         card.appendChild(name);
@@ -250,11 +245,11 @@ function newDataSensor(sensor) {
         card.appendChild(chbox);
         name.appendChild(type);
         name.appendChild(id);
+        //values.appendChild(time);
         values.appendChild(value);
-        values.appendChild(time);
         sensorsDataList.appendChild(card);
     } else {
-        card   = document.getElementById('sensor-card-' + sensor.sensor_id);
+        card   = document.getElementById('sensor-card-' + ID);
         // icon =
         name   = getFirstChildByClassName(card, "sensor-card-name");
         values = getFirstChildByClassName(card, "sensor-card-values");
@@ -265,27 +260,34 @@ function newDataSensor(sensor) {
         time   = getFirstChildByClassName(values, "sensor-card-time");
     }
 
-    sensorValue = parseFloat(sensor.value)
-    sensorTimestamp = new Date(parseInt(sensor.timestamp)).toLocaleTimeString()
-
     id.innerHTML    = sensor.sensor_id;
     type.innerHTML  = sensor.type;
-    value.innerHTML = sensorValue.toFixed(2) + ' ' + getUnits(sensor.type);
-    time.innerHTML  = sensorTimestamp;
-
-    sensorData['y'].push(sensorValue)
-    sensorData['x'].push(sensorTimestamp)
-    if (sensorData['y'].length > MAX_ARRAY_SIZE) {
-        sensorData['y'] = sensorData['y'].slice(-MAX_ARRAY_SIZE, sensorData['y'].length);
-        sensorData['x'] = sensorData['x'].slice(-MAX_ARRAY_SIZE, sensorData['x'].length);
-    }
+    value.innerHTML = sensorValueToStr(sensor.value, sensor.unit);
+    sensorData['values'].push(sensor.value)
 
     if (Object.keys(sensorsData).length == 1) {
         chbox.innerHTML = CHECKED_ICON;
-        setChartData(sensor.sensor_id);
-    } else if (sensor.sensor_id === activeSensorId) {
-        setChartData(sensor.sensor_id, false);
+        setChartData(ID);
+    } else if (ID === activeSensorId) {
+        setChartData(ID, false);
     }
+}
+
+function sensorValueToStr(value, unit) {
+    if (Array.isArray(value)) return vectorToStr(value, unit, 2);
+    if (isNaN(value)) return value + ' ' + unit;
+    return value.toFixed(2) + ' ' + unit;
+}
+
+let VECTOR = 'xyzwt'
+function vectorToStr(vector, unit, toFixed=-1) {
+    txt = '';
+    for (let i = 0; i < vector.length; ++i) {
+        n = toFixed >= 0 ? vector[i].toFixed(toFixed) : vector[i];
+        s = n < 0 ? '' : '+';
+        txt += `<span class='sensor-card-coord'>${VECTOR[i]}:</span> ${s}${n} ${unit}<br>`;
+    }
+    return txt;
 }
 
 function setChartData(sensorId, animation=true) {
@@ -301,10 +303,10 @@ function setChartData(sensorId, animation=true) {
 
     let sensorData = sensorsData[sensorId];
     sensorsChart.data = {
-        labels: sensorData['x'],
+        labels: timestamps,
         datasets: [{
-            label: capitalize(sensorData['type']) + ' (' + getUnits(sensorData['type']) + ')',
-            data: sensorData['y'],
+            label: capitalize(sensorData['type']) + ' (' + sensorData['unit'] + ')',
+            data: sensorData['values'],
             backgroundColor: pickColor(sensorData['type'], 0.2),
             borderColor: pickColor(sensorData['type'], 1),
             borderWidth: 1
@@ -319,7 +321,33 @@ function setChartData(sensorId, animation=true) {
 
 function updateSensors() {
     monitorClient.get('sensors_data')
-        .then(data => data.forEach(newDataSensor))
+        .then(data => {
+            timestamps.push(new Date(data.timestamp).toLocaleTimeString())
+            data.sensors.forEach(sensor => {
+                // If the sensor measures different features, just add
+                // a card for each feature
+                if (Array.isArray(sensor.type)) {
+                    for (let i = 0; i < sensor.type.length; ++i) {
+                        newDataSensor({
+                            sensor_id: sensor.sensor_id,
+                            timestamp: sensor.timestamp,
+                            type:      sensor.type[i],
+                            value:     sensor.value[i],
+                            unit:      sensor.unit[i],
+                        });
+                    }
+                } else {
+                    newDataSensor(sensor);
+                }
+
+                if (timestamps.length > MAX_ARRAY_SIZE) {
+                    timestamps = timestamps.slice(-MAX_ARRAY_SIZE, timestamps.length);
+                    for (const [ sensorId, sensorData ] of Object.entries(sensorsData)) {
+                        sensorsData[sensorId]['values'] = sensorData['values'].slice(-MAX_ARRAY_SIZE, sensorData['values'].length);
+                    }
+                }
+            });
+        })
         .catch(console.log)
 }
 
@@ -330,7 +358,7 @@ let i1 = null;
 monitorClient.onDCOpen = () => {
     monitorClient.cmd('is_monitor_running')
         .then(result => {
-            result = result.toLowerCase() == '"true"'; // To bool
+            result = result.toLowerCase() == '"true"'; // String to bool
             if (result) {
                 i0 = setInterval(updateSensors, 1500);
             }
@@ -346,7 +374,7 @@ monitorClient.onDCClose = () => {
 
 function startMonitor() {
     monitorClient.cmd('start_monitor')
-        .then(() => i0 = setInterval(updateSensors, 1500)) // Returns ok
+        .then(() => i0 = setInterval(updateSensors, 3000)) // Returns ok
         .catch(console.error)
 }
 

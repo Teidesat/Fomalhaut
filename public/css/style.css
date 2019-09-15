@@ -5,15 +5,16 @@
     --top-bar-padding: 10px;
     --top-bar-logo-height: 15px;
     --top-bar-logo-padding-left: 10px;
+    --bottom-bar-height: 20px;
     --server-bar-height: 40px;
     --server-bar-padding-v: 5px;
     --server-bar-padding-h: 20px;
     --content-padding: 20px;
-    --content-height: calc(100% - var(--top-bar-height) - var(--server-bar-height));
+    --content-height: calc(100% - var(--top-bar-height) - var(--server-bar-height) - var(--bottom-bar-height));
     --separation: 5px;
     --left-bar-width: 40px;
     --left-bar-padding: 5px;
-    --sensors-width: 280px;
+    --sensors-width: 320px;
     --sensors-options-height: 50px;
 
     --pal-900: #0b0e13;
@@ -118,6 +119,51 @@ html, body {
 
 .top-bar-left {
     padding-left: var(--top-bar-logo-padding-left);
+}
+
+/* Top bar ------------------------------------------------------------------ */
+
+.bottom-bar {
+    height: var(--bottom-bar-height);
+    width: 100%;
+    display: flex;
+}
+
+.bottom-bar-content {
+    height: 100%;
+    width: calc(100% - var(--left-bar-width));
+    background-color: var(--pal-200);
+    display: flex;
+}
+
+.bottom-bar-color-mockup {
+    height: 100%;
+    width: calc(var(--left-bar-width));
+    background-color: var(--pal-800);
+}
+
+.log-peak {
+    width: 100%;
+    height: 100%;
+    color: #000;
+    display: flex;
+    align-items: center;
+    padding-left: var(--separation);
+    padding-right: var(--separation);
+}
+
+.log-peak i {
+    width: 20px;
+    font-size: 1em;
+    margin-right: var(--separation);
+}
+
+.log-peak div {
+    font-size: 0.7em;
+    display: inline-block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 /* Server  ------------------------------------------------------------------ */
@@ -319,24 +365,25 @@ html, body {
 }
 
 .sensor-card-name {
-    width: calc(100% - 40px - 40px - 80px);
-    min-width: calc(100% - 40px - 40px - 80px);
+    width: calc(100% - 40px - 40px - 100px);
+    min-width: calc(100% - 40px - 40px - 100px);
 }
 
 .sensor-card-values {
-    width: 80px;
-    min-width: 80px;
+    width: 100px;
+    min-width: 100px;
 }
 
 .sensor-card-value {
-    font-size: 0.9em;
+    font-size: 0.8em;
 }
 
 .sensor-card-type {
     text-transform: capitalize;
+    font-size: 0.8em;
 }
 
-.sensor-card-time, .sensor-card-id {
+.sensor-card-time, .sensor-card-id, .sensor-card-coord {
     color: #555;
     font-size: 0.8em;
 }

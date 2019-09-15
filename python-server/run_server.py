@@ -58,6 +58,8 @@ import signal
 import time
 import json
 
+from copy import deepcopy
+
 from src.utils.Logger import default_logger as logger
 from src.services.MonitorService import MonitorService
 from src.services.CameraService import CameraService
@@ -96,18 +98,8 @@ def on_new_message_listener(message, request_id, monitor, analyzer, server):
 
         elif message['data'] == 'sensors_data':
             sensors_data = monitor.get_last_sensors_data()
-            if not monitor.is_running() or sensors_data is None:
-                server.send_to_request_id({}, request_id)
-            else:
-                parsed_sensors_data = []
-                for sensor_data in sensors_data:
-                    parsed_sensors_data.append({
-                        'timestamp': sensor_data.timestamp,
-                        'sensor_id': sensor_data.sensor_id,
-                        'type': sensor_data.type,
-                        'value': sensor_data.value
-                    })
-                server.send_to_request_id(parsed_sensors_data, request_id)
+            server.send_to_request_id(deepcopy(sensors_data), request_id)
+
     else:
         server.send_to_request_id('"Unknown message or command"', request_id)
 

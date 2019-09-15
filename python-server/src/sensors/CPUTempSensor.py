@@ -13,3 +13,6 @@ class CPUTempSensor(BaseSensor):
 
     def get_type(self):
         return 'temperature'
+
+    def get_unit(self):
+        return 'ºC'

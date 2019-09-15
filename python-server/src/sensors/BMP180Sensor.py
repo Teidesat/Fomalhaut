@@ -96,4 +96,7 @@ class BMP180Sensor(I2CSensor):
         return 44330 * (1 - (p / self.sea_level_pressure)**(1/5.255))
 
     def get_type(self):
-        return 'barometer'
+        return ['temperature', 'pressure', 'altitude']
+
+    def get_unit(self):
+        return ['ºC', 'mb', 'm']

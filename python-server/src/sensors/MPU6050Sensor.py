@@ -52,7 +52,7 @@ class MPU6050Sensor(I2CSensor):
         accel = self.__get_accel_data()
         gyro = self.__get_gyro_data()
 
-        return [accel, gyro, temp]
+        return accel + gyro + [temp]
 
     def parse_data(self, data):
         return super().parse_data(data)
@@ -63,7 +63,12 @@ class MPU6050Sensor(I2CSensor):
         self.__set_accel_range(self.ACCEL_RANGE_4G)
 
     def get_type(self):
-        return 'accelerometer'
+        return ['accelerometer_x', 'accelerometer_y', 'accelerometer_z',
+                'gyro_x', 'gyro_y', 'gyro_z',
+                'temperature']
+
+    def get_unit(self):
+        return ['g', 'g', 'g', '°', '°', '°', 'ºC']
 
     def __read_i2c_word(self, register):
         high = self.get_bus().read_byte_data(self.address, register)
@@ -124,12 +129,12 @@ class MPU6050Sensor(I2CSensor):
         z = z / accel_scale_modifier
 
         if g is True:
-            return {'x': x, 'y': y, 'z': z}
+            return [x, y, z]
         elif g is False:
             x = x * self.GRAVITIY_MS2
             y = y * self.GRAVITIY_MS2
             z = z * self.GRAVITIY_MS2
-            return {'x': x, 'y': y, 'z': z}
+            return [x, y, z]
 
     def __set_gyro_range(self, gyro_range):
         self.get_bus().write_byte_data(self.address, self.GYRO_CONFIG, gyro_range)
@@ -173,4 +178,4 @@ class MPU6050Sensor(I2CSensor):
         y = y / gyro_scale_modifier
         z = z / gyro_scale_modifier
 
-        return {'x': x, 'y': y, 'z': z}
+        return [x, y, z]

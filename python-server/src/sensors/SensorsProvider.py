@@ -1,44 +1,8 @@
-from random import uniform
-from src.sensors.BaseSensor import BaseSensor
 from src.utils.Logger import default_logger as logger
+from src.sensors.FakeSensors import default_fakes
 
 
 class SensorsProvider:
-    # ----------- ONLY FOR SIMULATION -----------
-    class FakeTemperatureSensor(BaseSensor):
-
-        def __init__(self, sensor_id):
-            super().__init__(sensor_id)
-
-        def get_value(self):
-            return uniform(12, 60)
-
-        def get_type(self):
-            return 'temperature'
-
-    class FakeHumiditySensor(BaseSensor):
-
-        def __init__(self, sensor_id):
-            super().__init__(sensor_id)
-
-        def get_value(self):
-            return [uniform(20, 95), uniform(12, 60)]
-
-        def get_type(self):
-            return 'humidity'
-
-    class FakeVoltageSensor(BaseSensor):
-
-        def __init__(self, sensor_id):
-            super().__init__(sensor_id)
-
-        def get_value(self):
-            return uniform(1, 2)
-
-        def get_type(self):
-            return 'voltage'
-
-    # -------------------------------------------
 
     @staticmethod
     def try_import_sensor_module(module_name, sensor_name):
@@ -84,8 +48,7 @@ class SensorsProvider:
             if NEO6MGPSSensor_ok:    SensorsProvider.__add_sensor(NEO6MGPSSensor, sensors, 'gps', logger)
 
         else:
-            sensors.extend([SensorsProvider.FakeTemperatureSensor(53245), SensorsProvider.FakeTemperatureSensor(62346),
-                            SensorsProvider.FakeVoltageSensor(51745), SensorsProvider.FakeHumiditySensor(32344)])
+            sensors.extend(default_fakes)
 
         return sensors
 

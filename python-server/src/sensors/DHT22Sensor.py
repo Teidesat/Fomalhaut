@@ -21,4 +21,7 @@ class DHT22Sensor(BaseSensor):
             return [humidity, temp]
 
     def get_type(self):
-        return 'humidity'
+        return ['humidity', 'temperature']
+
+    def get_unit(self):
+        return ['%', 'ºC']

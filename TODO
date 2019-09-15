@@ -13,6 +13,9 @@
     - Automatic send start monitoring command
     - Automatic send start camera command
 
+- Sensors:
+    Alerts when a sensor is out of range
+
 - Camera:
     - Currently, the first available camera (index=0) is the only one selected when the service starts:
         - Option to select a camera (cv2.VideoCapture(index), where index represent the camera)

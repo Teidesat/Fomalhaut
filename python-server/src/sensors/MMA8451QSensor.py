@@ -32,3 +32,6 @@ class MMA8451QSensor(I2CSensor):
 
     def get_type(self):
         return 'accelerometer'
+
+    def get_unit(self):
+        return 'g'

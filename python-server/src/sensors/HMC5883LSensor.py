@@ -32,3 +32,6 @@ class HMC5883LSensor(I2CSensor):
 
     def get_type(self):
         return 'compass'
+
+    def get_unit(self):
+        return '°'

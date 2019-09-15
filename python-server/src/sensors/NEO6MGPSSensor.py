@@ -13,9 +13,13 @@ class NEO6MGPSSensor(BaseSensor):
         str = self.__serialPort.readline()
         if str.find('GGA') > 0:
             msg = pynmea2.parse(str)
-            return [msg.lat, msg.lat_dir, msg.lon, msg.lon_dir, msg.altitude, msg.altitude_units]
+            assert(msg.altitude_units == 'M')
+            return [str(msg.lat) + msg.lat_dir, str(msg.lon) + msg.lon_dir, msg.altitude]
 
         return []
 
     def get_type(self):
-        return 'gps'
+        return ['latitude', 'longitude', 'altitude']
+
+    def get_unit(self):
+        return ['', '', , 'm']
