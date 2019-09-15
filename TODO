@@ -1,9 +1,49 @@
 - Make sure messages are only sent back to the corresponding client
-- Red marker to let user know there is a new Log
-- Last log shows at the bottom
-- Start / Stop local Server
-- Config page:
+
+- Logs:
+    - Red marker to let user know there is a new Log
+    - Last log shows at the bottom
+    - Logger as a service, so messages may not be written at the same time if two threads log at the same time
+
+- Server interface:
+    - Start / Stop local Server
+
+- Config page (Preferences):
     - Automatic start local server always
     - Automatic send start monitoring command
     - Automatic send start camera command
-- Logger as a service, so messages may not be written at the same time if two threads log at the same time
+
+- Camera:
+    - Currently, the first available camera (index=0) is the only one selected when the service starts:
+        - Option to select a camera (cv2.VideoCapture(index), where index represent the camera)
+        - When selecting the camera, display the name of each connected device (cross platform)
+        - When the camera is unplugged, there is no way to reconnect it, but restarting the service
+
+    - Add the option to save a frame as png in the server
+    - Add the option to download the captured png from the server
+    - Add the option to directly download the frame as png in the client without permanently storing the png in the server
+
+    - Add the same three options for raw video capture.
+
+    - In order for the program to stream video from a server to the desktop application (both may not be run in the same machine)
+    the video stream must be compressed (VP8, VP9, H264, etc...) By default in the negotiation with most browsers including Electron
+    which uses chromium, the codec VP8 is chosen. The problem is that this codec reduces the quality of the video considerably
+    (depending on the context) but is much lighter for the CPU to encode.
+
+    With the function __parseSdp, in MonitorClient.js the sdp is parsed in order to offer only the H264 codec (m[2] == 'H264'),
+    which forces a better video quality at the cost of higher CPU usage in the server. This may not be the best depending on the
+    case and the VP8 codec may be preferred.
+
+    An option should be added to reconnect(?) or change the codec to VP8 or H264 on the fly.
+
+    - Add a full set of configuration options with a GUI for the default camera interface (VideoCapture) using self.__cap.get(...) and self.__cap.set(...)
+
+    - Add the option to select a specific camera from a vendor and make the configuration use the specific library for that camera model configuration.
+        - The camera that's currently being used in the ground segment is the DCC1545M (https://www.thorlabs.com/thorproduct.cfm?partnumber=DCC1545M)
+        for which exists a very rich library of methods to interface with the camera for python and c++.
+
+    - Tracking, todo...
+
+- STK
+
+- Update description with the requirements to install aiortc for python in windows
