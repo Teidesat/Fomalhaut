@@ -17,6 +17,7 @@
     - Alerts when a sensor is out of range
     - Options to change the Monitor update period (on the client and on the server)
     - Options to change the maximum plot length (on the client)
+    - Option to download last (current) log file
 
 - Camera:
     - Currently, the first available camera (index=0) is the only one selected when the service starts:
