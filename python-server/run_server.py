@@ -66,6 +66,9 @@ from src.services.CameraService import CameraService
 from src.WebRTCServer import WebRTCServer
 
 
+__VERSION__ = '0.0.0-alpha' # Major, Minor, Patch
+
+
 def on_new_log_listener(message, server):
     server.send_to_all(json.dumps(message))
 
@@ -138,6 +141,7 @@ def start_server(simulate, period, ip, port, resolution, automatic_start):
 
 
 def main():
+    print('Version %s' % __VERSION__)
     parser = argparse.ArgumentParser(description='Monitor server.')
     parser.add_argument('-d', '--debug', action='store_true', help='enable debug mode')
     parser.add_argument('-t', '--trace', action='store_true', help='enable trace mode')

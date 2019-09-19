@@ -1,5 +1,5 @@
 - Make sure messages are only sent back to the corresponding client
-- Update README
+- Update README: Separate optional prerequisites (for sensors)
 
 - Logs:
     - Red marker to let user know there is a new Log
