@@ -63,12 +63,10 @@ class MPU6050Sensor(I2CSensor):
         self.__set_accel_range(self.ACCEL_RANGE_4G)
 
     def get_type(self):
-        return ['accelerometer_x', 'accelerometer_y', 'accelerometer_z',
-                'gyro_x', 'gyro_y', 'gyro_z',
-                'temperature']
+        return ['accelerometer', 'gyro', 'temperature']
 
     def get_unit(self):
-        return ['g', 'g', 'g', '°', '°', '°', 'ºC']
+        return ['g', '°', 'ºC']
 
     def __read_i2c_word(self, register):
         high = self.get_bus().read_byte_data(self.address, register)
