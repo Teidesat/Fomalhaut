@@ -29,6 +29,7 @@ class WebRTCServer:
         def __init__(self, max_size=3):
             super().__init__()
             self.__frame_queue = Queue()
+            self.__last_frame = None
             self.__max_size = max_size
             self.__start = -1
 
@@ -38,18 +39,27 @@ class WebRTCServer:
             self.__frame_queue.put(frame)
 
         async def recv(self):
+            av_frame = None
             try:
                 super_frame = await super().recv() # TODO
-                frame = self.__frame_queue.get()
+                if self.__frame_queue.qsize() == 0:
+                    if self.__last_frame is None:
+                        av_frame = super_frame
+                    else:
+                        av_frame = self.__last_frame
+                else:
+                    frame = self.__frame_queue.get()
 
-                if self.__start == -1:
-                    self.__start = time.time()
+                    if self.__start == -1:
+                        self.__start = time.time()
 
-                av_frame = VideoFrame.from_ndarray(frame, format="bgr24")
-                av_frame.pts = super_frame.pts#time.time() - self.__start
-                av_frame.time_base = super_frame.time_base#fractions.Fraction(1, 1000)
+                    av_frame = VideoFrame.from_ndarray(frame, format="bgr24")
+                    av_frame.pts = super_frame.pts#time.time() - self.__start
+                    av_frame.time_base = super_frame.time_base#fractions.Fraction(1, 1000)
             except Exception as e:
                 print(e)
+
+            self.__last_frame = av_frame
             return av_frame
 
     def __init__(self, port=80, ip='localhost', resolution='640x480'):

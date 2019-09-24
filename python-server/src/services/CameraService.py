@@ -19,7 +19,7 @@ class CameraService(BaseService):
         # Camera
         self.__cap = cv2.VideoCapture(0)
         self.__target_fps = self.__cap.get(cv2.CAP_PROP_FPS)
-        self.__default_frame = cv2.imread('assets/default_Frame.png')
+        self.__default_frame = cv2.imread('assets/default_frame.png')
         self.__default_target_fps = 30
 
         if not self.__cap.isOpened():
@@ -54,7 +54,7 @@ class CameraService(BaseService):
         # Pick the default "no camera" message frame if that's the case
         # otherwise process the frame normally
         t1 = time.time()
-        if ret == False:
+        if not ret:
             if self.__cap.isOpened():
                 self.__target_fps = self.__default_target_fps
                 self.__cap.release()
@@ -66,7 +66,7 @@ class CameraService(BaseService):
         t2 = time.time()
         self.__sync_frame(1. / self.__target_fps)
 
-        # Frame Listenner
+        # Frame Listener
         t3 = time.time()
         self.__on_new_frame_skip(ret, frame)
 
