@@ -37,7 +37,7 @@ class SensorsProvider:
                 for i, sensor in enumerate(W1ThermSensor.get_available_sensors([W1ThermSensor.THERM_SENSOR_DS18B20])):
                     sensor = DS18B20Sensor(sensor_id='temperature %d' % i, sensor=sensor)
                     sensors.append(sensor)
-                    logger.info(logger, 'Loaded \'%s\' sensor...' % sensor.get_id())
+                    logger.info('Loaded \'%s\' sensor...' % sensor.get_id())
 
             if CPUTempSensor_ok:  SensorsProvider.__add_sensor(CPUTempSensor, sensors, 'CPU temperature', logger)
             if MMA8451QSensor_ok: SensorsProvider.__add_sensor(MMA8451QSensor, sensors, 'accelerometer', logger)
