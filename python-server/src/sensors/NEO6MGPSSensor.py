@@ -22,4 +22,4 @@ class NEO6MGPSSensor(BaseSensor):
         return ['latitude', 'longitude', 'altitude']
 
     def get_unit(self):
-        return ['', '', , 'm']
+        return ['', '', 'm']
