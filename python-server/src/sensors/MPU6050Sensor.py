@@ -52,7 +52,7 @@ class MPU6050Sensor(I2CSensor):
         accel = self.__get_accel_data()
         gyro = self.__get_gyro_data()
 
-        return accel + gyro + [temp]
+        return [accel, gyro, temp]
 
     def parse_data(self, data):
         return super().parse_data(data)
