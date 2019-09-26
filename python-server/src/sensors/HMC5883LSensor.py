@@ -37,4 +37,4 @@ class HMC5883LSensor(I2CSensor):
         return 'compass'
 
     def get_unit(self):
-        return 'gauss'
+        return 'miligauss'
