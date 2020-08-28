@@ -1,0 +1,42 @@
+-
+    const pages = [ // [Name, Icon-name, selected/disabled]
+        ['Satellite communications', 'satellite', ''],
+        ['Satellite location', 'globe-europe', ''],
+        ['Satellite or station sensors', 'microchip', 'selected'],
+        ['Station tracking', 'eye', 'disabled'],
+        ['Station encoder', 'lock', 'disabled'],
+        ['Station decoder', 'unlock', ''],
+        ['Configuration', 'sliders-h', ''],
+        ['Logs', 'comment-alt', ''],
+        ['About', 'question', ''],
+    ]
+
+doctype html
+html(lang='en')
+    head
+        title Fomalhaut
+        link(rel='stylesheet', type='text/css', href='css/main.css')
+        link(rel='stylesheet', type='text/css', href='assets/fontawesome-free-5.14.0-web/css/all.min.css')
+
+    body
+        .top-panel
+            .corner-icon
+                img(src='assets/fomalhaut_logo.png' alt='')
+            .top-panel-bar
+                .connection-status
+                    span: i(class=`fas fa-satellite-dish`)
+                    span Ground Station
+                    span.status-text-good Online
+                .connection-status
+                    span: i(class=`fas fa-satellite`)
+                    span Next Satellite Window
+                    span.status-text-info [ETA] 22:31:27 29 Aug 2020
+            .corner-options
+                .window-option: img(src='assets/window-close.png')
+                .window-option: img(src='assets/window-max.png')
+                .window-option: img(src='assets/window-min.png')
+        .left-panel
+            each pair in pages
+                .page-selector(class=`${pair[2]}` title=`${pair[0]}`)
+                    i(class=`fas fa-${pair[1]}`)
+                    .page-selector-line

@@ -1,0 +1,122 @@
+@font-face {
+  font-family: "RobotoRegular";
+  src: url("../assets/Roboto/Roboto-Regular.ttf");
+}
+@font-face {
+  font-family: "RobotoMonoRegular";
+  src: url("../assets/Roboto_Mono/static/RobotoMono-Regular.ttf");
+}
+@font-face {
+  font-family: "RobotoCondensedRegular";
+  src: url("../assets/Roboto_Condensed/RobotoCondensed-Regular.ttf");
+}
+html, body {
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  font-family: "RobotoRegular", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.status-text-good {
+  color: #C7FFC2;
+}
+
+.status-text-info {
+  color: #A3F4FF;
+}
+
+.top-panel {
+  width: 100%;
+  height: 65px;
+  background: #2C2C2C;
+}
+.top-panel .corner-icon {
+  float: left;
+  width: 65px;
+  height: 65px;
+  background: #212121;
+}
+.top-panel .corner-icon img {
+  width: calc(100% - 11px * 2);
+  height: calc(100% - 11px * 2);
+  margin: 11px;
+}
+.top-panel .top-panel-bar {
+  height: 100%;
+  float: left;
+  color: white;
+}
+.top-panel .top-panel-bar .connection-status {
+  float: left;
+  font-size: 10.5pt;
+  margin-left: 17px;
+  margin-top: 10px;
+  margin-right: 22px;
+  line-height: 20px;
+  vertical-align: middle;
+}
+.top-panel .top-panel-bar .connection-status span {
+  margin-left: 5px;
+}
+.top-panel .top-panel-bar .connection-status span:nth-child(3) {
+  font-family: "RobotoCondensedRegular", sans-serif;
+}
+.top-panel .corner-options {
+  float: right;
+  color: white;
+  margin-top: 8px;
+}
+.top-panel .corner-options .window-option {
+  margin-right: 5px;
+  width: 20px;
+  height: 20px;
+  float: right;
+  cursor: pointer;
+}
+.top-panel .corner-options .window-option img {
+  margin: 6px;
+}
+
+.left-panel {
+  height: calc(100% - 65px);
+  width: 65px;
+  background: #2C2C2C;
+}
+.left-panel .page-selector {
+  width: 100%;
+  height: 65px;
+  text-align: center;
+  cursor: pointer;
+}
+.left-panel .page-selector i {
+  color: white;
+  font-size: 21px;
+  line-height: 65px;
+  vertical-align: middle;
+}
+.left-panel .page-selector.disabled i {
+  color: #5E5E5E;
+}
+.left-panel .page-selector.selected {
+  background: #212121;
+  box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.2), inset -5px -5px 10px rgba(0, 0, 0, 0.2);
+}
+.left-panel .page-selector .page-selector-line {
+  opacity: 0;
+}
+.left-panel .page-selector.selected .page-selector-line {
+  opacity: 100%;
+  width: 45px;
+  height: 3px;
+  background: #A3F4FF;
+  border-radius: 65px;
+  margin-top: -10px;
+  margin-left: 10px;
+}
+
+/*# sourceMappingURL=main.css.map */

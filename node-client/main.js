@@ -12,6 +12,7 @@ function createWindow () {
     width: 1200,
     height: 800,
     frame: false,
+    icon: __dirname + '/../public/assets/icon.png',
     experimentalFeatures: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),

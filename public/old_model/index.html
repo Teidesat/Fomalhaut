@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/fonts.css" />
+    <link rel="stylesheet" href="css/switch.css" />
+    <title>TEIDESAT DESKTOP</title>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <img src="assets/teidesat-white.svg" />
+        </div>
+        <div class="top-bar-right">
+            <img src="assets/window-minimize.svg" alt="minimize" id="minimize-btn" />
+            <img src="assets/window-maximize.svg" alt="maximize" id="maximize-btn" />
+            <img src="assets/window-restore.svg" alt="restore" id="restore-btn" class="hidden" />
+            <img src="assets/close.svg" alt="close" id="close-btn" />
+        </div>
+    </div>
+
+    <div class="server-bar">
+        <div class="server-status">
+            <div id="server-status-indicator" class="server-status-color status-disconnected"></div>
+            <div id="server-status-name">Disconnected</div>
+        </div>
+        <div class="server-selector">
+            <input id="server-host" type="text" name="host" placeholder="localhost">
+            <div>:</div>
+            <input id="server-port" type="text" name="port" placeholder="9090">
+            <i id="server-connect-btn" class="material-icons circle-icon clickable no-selectable" onclick="connectMonitor()">power</i>
+            <i id="server-disconnect-btn" class="material-icons circle-icon no-selectable circle-icon-disabled" onclick="disconnectMonitor()">power_off</i>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+    <div class="left-bar no-selectable">
+        <div><i id="camera-icon" class="material-icons">camera</i></div>
+        <div><i id="sensors-icon" class="material-icons icon-disabled">memory</i></div>
+        <div><i id="logs-icon" class="material-icons icon-disabled">history</i></div>
+        <div><i id="info-icon" class="material-icons icon-disabled">info</i></div>
+    </div>
+    <div class="content">
+        <section id="camera-section" class="content-section">
+            <video id="camera-preview" autoplay></video>
+        </section>
+        <section id="logs-section" class="hidden content-section">
+            <div id="logs-list">
+                <div class="log-info"><i class="material-icons">info</i>hola</div>
+                <div class="log-debug"><i class="material-icons">info</i>(Debug) hola</div>
+                <div class="log-warning"><i class="material-icons">warning</i>warning</div>
+                <div class="log-error"><i class="material-icons">error</i>error</div>
+            </div>
+        </section>
+        <section id="sensors-section" class="content-section hidden">
+            <div class="sensors-section-flexbox"> <!-- display: flex must be set in a child, because hidden class uses dispaly: none -->
+                <div id="sensors-data-list"></div>
+                <div class="sensors-options-and-chart">
+                    <div class="sensors-options">
+                         <button type="button" onclick="startMonitor()">Start monitor</button>
+                         <button type="button" onclick="stopMonitor()">Stop monitor</button>
+                    </div>
+                    <div class="sensors-chart-container">
+                        <canvas id="sensors-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="info-section" class="content-section hidden">
+        </section>
+    </div>
+    </div>
+
+    <div class="bottom-bar">
+        <div class="bottom-bar-color-mockup"></div>
+        <div class="bottom-bar-content">
+            <div class="log-peak log-info">
+                <i class="material-icons">info</i><div>Server says hello</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="external/chart.js@2.8.0" charset="utf-8"></script>
+    <script src="js/colors.js" charset="utf-8"></script>
+    <script src="js/MonitorClient.js" charset="utf-8"></script>
+    <script src="js/main.js" charset="utf-8"></script>
+</body>
+</html>
