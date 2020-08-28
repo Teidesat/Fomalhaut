@@ -13,6 +13,8 @@ This software is designed as a general purpose cross-platform application for th
 will connect to the local server (`python-server`) by default or any other remote server (_note, for debugging purposes, the
 interface can be accessed through the browser_).
 
+![](docs/sample.png)
+
 Its currently implemented features range from:
   - Camera analysis
   - Satellite tracking

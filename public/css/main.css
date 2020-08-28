@@ -15,6 +15,7 @@ html, body {
   width: 100%;
   background-color: white;
   font-family: "RobotoRegular", sans-serif;
+  overflow: hidden;
 }
 
 * {
@@ -83,6 +84,7 @@ html, body {
 }
 
 .left-panel {
+  float: left;
   height: calc(100% - 65px);
   width: 65px;
   background: #2C2C2C;
@@ -117,6 +119,15 @@ html, body {
   border-radius: 65px;
   margin-top: -10px;
   margin-left: 10px;
+}
+
+.content {
+  position: absolute;
+  left: 65px;
+  top: 65px;
+  background: #f9f9f9;
+  width: calc(100% - 65px);
+  height: calc(100% - 65px);
 }
 
 /*# sourceMappingURL=main.css.map */

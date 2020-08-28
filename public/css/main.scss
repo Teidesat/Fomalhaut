@@ -4,6 +4,7 @@ $white-disabled: #5E5E5E;
 $status-good: #C7FFC2;
 $status-info: #A3F4FF;
 $cyan: #A3F4FF;
+$white-panel: #f9f9f9;
 $left-panel-w: 65px;
 $top-panel-h: 65px;
 $small-font: 10.5pt;
@@ -29,6 +30,7 @@ html, body {
   width: 100%;
   background-color: white;
   font-family: 'RobotoRegular', sans-serif;
+  overflow: hidden;
 }
 
 * {
@@ -111,6 +113,7 @@ html, body {
 }
 
 .left-panel {
+  float: left;
   height: calc(100% - #{$top-panel-h});
   width: $left-panel-w;
   background: $black-dark;
@@ -153,4 +156,13 @@ html, body {
       margin-left: ($left-panel-w - $line-w) / 2;
     }
   }
+}
+
+.content {
+  position: absolute;
+  left: $left-panel-w;
+  top: $top-panel-h;
+  background: $white-panel;
+  width: calc(100% - #{$left-panel-w});
+  height: calc(100% - #{$top-panel-h});
 }

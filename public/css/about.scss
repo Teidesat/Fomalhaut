@@ -1,0 +1,60 @@
+.content .content-about {
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+  display: block;
+  .central-text {
+    font-size: 13pt;
+    width: 50%;
+    max-width: 567.5px;
+    margin-left: auto;
+    margin-right: auto;
+    p {
+      text-align: justify;
+      text-justify: inter-word;
+      text-indent: 25px;
+      margin-bottom: 30px;
+    }
+  }
+  .about-logo {
+    width: 70%;
+    max-width: 794.5px;
+    margin-left: 15%;
+  }
+  .about-links {
+    position: absolute;
+    right: 50px;
+    bottom: 25px;
+    .button-link {
+      margin-top: 10px;
+      background-color: #ffffff;
+      cursor: pointer;
+      box-shadow:  6px 6px 12px #c7c7c7,
+      -6px -6px 12px #ffffff;
+      border-radius: 40px;
+      overflow: hidden;
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      & i {
+        font-size: 20px;
+        line-height: 40px;
+        vertical-align: middle;
+      }
+      &:active {
+        box-shadow: inset 6px 6px 10px 0 rgba(0, 0, 0, 0.2),
+        inset -6px -6px 10px 0 rgba(255, 255, 255, 0.5);
+      }
+
+      .github {
+        color: #555;
+      }
+      .website {
+        color: #7aefff;
+      }
+      .donations {
+        color: #ff7878;
+      }
+    }
+  }
+}

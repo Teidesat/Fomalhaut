@@ -1,2 +1,4 @@
- - [ ] Better tooltip
- - [ ] ...
+ - Better tooltip
+ - Teidesat logo for info
+ - Replace scrollbar
+ - Make links work in desktop version
