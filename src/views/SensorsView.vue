@@ -1,0 +1,1 @@
+<template>SensorsView.vue</template>

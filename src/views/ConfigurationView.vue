@@ -1,0 +1,1 @@
+<template>ConfigurationView.vue</template>

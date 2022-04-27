@@ -1,0 +1,1 @@
+<template>LocationView.vue</template>

@@ -1,4 +1,7 @@
-# fomalhaut-vue
+# Fomalhaut App
+## Implemented with Vue Cli 
+### by Fabio Bianchini Cano
+----
 
 ## Project setup
 ```

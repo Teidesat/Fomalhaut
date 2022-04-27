@@ -1,0 +1,1 @@
+<template>EncoderView.vue</template>

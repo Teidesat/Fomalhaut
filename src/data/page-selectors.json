@@ -1,0 +1,72 @@
+{
+  "familySelectors": [
+    {
+      "nameFamily": "satellite",
+      "symbol": "fas fa-satellite",
+      "pages": [
+        {
+          "title": "Satellite Communications",
+          "symbol": "fas fa-satellite",
+          "disabled": false,
+          "path": "/communications"
+        },
+        {
+          "title": "Satellite location",
+          "symbol": "fas fa-globe-europe",
+          "disabled": false,
+          "path": "/location"
+        },
+        {
+          "title": "Satellite or station sensors",
+          "symbol": "fas fa-microchip",
+          "disabled": false,
+          "path": "/sensors"
+        }
+      ]
+    },
+    {
+      "nameFamily": "station",
+      "symbol": "fas fa-computer",
+      "pages": [
+        {
+          "title": "Station tracking",
+          "symbol": "fas fa-eye",
+          "disabled": true,
+          "path": "/tracking"
+        },
+        {
+          "title": "Station encoder",
+          "symbol": "fas fa-lock",
+          "disabled": true,
+          "path": "/encoder"
+        },
+        {
+          "title": "Station decoder",
+          "symbol": "fas fa-unlock",
+          "disabled": false,
+          "path": "/decoder"
+        }
+      ]
+    }
+  ],
+  "lonelyPageSelectors": [
+    {
+      "title": "Configuration",
+      "symbol": "fas fa-sliders-h",
+      "disabled": false,
+      "path": "/configuration"
+    },
+    {
+      "title": "Logs",
+      "symbol": "fas fa-comment-alt",
+      "disabled": false,
+      "path": "/logs"
+    },
+    {
+      "title": "About",
+      "symbol": "fas fa-question",
+      "disabled": false,
+      "path": "/about"
+    }
+  ]
+}
