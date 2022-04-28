@@ -68,6 +68,7 @@ body {
   width: 65px;
   height: 65px;
   background: #212121;
+  /* position: fixed; */
 }
 .top-panel .corner-icon img {
   width: calc(100% - 11px * 2);

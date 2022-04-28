@@ -1,7 +1,14 @@
 <template>
+  BUG IMPOSSIBLE ACCESS TO DROPDOWN MENUS FROM HOMEVIEW
   <!-- <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> -->
   <TopPanel></TopPanel>
+  <!-- <div class="container">
+    <div class="row">
+      <div class="col"></div>
+      <div class="col-11"></div>
+    </div>
+  </div> -->
   <SidePanel></SidePanel>
   <router-view />
 </template>
@@ -11,7 +18,10 @@ import TopPanel from "./components/TopPanel.vue";
 import SidePanel from "./components/SidePanel.vue";
 
 export default {
-  components: { TopPanel, SidePanel },
+  components: {
+    TopPanel,
+    SidePanel,
+  },
 };
 </script>
 

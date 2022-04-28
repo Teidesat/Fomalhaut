@@ -42,6 +42,8 @@ export default {
   float: left;
   height: calc(100%);
   width: 65px;
+  top: 65px;
   background: #2c2c2c;
+  position: fixed;
 }
 </style>
