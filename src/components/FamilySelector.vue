@@ -30,7 +30,7 @@
 
 <script>
 import { useRoute } from "vue-router";
-import { PageSelector } from "./PageSelector.vue";
+import PageSelector from "./PageSelector.vue";
 
 export default {
   components: PageSelector,

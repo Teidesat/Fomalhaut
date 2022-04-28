@@ -51,6 +51,12 @@
   ],
   "lonelyPageSelectors": [
     {
+      "title": "Temperature Map",
+      "symbol": "fas fa-temperature-half",
+      "disabled": false,
+      "path": "/temperaturemap"
+    },
+    {
       "title": "Configuration",
       "symbol": "fas fa-sliders-h",
       "disabled": false,
