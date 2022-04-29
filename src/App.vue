@@ -1,14 +1,5 @@
 <template>
-  BUG IMPOSSIBLE ACCESS TO DROPDOWN MENUS FROM HOMEVIEW
-  <!-- <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> -->
   <TopPanel></TopPanel>
-  <!-- <div class="container">
-    <div class="row">
-      <div class="col"></div>
-      <div class="col-11"></div>
-    </div>
-  </div> -->
   <SidePanel></SidePanel>
   <router-view />
 </template>
@@ -37,6 +28,6 @@ export default {
   width: 100%;
   background-color: white;
   font-family: "RobotoRegular", sans-serif;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 </style>

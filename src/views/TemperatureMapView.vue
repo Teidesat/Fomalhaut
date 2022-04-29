@@ -1,6 +1,6 @@
 <template>
   <Bar
-    class="chacho"
+    class="content"
     :chart-options="chartOptions"
     :chart-data="chartData"
     :chart-id="chartId"
@@ -104,7 +104,7 @@ export default {
 </script>
 
 <style>
-.chacho {
+.content {
   position: absolute;
   top: 12.5%;
   left: 25%;

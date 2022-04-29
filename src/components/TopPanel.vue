@@ -42,7 +42,6 @@ body {
   width: 100%;
   background-color: white;
   font-family: "RobotoRegular", sans-serif;
-  overflow: hidden;
 }
 
 * {
@@ -62,6 +61,8 @@ body {
   width: 100%;
   height: 65px;
   background: #2c2c2c;
+  position: fixed;
+  z-index: 10;
 }
 .top-panel .corner-icon {
   float: left;

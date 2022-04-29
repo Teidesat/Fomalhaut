@@ -95,5 +95,9 @@ export default {
 .dropdown-menu-dark {
   background-color: #2c2c2c;
 }
+/* .dropdown-menu a {
+  z-index: 10;
+  opacity: 100%;
+} */
 @import "bootstrap";
 </style>
