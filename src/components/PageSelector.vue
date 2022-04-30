@@ -64,8 +64,8 @@ export default {
 }
 .page-selector.selected .page-selector-line {
   opacity: 100%;
-  width: 45px;
-  height: 3px;
+  width: 65%;
+  height: 38px;
   background: #a3f4ff;
   border-radius: 65px;
   margin-top: -10px;

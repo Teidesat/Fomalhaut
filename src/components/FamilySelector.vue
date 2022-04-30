@@ -85,12 +85,12 @@ export default {
 }
 .page-selector.selected .page-selector-line {
   opacity: 100%;
-  width: 45px;
+  width: 70%;
   height: 3px;
   background: #a3f4ff;
   border-radius: 65px;
   /* margin-top: -10px; */
-  /* margin-left: -7px; */
+  margin-left: 15%;
 }
 .dropdown-menu-dark {
   background-color: #2c2c2c;

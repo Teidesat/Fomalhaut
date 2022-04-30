@@ -1,16 +1,22 @@
 <template>
-  <Bar
-    class="content"
-    :chart-options="chartOptions"
-    :chart-data="chartData"
-    :chart-id="chartId"
-    :dataset-id-key="datasetIdKey"
-    :plugins="plugins"
-    :css-classes="cssClasses"
-    :styles="styles"
-    :width="width"
-    :height="height"
-  />
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <Bar
+          class="chart"
+          :chart-options="chartOptions"
+          :chart-data="chartData"
+          :chart-id="chartId"
+          :dataset-id-key="datasetIdKey"
+          :plugins="plugins"
+          :css-classes="cssClasses"
+          :styles="styles"
+          :width="width"
+          :height="height"
+        />
+      </div>
+    </div>
+  </div>
   <!-- style="display: inline-block" -->
 </template>
 
@@ -103,10 +109,4 @@ export default {
 };
 </script>
 
-<style>
-.content {
-  position: absolute;
-  top: 12.5%;
-  left: 25%;
-}
-</style>
+<style></style>
