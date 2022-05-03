@@ -22,7 +22,9 @@ export default {
   },
   computed: {
     isActive() {
-      return useRoute().path === this.path;
+      return this.path === "/temperaturemap"
+        ? useRoute().path === this.path || useRoute().path === "/sensorsmap"
+        : useRoute().path === this.path;
     },
   },
 };

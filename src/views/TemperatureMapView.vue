@@ -1,4 +1,9 @@
 <template>
+  <nav>
+    <router-link to="/temperaturemap">Gráfico de temperaturas</router-link> |
+    <router-link to="/sensorsmap">Mapa de temperaturas</router-link>
+  </nav>
+
   <div class="container">
     <div class="row">
       <div class="col">
@@ -84,7 +89,7 @@ export default {
         datasets: [
           {
             label: "Temperatura de los sensores",
-            backgroundColor: "#f87979",
+            backgroundColor: "#239160",
             data: this.getTemperatures(),
           },
         ],
@@ -109,4 +114,17 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+nav {
+  padding: 30px;
+}
+
+nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+nav a.router-link-exact-active {
+  color: #239160;
+}
+</style>
