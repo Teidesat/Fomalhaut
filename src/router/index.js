@@ -46,11 +46,6 @@ const routes = [
     component: () => import("../views/TemperatureMapView.vue"),
   },
   {
-    path: "/sensorsmap",
-    name: "sensorsmap",
-    component: () => import("../views/SensorsMapView.vue"),
-  },
-  {
     path: "/configuration",
     name: "configuration",
     component: () => import("../views/ConfigurationView.vue"),
