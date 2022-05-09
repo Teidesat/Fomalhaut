@@ -6,5 +6,6 @@ import "bootstrap";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "moment/moment.js";
 import "vue-chartjs";
+// import "fs";
 
 createApp(App).use(store).use(router).mount("#app");
