@@ -1,14 +1,6 @@
 {
-  "temperatureMap": [
-    { "id_sensor": "S1", "temperature": 43 },
-    { "id_sensor": "S2", "temperature": 21 },
-    { "id_sensor": "S3", "temperature": 76 },
-    { "id_sensor": "S4", "temperature": 98 },
-    { "id_sensor": "S5", "temperature": 64 },
-    { "id_sensor": "S6", "temperature": 32 },
-    { "id_sensor": "S7", "temperature": 63 },
-    { "id_sensor": "S8", "temperature": 28 },
-    { "id_sensor": "S9", "temperature": 97 },
-    { "id_sensor": "S10", "temperature": 85 }
-  ]
+  "temperatureMaps": {
+    "IDs": ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10"],
+    "temperatures": [43, 21, 76, 98, 64, 32, 63, 28, 97, 85]
+  }
 }
