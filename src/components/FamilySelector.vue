@@ -41,9 +41,10 @@ export default {
   },
   computed: {
     isActive() {
-      for (let selector of this.pages)
-        if (selector.path === useRoute().path) return true;
-      return false;
+      return this.pages === useRoute().path;
+      // for (let selector of this.pages)
+      //   if (selector.path === useRoute().path) return true;
+      // return false;
     },
   },
 };
