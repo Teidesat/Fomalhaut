@@ -7,7 +7,7 @@
       <div class="col-1 pe-0 bg-dark">
         <SidePanel></SidePanel>
       </div>
-      <div class="col">
+      <div class="col-11 p-0">
         <router-view />
       </div>
     </div>
