@@ -13,6 +13,7 @@ let renderer;
 let ambientLight;
 let directionalLight;
 let controls;
+
 export default {
   name: "FaceSensorMap",
   data() {

@@ -15,7 +15,7 @@ const HEIGHT = 1024;
 const canvas = createCanvas(WIDTH, HEIGHT);
 const ctx = canvas.getContext("2d");
 
-const RESOLUTION = 200;
+const RESOLUTION = 500;
 const HORIZONTAL_GAP = canvas.width / RESOLUTION;
 const VERTICAL_GAP = canvas.height / RESOLUTION;
 
@@ -26,7 +26,7 @@ let temperatureMapColor;
 
 /**
  * Main function that creates the texture PNG.
- * Calls the printSensors function.
+ * Calls the printSensorsRadius function.
  */
 function createTempMapTexture() {
   /*
@@ -50,7 +50,9 @@ function createTempMapTexture() {
       .fill(256)
       .map(() => new Array(RESOLUTION).fill(256));
 
-    printSensors(getRandomSensors(8));
+    const GENERATED_SENSORS = getRandomSensors(8);
+    printSensors(GENERATED_SENSORS);
+    printSensorsRadius(GENERATED_SENSORS);
     const buffer = canvas.toBuffer("image/png");
     fs.writeFileSync(PATH + "texture" + (i + 1) + ".png", buffer);
   }
@@ -83,20 +85,34 @@ function getRandomSensors(nSensors) {
   }
   return sensors;
 }
+
+function printSensors(SENSORS) {
+  // Print sensors
+  ctx.fillStyle = "black";
+  for (const SENSOR of SENSORS) {
+    const sensorSize =
+      Math.floor(RESOLUTION / 100) > 1 ? Math.floor(RESOLUTION / 100) : 1; //Min size 1
+    for (let i = SENSOR.x - sensorSize; i < SENSOR.x + sensorSize; i++) {
+      for (let j = SENSOR.y - sensorSize; j < SENSOR.y + sensorSize; j++) {
+        if (isOutsideImg(i, j, SENSOR)) continue;
+        temperatureMapColor[i][j] = -1;
+        ctx.fillRect(
+          Math.floor(i * HORIZONTAL_GAP),
+          Math.floor(j * VERTICAL_GAP),
+          HORIZONTAL_GAP,
+          VERTICAL_GAP
+        );
+      }
+    }
+  }
+}
+
 /**
- * Print the sensors and its personal range and color from their variables.
+ * Print sensor's personal range and color from their variables.
  * @param {Array} SENSORS Array of sensor objects.
  */
-function printSensors(SENSORS) {
+function printSensorsRadius(SENSORS) {
   for (const SENSOR of SENSORS) {
-    temperatureMapColor[SENSOR.x][SENSOR.y] = -1;
-    ctx.fillStyle = "black";
-    ctx.fillRect(
-      Math.floor(SENSOR.x * HORIZONTAL_GAP),
-      Math.floor(SENSOR.y * VERTICAL_GAP),
-      HORIZONTAL_GAP,
-      VERTICAL_GAP
-    );
     ctx.fillStyle = "#FFC90E";
     let maxDistance = 0;
     for (let i = SENSOR.x - SENSOR.radius; i <= SENSOR.x + SENSOR.radius; i++) {
@@ -118,7 +134,6 @@ function printSensors(SENSORS) {
               0,
               Math.pow(SENSOR.radius, 2), // Max distance reachable is radius^2
               minColor,
-              // (1 / SENSOR.radius) * 1000,
               255
             )
           );
