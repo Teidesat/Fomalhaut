@@ -1,12 +1,6 @@
 <template>
   <div>
-    <img
-      :src="imageUrl"
-      alt="Webcam Stream"
-      width="640"
-      height="480"
-      :key="imageUrl"
-    />
+    <img ref="img" alt="Webcam Stream" />
   </div>
 </template>
 
@@ -14,21 +8,31 @@
 export default {
   data() {
     return {
-      imageUrl: "",
+      canvas: null,
+      ctx: null,
+      streamUrl: "http://localhost:5000/stream",
     };
   },
   async created() {
     try {
-      const streamUrl = "http://localhost:5000/stream";
+      this.canvas = document.createElement("canvas");
+      this.ctx = this.canvas.getContext("2d");
 
       setInterval(() => {
-        fetch(streamUrl, { method: "POST" })
+        fetch(this.streamUrl, { method: "POST" })
           .then((response) => response.blob())
           .then((blob) => {
-            this.imageUrl = URL.createObjectURL(blob);
+            const img = new Image();
+            img.onload = () => {
+              this.canvas.width = img.width;
+              this.canvas.height = img.height;
+              this.ctx.drawImage(img, 0, 0);
+              this.$refs.img.src = this.canvas.toDataURL("image/jpeg");
+            };
+            img.src = URL.createObjectURL(blob);
           })
           .catch((error) => console.error(error));
-      }, 50);
+      }, 15);
     } catch (error) {
       console.error(error);
     }
