@@ -10,7 +10,7 @@ export default {
     return {
       canvas: null,
       ctx: null,
-      streamUrl: "http://localhost:5000/stream",
+      streamUrl: "http://localhost:5000/stream", // URL to the flask server from https://github.com/Teidesat/optical-ground-station-server
     };
   },
   async created() {

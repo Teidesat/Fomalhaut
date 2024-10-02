@@ -1,0 +1,11 @@
+services:
+  fomalhaut-app:
+    image: fomalhaut-app:vue
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fomalhaut-app
+    hostname: fomalhaut-app
+    ports:
+      - "8080:8080"
+    command: npm run serve
