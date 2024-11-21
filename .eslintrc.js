@@ -18,6 +18,7 @@ module.exports = {
       "error",
       {
         ignores: ["default"],
+        "endOfLine": "auto"
       },
     ],
   },
