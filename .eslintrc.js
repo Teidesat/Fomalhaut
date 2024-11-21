@@ -18,7 +18,12 @@ module.exports = {
       "error",
       {
         ignores: ["default"],
-        "endOfLine": "auto"
+      },
+    ],
+    "prettier/prettier": [
+      "error",
+      {
+        endOfLine: "auto",
       },
     ],
   },
