@@ -8,4 +8,19 @@ services:
     hostname: fomalhaut-app
     ports:
       - "8080:8080"
-    command: npm run serve
+    volumes:
+      - ./src:/app/src
+    command: npm run serve -- --port 8080 --host 0.0.0.0
+
+  sensors-log-test-server:
+    image: fomalhaut-app:vue
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sensors-log-test-server
+    hostname: sensors-log-test-server
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src
+    command: node server.js
