@@ -38,6 +38,21 @@
    ```
    docker compose up --detach && docker compose logs --follow
    ```
+- Option 3: Run with server.js
+   
+   ### Install dependencies
+   ```
+   npm install
+   ```
+   ### Run the server "In a terminal you run the server"
+   ```
+   node server
+   ```
+   ### Run the app "In other terminal you run the app"
+   ```
+   npm run serve
+   ```
+- Data will be shown at logsview just to test that is working, this will change in the future.
 
 ## Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
