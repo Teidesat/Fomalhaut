@@ -15,7 +15,7 @@ interface can be accessed through the browser_).
 
 ## Usage
 
-```git clone https://github.com/AlvaroRGZ/Fomalhaut-Frontend```
+```git clone https://github.com/Teidesat/Fomalhaut.git```
 
 ```cd Fomalhaut-Frontend```
 
