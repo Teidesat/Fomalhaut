@@ -1,0 +1,19 @@
+networks:
+  fomalhaut-network:
+    external: true
+
+services:
+  fomalhaut-frontend:
+    image: fomalhaut-frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fomalhaut-frontend
+    hostname: fomalhaut-frontend
+    networks:
+      - fomalhaut-network
+    ports:
+      - "20001:20001"
+    volumes:
+      - ./src:/app/src
+    command: npm run dev
