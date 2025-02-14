@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SidePanel from "./components/SidePanel/SidePanel";
 import About from "./components/pages/About/About";
 import TemperatureMap from "./components/pages/satellite/TemperatureMap/TemperatureMap";
+import Orbit from "./components/pages/satellite/Orbit/Orbit";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/temperaturemap" element={<TemperatureMap />} />
+            <Route path="/location" element={<Orbit />} />
           </Routes>
         </div>
       </div>
