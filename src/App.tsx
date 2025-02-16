@@ -5,8 +5,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SidePanel from "./components/SidePanel/SidePanel";
 import About from "./components/pages/About/About";
 import TemperatureMap from "./components/pages/satellite/TemperatureMap/TemperatureMap";
-import Logs from "./components/pages/Logs/Logs";
 import Orbit from "./components/pages/satellite/Orbit/Orbit";
+import Logs from "./components/pages/Logs/Logs";
 
 function App() {
   return (
