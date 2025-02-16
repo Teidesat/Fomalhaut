@@ -1,10 +1,17 @@
-/* General styles for the App */
-.App {
+/* App.css */
+.app-container {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
 }
 
-.App-body {
-    width: 100%;
+.content-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  overflow-y: auto; /* Enables scrolling */
 }

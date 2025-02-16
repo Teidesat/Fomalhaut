@@ -1,9 +1,10 @@
 .SidePanel {
-    height: 100vh;
     background-color: #272a2d;
     padding: 20px;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
   }
   
   .family-section {
