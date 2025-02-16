@@ -7,6 +7,7 @@ import earthmap from '../../../../assets/earthmap-high4k.jpg';
 import cubesatTexture from '../../../../assets/cubesat.png';
 import cubesatImage from '../../../../assets/teidesatCube.png';
 import circle from '../../../../assets/circle.png';
+import { set } from "date-fns";
 
 // simulated TLE data for TEIDESAT-1
 const tleLine1 = '1 25544U 98067A   19156.50900463  .00003075  00000-0  59442-4 0  9992';
@@ -148,6 +149,7 @@ const Orbit: FC = () => {
   const orbitRef = useRef<THREE.Line | null>(null);
   const [satelliteInfo, setSatelliteInfo] = useState<JSX.Element | null>(null);
   const [hovered, setHovered] = useState<boolean>(false);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
   useEffect(() => {
     const mainContent = document.querySelector('.main-content');
@@ -287,11 +289,19 @@ const Orbit: FC = () => {
   };
 
   const handleFullscreen = () => {
-    if (mountRef.current) {
-      if (mountRef.current.requestFullscreen) {
-        mountRef.current.requestFullscreen();
+    if (!isFullscreen) {
+      if (mountRef.current) {
+        if (mountRef.current.requestFullscreen) {
+          mountRef.current.requestFullscreen();
+        }
+      };
+      setIsFullscreen(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
       }
-    };
+      setIsFullscreen(false);
+    }
   };
 
   return (
@@ -303,7 +313,9 @@ const Orbit: FC = () => {
         </div>
       )}
       <button className="center-button" onClick={handleCenterSatellite}>Center Satellite 📍</button>
-      <button className="fullscreen-button" onClick={handleFullscreen}>⛶</button>
+      <button className="fullscreen-button" onClick={handleFullscreen}>
+        {isFullscreen ? "Exit" : '⛶'}
+      </button>
     </div>
   );
 };
