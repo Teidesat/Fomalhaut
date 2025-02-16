@@ -150,8 +150,15 @@ const Orbit: FC = () => {
   const [hovered, setHovered] = useState<boolean>(false);
 
   useEffect(() => {
+<<<<<<< Updated upstream
     const width = window.innerWidth - 210;
     const height = window.innerHeight - 60;
+=======
+    const mainContent = document.querySelector('.main-content');
+
+    const width = mainContent ? mainContent.clientWidth : window.innerWidth;
+    const height = mainContent ? mainContent.clientHeight : window.innerHeight;
+>>>>>>> Stashed changes
     const scene = createScene();
     sceneRef.current = scene;
     const renderer = createRenderer(width, height);
@@ -227,10 +234,37 @@ const Orbit: FC = () => {
     window.addEventListener('pointermove', handleMouseMove);
     window.addEventListener('pointerdown', handleMouseDown);
 
+<<<<<<< Updated upstream
+=======
+    const handleResize = () => {
+      if (cameraRef.current && renderer) {
+        if (document.fullscreenElement) {
+          renderer.setSize(window.innerWidth, window.innerHeight);
+          cameraRef.current.aspect = window.innerWidth / window.innerHeight;
+        } else {
+          if (mainContent && cameraRef.current) {
+            const width = mainContent.clientWidth;
+            const height = mainContent.clientHeight;
+            renderer.setSize(width, height);
+            cameraRef.current.aspect = width / height;
+          }
+        }
+        cameraRef.current.updateProjectionMatrix();
+        render();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+>>>>>>> Stashed changes
     return () => {
       if (mountRef.current) mountRef.current.removeChild(renderer.domElement);
       window.removeEventListener('pointermove', handleMouseMove);
       window.removeEventListener('pointerdown', handleMouseDown);
+<<<<<<< Updated upstream
+=======
+      window.removeEventListener('resize', handleResize);
+>>>>>>> Stashed changes
     };
   }, []);
 
@@ -260,6 +294,17 @@ const Orbit: FC = () => {
     }
   };
 
+<<<<<<< Updated upstream
+=======
+  const handleFullscreen = () => {
+    if (mountRef.current) {
+      if (mountRef.current.requestFullscreen) {
+        mountRef.current.requestFullscreen();
+      }
+    };
+  };
+
+>>>>>>> Stashed changes
   return (
     <div className="Orbit" ref={mountRef}>
       {satelliteInfo && (
@@ -269,6 +314,10 @@ const Orbit: FC = () => {
         </div>
       )}
       <button className="center-button" onClick={handleCenterSatellite}>Center Satellite 📍</button>
+<<<<<<< Updated upstream
+=======
+      <button className="fullscreen-button" onClick={handleFullscreen}>⛶</button>
+>>>>>>> Stashed changes
     </div>
   );
 };
