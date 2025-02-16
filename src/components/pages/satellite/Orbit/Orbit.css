@@ -1,9 +1,4 @@
 .Orbit {
-<<<<<<< Updated upstream
-    position: relative;
-}
-
-=======
     position: absolute;
 }
 
@@ -15,7 +10,6 @@ html, body {
     height: 100%;
 }  
 
->>>>>>> Stashed changes
 .satellite-info {
     position: absolute;
     top: 20px;
@@ -63,8 +57,6 @@ html, body {
     transition: background-color 0.2s;
 }
 
-<<<<<<< Updated upstream
-=======
 .fullscreen-button {
     position: absolute;
     bottom: 20px;
@@ -80,18 +72,14 @@ html, body {
     transition: background-color 0.2s;
 }
 
->>>>>>> Stashed changes
 .center-button:hover {
     background-color: #0056b3;
 }
 
 .satellite-hover {
     filter: brightness(1.5);
-<<<<<<< Updated upstream
-=======
 }
 
 .fullscreen-button:hover {
     background-color: #0056b3;
->>>>>>> Stashed changes
 }
