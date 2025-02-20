@@ -10,8 +10,8 @@ import circle from '../../../../assets/circle.png';
 import { set } from "date-fns";
 
 // simulated TLE data for TEIDESAT-1
-const tleLine1 = '1 25544U 98067A   19156.50900463  .00003075  00000-0  59442-4 0  9992';
-const tleLine2 = '2 25544  51.6433  59.2583 0008217  16.4489 347.6017 15.51174618173442';
+const tleLine1 = '1 24278U 96046B   05249.63179728 -.00000050  00000-0 -12262-4 0   378';
+const tleLine2 = '2 24278  98.5369 288.1693 0350663 325.3727  32.5020 13.52914236447209';
 
 // Constants
 const MinutesPerDay = 1440;
@@ -32,9 +32,13 @@ const createRenderer = (width: number, height: number) => {
 
 const createCamera = (width: number, height: number) => {
   const NEAR = 1e-6, FAR = 1e27;
-  const camera = new THREE.PerspectiveCamera(54, width / height, NEAR, FAR);
-  camera.position.set(15000, 0, -15000);
+  const camera = new THREE.PerspectiveCamera(60, width / height, NEAR, FAR);
+  camera.position.set(15000, 0, 0);
   camera.lookAt(0, 0, 0);
+
+  //change camera rotation to align with Three.js coordinate system
+  camera.up.set(0, 0, 1);
+
   return camera;
 };
 
@@ -56,6 +60,10 @@ const createEarth = (scene: THREE.Scene, render: () => void) => {
   const geometry = new THREE.SphereGeometry(earthRadius, 50, 50);
   const material = new THREE.MeshPhongMaterial({ side: THREE.DoubleSide, map: textLoader.load(earthmap, render) });
   const earthMesh = new THREE.Mesh(geometry, material);
+  
+  // Set rotation to align with Three.js coordinate system
+  earthMesh.rotation.x = Math.PI / 2;
+  
   scene.add(earthMesh);
 };
 
@@ -78,7 +86,8 @@ const addOrbit = (scene: THREE.Scene, render: () => void) => {
   for (let i = 0; i <= minutes; i += intervalMinutes) {
     const date = new Date(initialDate.getTime() + i * 60000);
     const positionEci = satellite.propagate(satrec, date).position as satellite.EciVec3<number>;
-    if (positionEci) points.push(new THREE.Vector3(positionEci.x, positionEci.y, positionEci.z));
+    const positionEcf = satellite.eciToEcf(positionEci, satellite.gstime(date)) as satellite.EcfVec3<number>;
+    if (positionEcf) points.push(new THREE.Vector3(positionEcf.x, positionEcf.y, positionEcf.z));
   }
 
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -176,7 +185,8 @@ const Orbit: FC = () => {
     const animate = () => {
       requestAnimationFrame(animate);
       const positionEci = satellite.propagate(satrec, new Date()).position as satellite.EciVec3<number>;
-      if (satelliteSpriteRef.current) satelliteSpriteRef.current.position.set(positionEci.x, positionEci.y, positionEci.z);
+      const positionEcf = satellite.eciToEcf(positionEci, satellite.gstime(new Date())) as satellite.EcfVec3<number>;
+      if (satelliteSpriteRef.current) satelliteSpriteRef.current.position.set(positionEcf.x, positionEcf.y, positionEcf.z);
       render();
     };
 
