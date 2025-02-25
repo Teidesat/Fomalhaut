@@ -10,8 +10,9 @@ import circle from '../../../../assets/circle.png';
 import { set } from "date-fns";
 
 // simulated TLE data for TEIDESAT-1
-const tleLine1 = '1 25544U 98067A   19156.50900463  .00003075  00000-0  59442-4 0  9992';
-const tleLine2 = '2 25544  51.6433  59.2583 0008217  16.4489 347.6017 15.51174618173442';
+const tleLine1 = '1 99999U 24051A   24051.50000000  .00000000  00000-0  00000-0 0  9992';
+const tleLine2 = '2 99999  97.5000  50.0000 0002000   0.0000  90.0000 15.00000000  00001';
+
 
 // Constants
 const MinutesPerDay = 1440;
@@ -19,22 +20,30 @@ const ixpdotp = MinutesPerDay / (2.0 * 3.141592654);
 const satrec = satellite.twoline2satrec(tleLine1, tleLine2);
 const earthRadius = 6371;
 const raycaster = new THREE.Raycaster();
+const tenerifeLat = 28.2916;
+const tenerifeLon = -16.6291;
+
 
 // Creation Functions
 const createScene = () => new THREE.Scene();
 
 const createRenderer = (width: number, height: number) => {
   const renderer = new THREE.WebGLRenderer({ logarithmicDepthBuffer: true, antialias: true });
-  //renderer.setClearColor(new THREE.Color(defaultOptions.backgroundColor));
   renderer.setSize(width, height);
+  
   return renderer;
 };
 
+
 const createCamera = (width: number, height: number) => {
   const NEAR = 1e-6, FAR = 1e27;
-  const camera = new THREE.PerspectiveCamera(54, width / height, NEAR, FAR);
-  camera.position.set(15000, 0, -15000);
+  const camera = new THREE.PerspectiveCamera(60, width / height, NEAR, FAR);
+  camera.position.set(20000, 0, 0);
   camera.lookAt(0, 0, 0);
+
+  //change camera rotation to align with Three.js coordinate system
+  camera.up.set(0, 0, 1);
+
   return camera;
 };
 
@@ -46,8 +55,8 @@ const createControls = (camera: THREE.PerspectiveCamera, renderer: THREE.WebGLRe
 };
 
 const createLighting = (scene: THREE.Scene) => {
-  const sun = new THREE.DirectionalLight(0xffffff, 5);
-  sun.position.set(0, 59333894, -137112541);
+  const sun = new THREE.DirectionalLight(0xffffff, 4);
+  sun.position.set(0, 1000000, 500000);
   scene.add(sun, new THREE.AmbientLight());
 };
 
@@ -56,6 +65,10 @@ const createEarth = (scene: THREE.Scene, render: () => void) => {
   const geometry = new THREE.SphereGeometry(earthRadius, 50, 50);
   const material = new THREE.MeshPhongMaterial({ side: THREE.DoubleSide, map: textLoader.load(earthmap, render) });
   const earthMesh = new THREE.Mesh(geometry, material);
+  
+  // Set rotation to align with Three.js coordinate system
+  earthMesh.rotation.x = Math.PI / 2;
+  
   scene.add(earthMesh);
 };
 
@@ -78,7 +91,9 @@ const addOrbit = (scene: THREE.Scene, render: () => void) => {
   for (let i = 0; i <= minutes; i += intervalMinutes) {
     const date = new Date(initialDate.getTime() + i * 60000);
     const positionEci = satellite.propagate(satrec, date).position as satellite.EciVec3<number>;
-    if (positionEci) points.push(new THREE.Vector3(positionEci.x, positionEci.y, positionEci.z));
+    const positionEcf = satellite.eciToEcf(positionEci, satellite.gstime(date)) as satellite.EcfVec3<number>;
+    
+    if (positionEcf) points.push(new THREE.Vector3(positionEcf.x, positionEcf.y, positionEcf.z));
   }
 
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -89,55 +104,126 @@ const addOrbit = (scene: THREE.Scene, render: () => void) => {
 };
 
 function getStarfield({ numStars = 1000 } = {}) {
-    function randomSpherePoint() {
-      const minRadius = 1000000;  
-      const spread = 500000;
-      const radius = Math.random() * spread + minRadius;
-  
-      const u = Math.random();
-      const v = Math.random();
-      const theta = 2 * Math.PI * u;
-      const phi = Math.acos(2 * v - 1);
-      let x = radius * Math.sin(phi) * Math.cos(theta);
-      let y = radius * Math.sin(phi) * Math.sin(theta);
-      let z = radius * Math.cos(phi);
-  
-      return {
-        pos: new THREE.Vector3(x, y, z),
-        hue: 0.6,
-        minDist: radius,
-      };
-    }
-  
-    const verts = [];
-    const colors = [];
-    const positions = [];
-    let col;
-  
-    for (let i = 0; i < numStars; i += 1) {
-      let p = randomSpherePoint();
-      const { pos, hue } = p;
-      positions.push(p);
-      col = new THREE.Color().setHSL(hue, 0.2, Math.random());
-      verts.push(pos.x, pos.y, pos.z);
-      colors.push(col.r, col.g, col.b);
-    }
-  
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute("position", new THREE.Float32BufferAttribute(verts, 3));
-    geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-  
-    const mat = new THREE.PointsMaterial({
-      size: 4,
-      vertexColors: true,
-      map: new THREE.TextureLoader().load(circle),
-      sizeAttenuation: false,
-      transparent: true,
-    });
-  
-    const points = new THREE.Points(geo, mat);
-    return points;
+  function randomSpherePoint() {
+    const minRadius = 1000000;  
+    const spread = 500000;
+    const radius = Math.random() * spread + minRadius;
+
+    const u = Math.random();
+    const v = Math.random();
+    const theta = 2 * Math.PI * u;
+    const phi = Math.acos(2 * v - 1);
+    let x = radius * Math.sin(phi) * Math.cos(theta);
+    let y = radius * Math.sin(phi) * Math.sin(theta);
+    let z = radius * Math.cos(phi);
+
+    return {
+      pos: new THREE.Vector3(x, y, z),
+      hue: 0.6,
+      minDist: radius,
+    };
   }
+
+  const verts = [];
+  const colors = [];
+  const positions = [];
+  let col;
+
+  for (let i = 0; i < numStars; i += 1) {
+    let p = randomSpherePoint();
+    const { pos, hue } = p;
+    positions.push(p);
+    col = new THREE.Color().setHSL(hue, 0.2, Math.random());
+    verts.push(pos.x, pos.y, pos.z);
+    colors.push(col.r, col.g, col.b);
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(verts, 3));
+  geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+
+  const mat = new THREE.PointsMaterial({
+    size: 4,
+    vertexColors: true,
+    map: new THREE.TextureLoader().load(circle),
+    sizeAttenuation: false,
+    transparent: true,
+  });
+
+  const points = new THREE.Points(geo, mat);
+  return points;
+}
+
+
+
+const createLightCone = (scene: THREE.Scene) => {
+  const coneGeometry = new THREE.ConeGeometry(2700, 1100, 32);
+  
+  const coneMaterial = new THREE.MeshBasicMaterial({
+    color: 0xff0000,
+    transparent: true,
+    opacity: 0.5,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+  });
+
+  const cone = new THREE.Mesh(coneGeometry, coneMaterial);
+  scene.add(cone);
+
+  return cone;
+};
+
+const updateLightCone = (cone: THREE.Mesh, position: THREE.Vector3) => {
+  cone.position.copy(position);
+  cone.lookAt(new THREE.Vector3(0, 0, 0));
+
+  // Aplicar correción de posicion que el vertice del cono este en la posicion 'position'
+  cone.position.addScaledVector(cone.getWorldDirection(new THREE.Vector3()), 600);
+  
+  // Aplicar la corrección de rotación para que apunte correctamente
+  cone.rotateX(Math.PI + Math.PI / 2); 
+}
+
+const createTenerifePoint = (scene: THREE.Scene) => {
+  const geometry = new THREE.SphereGeometry(20, 32, 32);
+  const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+  const tenerifePoint = new THREE.Mesh(geometry, material);
+
+  const latRad = THREE.MathUtils.degToRad(tenerifeLat);
+  const lonRad = THREE.MathUtils.degToRad(tenerifeLon);
+  const x = earthRadius * Math.cos(latRad) * Math.cos(lonRad);
+  const y = earthRadius * Math.cos(latRad) * Math.sin(lonRad);
+  const z = earthRadius * Math.sin(latRad);
+
+  tenerifePoint.position.set(x, y, z);
+
+  scene.add(tenerifePoint);
+};
+
+const isOverTenerife = (positionGd: satellite.GeodeticLocation) => {
+  const latDiff = Math.abs(positionGd.latitude * (180 / Math.PI) - tenerifeLat);
+  const lonDiff = Math.abs(positionGd.longitude * (180 / Math.PI) - tenerifeLon);
+  return (latDiff + lonDiff) < 36;
+};
+
+const calculateNextPass = () => {
+  const now = new Date();
+  const step = 60 * 1000; // 1 minute in milliseconds
+  let nextPass = null;
+
+  for (let i = 0; i < MinutesPerDay; i++) {
+    const date = new Date(now.getTime() + i * step);
+    const positionEci = satellite.propagate(satrec, date).position as satellite.EciVec3<number>;
+    const positionGd = satellite.eciToGeodetic(positionEci, satellite.gstime(date));
+
+    if (isOverTenerife(positionGd)) {
+      nextPass = date;
+      break;
+    }
+  }
+
+  return nextPass;
+};
 
 // Principal component
 const Orbit: FC = () => {
@@ -147,9 +233,11 @@ const Orbit: FC = () => {
   const sceneRef = useRef<THREE.Scene | null>(null);
   const satelliteSpriteRef = useRef<THREE.Sprite | null>(null);
   const orbitRef = useRef<THREE.Line | null>(null);
+  const coneRef = useRef<THREE.Mesh | null>(null);
   const [satelliteInfo, setSatelliteInfo] = useState<JSX.Element | null>(null);
   const [hovered, setHovered] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [nextPass, setNextPass] = useState<Date | null>(null);
 
   useEffect(() => {
     const mainContent = document.querySelector('.main-content');
@@ -163,20 +251,35 @@ const Orbit: FC = () => {
     cameraRef.current = camera;
     const render = () => renderer.render(scene, camera);
 
+
     createControls(camera, renderer, render);
     createLighting(scene);
     createEarth(scene, render);
+    createTenerifePoint(scene);
     scene.add(getStarfield());
     const satelliteSprite = createSatelliteSprite(cubesatTexture, render);
     satelliteSpriteRef.current = satelliteSprite;
     scene.add(satelliteSprite);
 
+    const cone = createLightCone(scene);
+    coneRef.current = cone;
+
+
     if (mountRef.current) mountRef.current.appendChild(renderer.domElement);
 
     const animate = () => {
       requestAnimationFrame(animate);
-      const positionEci = satellite.propagate(satrec, new Date()).position as satellite.EciVec3<number>;
-      if (satelliteSpriteRef.current) satelliteSpriteRef.current.position.set(positionEci.x, positionEci.y, positionEci.z);
+      const date = new Date();
+      const positionEci = satellite.propagate(satrec, date).position as satellite.EciVec3<number>;
+      const positionEcf = satellite.eciToEcf(positionEci, satellite.gstime(date)) as satellite.EcfVec3<number>;
+      const positionGd = satellite.eciToGeodetic(positionEci, satellite.gstime(date));
+      if (satelliteSpriteRef.current) satelliteSpriteRef.current.position.set(positionEcf.x, positionEcf.y, positionEcf.z);
+      if (coneRef.current) updateLightCone(coneRef.current, satelliteSpriteRef.current!.position);
+      if (isOverTenerife(positionGd)) {
+        (coneRef.current!.material as THREE.MeshBasicMaterial).color.set(0x00ff00);
+      } else {
+        (coneRef.current!.material as THREE.MeshBasicMaterial).color.set(0xff0000);
+      }
       render();
     };
 
@@ -206,6 +309,8 @@ const Orbit: FC = () => {
         const positionGd = satellite.eciToGeodetic(positionEci, gmst);
         const altitude = positionGd.height;
         const velocity = Math.sqrt(velocityEci.x ** 2 + velocityEci.y ** 2 + velocityEci.z ** 2);
+        const nextPassDate = calculateNextPass();
+        setNextPass(nextPassDate);
 
         const satelliteInfo = (
           <div>
@@ -250,6 +355,8 @@ const Orbit: FC = () => {
     };
 
     window.addEventListener('resize', handleResize);
+
+    
 
 
     return () => {
@@ -310,6 +417,8 @@ const Orbit: FC = () => {
         <div className="satellite-info">
           <button className="close-button" onClick={handleCloseInfo}>X</button>
           <pre>{satelliteInfo}</pre>
+          <h4>Next Pass Over Tenerife:</h4>
+          <p>{nextPass ? nextPass.toLocaleString() : 'Not available'}</p>
         </div>
       )}
       <button className="center-button" onClick={handleCenterSatellite}>Center Satellite 📍</button>
