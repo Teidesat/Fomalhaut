@@ -4,10 +4,11 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import * as satellite from 'satellite.js';
 import earthmap from '../../../../assets/earthmap-high4k.jpg';
-import cubesatTexture from '../../../../assets/cubesat.png';
 import cubesatImage from '../../../../assets/teidesatCube.png';
 import circle from '../../../../assets/circle.png';
 import { set } from "date-fns";
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
 
 // simulated TLE data for TEIDESAT-1
 const tleLine1 = '1 99999U 24051A   24051.50000000  .00000000  00000-0  00000-0 0  9992';
@@ -72,14 +73,6 @@ const createEarth = (scene: THREE.Scene, render: () => void) => {
   scene.add(earthMesh);
 };
 
-const createSatelliteSprite = (texturePath: string, render: () => void) => {
-  const texture = new THREE.TextureLoader().load(texturePath, render);
-  const material = new THREE.SpriteMaterial({ map: texture });
-  const sprite = new THREE.Sprite(material);
-  sprite.scale.set(300, 300, 1);
-  return sprite;
-};
-
 const addOrbit = (scene: THREE.Scene, render: () => void) => {
   const revsPerDay = satrec.no * ixpdotp;
   const intervalMinutes = 1;
@@ -92,7 +85,6 @@ const addOrbit = (scene: THREE.Scene, render: () => void) => {
     const date = new Date(initialDate.getTime() + i * 60000);
     const positionEci = satellite.propagate(satrec, date).position as satellite.EciVec3<number>;
     const positionEcf = satellite.eciToEcf(positionEci, satellite.gstime(date)) as satellite.EcfVec3<number>;
-    
     if (positionEcf) points.push(new THREE.Vector3(positionEcf.x, positionEcf.y, positionEcf.z));
   }
 
@@ -225,15 +217,37 @@ const calculateNextPass = () => {
   return nextPass;
 };
 
+const createSatelliteModel = (scene: THREE.Scene, render: () => void, satelliteRef: React.MutableRefObject<THREE.Group | null>) => {
+  const loader = new GLTFLoader();
+  loader.load(
+    '/cubesat.glb',
+    (gltf) => {
+      const model = gltf.scene;
+      model.scale.set(1000, 1000, 1000);
+
+      // Asignar el modelo a la referencia
+      satelliteRef.current = model;
+      
+      scene.add(model);
+      render();
+    },
+    undefined,
+    (error) => {
+      console.error('Error cargando el modelo:', error);
+    }
+  );
+};
+
+
 // Principal component
 const Orbit: FC = () => {
 
   const mountRef = useRef<HTMLDivElement>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
-  const satelliteSpriteRef = useRef<THREE.Sprite | null>(null);
   const orbitRef = useRef<THREE.Line | null>(null);
   const coneRef = useRef<THREE.Mesh | null>(null);
+  const satelliteModel = useRef<THREE.Group | null>(null);
   const [satelliteInfo, setSatelliteInfo] = useState<JSX.Element | null>(null);
   const [hovered, setHovered] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
@@ -257,9 +271,8 @@ const Orbit: FC = () => {
     createEarth(scene, render);
     createTenerifePoint(scene);
     scene.add(getStarfield());
-    const satelliteSprite = createSatelliteSprite(cubesatTexture, render);
-    satelliteSpriteRef.current = satelliteSprite;
-    scene.add(satelliteSprite);
+    createSatelliteModel(scene, render, satelliteModel);
+
 
     const cone = createLightCone(scene);
     coneRef.current = cone;
@@ -273,8 +286,11 @@ const Orbit: FC = () => {
       const positionEci = satellite.propagate(satrec, date).position as satellite.EciVec3<number>;
       const positionEcf = satellite.eciToEcf(positionEci, satellite.gstime(date)) as satellite.EcfVec3<number>;
       const positionGd = satellite.eciToGeodetic(positionEci, satellite.gstime(date));
-      if (satelliteSpriteRef.current) satelliteSpriteRef.current.position.set(positionEcf.x, positionEcf.y, positionEcf.z);
-      if (coneRef.current) updateLightCone(coneRef.current, satelliteSpriteRef.current!.position);
+      if (satelliteModel.current) {
+        satelliteModel.current.position.set(positionEcf.x, positionEcf.y, positionEcf.z);
+        satelliteModel.current.lookAt(0, 0, 0);
+      }
+      if (coneRef.current && satelliteModel.current) updateLightCone(coneRef.current, satelliteModel.current!.position);
       if (isOverTenerife(positionGd)) {
         (coneRef.current!.material as THREE.MeshBasicMaterial).color.set(0x00ff00);
       } else {
@@ -291,7 +307,7 @@ const Orbit: FC = () => {
       const mouse = new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
       raycaster.setFromCamera(mouse, cameraRef.current);
       const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
-      setHovered(intersects.length > 0 && intersects[0].object === satelliteSpriteRef.current);
+      setHovered(intersects.length > 0 && (intersects[0].object.parent?.type === 'Group' || intersects[0].object.parent?.type === 'Object3D'));
     };
 
     const handleMouseDown = (e: MouseEvent) => {
@@ -300,8 +316,7 @@ const Orbit: FC = () => {
       const mouse = new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
       raycaster.setFromCamera(mouse, cameraRef.current);
       const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
-
-      if (intersects.length > 0 && intersects[0].object === satelliteSpriteRef.current) {
+      if (intersects.length > 0 && (intersects[0].object.parent?.type === 'Group' || intersects[0].object.parent?.type === 'Object3D')) {
         const gmst = satellite.gstime(new Date());
         const positionAndVelocity = satellite.propagate(satrec, new Date());
         const positionEci = positionAndVelocity.position as satellite.EciVec3<number>;
@@ -315,14 +330,12 @@ const Orbit: FC = () => {
         const satelliteInfo = (
           <div>
             <h3>Satellite Information: TEIDESAT-1</h3>
-            <img src={cubesatImage} alt="Satellite" style={{ width: '150px', height: '100px' }} />
-            <p><strong>Inclination:</strong> {satrec.inclo.toFixed(2)}°</p>
-            <p><strong>Eccentricity:</strong> {satrec.ecco.toFixed(4)}</p>
-            <p><strong>RAAN:</strong> {satrec.nodeo.toFixed(2)}°</p>
-            <p><strong>Argument of Perigee:</strong> {satrec.argpo.toFixed(2)}°</p>
-            <p><strong>Mean Anomaly:</strong> {satrec.mo.toFixed(2)}°</p>
-            <p><strong>Mean Motion:</strong> {satrec.no.toFixed(4)} revs/day</p>
-            <p><strong>Position (ECI):</strong> x: {positionEci.x.toFixed(2)} km, y: {positionEci.y.toFixed(2)} km, z: {positionEci.z.toFixed(2)} km</p>
+            <img src={cubesatImage} alt="Satellite" style={{ width: '230px', height: '130px' }} />
+            <p><strong>Position (Lat, Lon):</strong></p>
+            <ul>
+              <li>Latitude: {(positionGd.latitude * (180 / Math.PI)).toFixed(2)}°</li>
+              <li>Longitude: {(positionGd.longitude * (180 / Math.PI)).toFixed(2)}°</li>
+            </ul>
             <p><strong>Altitude:</strong> {altitude.toFixed(2)} km</p>
             <p><strong>Velocity:</strong> {velocity.toFixed(2)} km/s</p>
           </div>
@@ -361,6 +374,7 @@ const Orbit: FC = () => {
 
     return () => {
       if (mountRef.current) mountRef.current.removeChild(renderer.domElement);
+      renderer.dispose();
       window.removeEventListener('pointermove', handleMouseMove);
       window.removeEventListener('pointerdown', handleMouseDown);
       window.removeEventListener('resize', handleResize);
@@ -370,8 +384,14 @@ const Orbit: FC = () => {
   }, []);
 
   useEffect(() => {
-    if (satelliteSpriteRef.current) {
-      satelliteSpriteRef.current.material.color.set(hovered ? 0xffff00 : 0xffffff);
+    if (satelliteModel.current) {
+      satelliteModel.current.scale.set(hovered ? 1200 : 1000, hovered ? 1200 : 1000, hovered ? 1200 : 1000);
+      satelliteModel.current.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.material.transparent = true;
+          child.material.opacity = hovered ? 0.5 : 1;
+        }
+      });
     }
   }, [hovered]);
 
@@ -384,8 +404,8 @@ const Orbit: FC = () => {
   };
 
   const handleCenterSatellite = () => {
-    if (cameraRef.current && satelliteSpriteRef.current) {
-      const pos = satelliteSpriteRef.current.position;
+    if (cameraRef.current && satelliteModel.current) {
+      const pos = satelliteModel.current.position;
       const center = new THREE.Vector3(0, 0, 0);
       const direction = new THREE.Vector3().subVectors(pos, center).normalize();
       const distance = 3000;
