@@ -8,6 +8,7 @@ import cubesatImage from '../../../../assets/teidesatCube.png';
 import circle from '../../../../assets/circle.png';
 import { set } from "date-fns";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { motion, AnimatePresence } from "framer-motion";
 
 
 // simulated TLE data for TEIDESAT-1
@@ -73,6 +74,27 @@ const createEarth = (scene: THREE.Scene, render: () => void) => {
   scene.add(earthMesh);
 };
 
+const createSatelliteModel = (scene: THREE.Scene, render: () => void, satelliteRef: React.MutableRefObject<THREE.Group | null>) => {
+  const loader = new GLTFLoader();
+  loader.load(
+    '/cubesat.glb',
+    (gltf) => {
+      const model = gltf.scene;
+      model.scale.set(1000, 1000, 1000);
+
+      // Asignar el modelo a la referencia
+      satelliteRef.current = model;
+      
+      scene.add(model);
+      render();
+    },
+    undefined,
+    (error) => {
+      console.error('Error cargando el modelo:', error);
+    }
+  );
+};
+
 const addOrbit = (scene: THREE.Scene, render: () => void) => {
   const revsPerDay = satrec.no * ixpdotp;
   const intervalMinutes = 1;
@@ -93,6 +115,27 @@ const addOrbit = (scene: THREE.Scene, render: () => void) => {
   scene.add(orbitCurve);
   render();
   return orbitCurve;
+};
+
+const createSatelliteLine = (scene: THREE.Scene) => {
+  const material = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+  const points = [new THREE.Vector3(), new THREE.Vector3()];
+  const geometry = new THREE.BufferGeometry().setFromPoints(points);
+  const line = new THREE.Line(geometry, material);
+  line.visible = false;
+  scene.add(line);
+  return line;
+};
+
+const updateSatelliteLine = (line: THREE.Line, satellitePosition: THREE.Vector3) => {
+  const positions = line.geometry.attributes.position.array as Float32Array;
+  positions[0] = satellitePosition.x;
+  positions[1] = satellitePosition.y;
+  positions[2] = satellitePosition.z;
+  positions[3] = 0;
+  positions[4] = 0;
+  positions[5] = 0;
+  line.geometry.attributes.position.needsUpdate = true;
 };
 
 function getStarfield({ numStars = 1000 } = {}) {
@@ -217,26 +260,7 @@ const calculateNextPass = () => {
   return nextPass;
 };
 
-const createSatelliteModel = (scene: THREE.Scene, render: () => void, satelliteRef: React.MutableRefObject<THREE.Group | null>) => {
-  const loader = new GLTFLoader();
-  loader.load(
-    '/cubesat.glb',
-    (gltf) => {
-      const model = gltf.scene;
-      model.scale.set(1000, 1000, 1000);
 
-      // Asignar el modelo a la referencia
-      satelliteRef.current = model;
-      
-      scene.add(model);
-      render();
-    },
-    undefined,
-    (error) => {
-      console.error('Error cargando el modelo:', error);
-    }
-  );
-};
 
 
 // Principal component
@@ -244,14 +268,17 @@ const Orbit: FC = () => {
 
   const mountRef = useRef<HTMLDivElement>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const controlsRef = useRef<OrbitControls | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const orbitRef = useRef<THREE.Line | null>(null);
   const coneRef = useRef<THREE.Mesh | null>(null);
   const satelliteModel = useRef<THREE.Group | null>(null);
+  const lineRef = useRef<THREE.Line | null>(null);
   const [satelliteInfo, setSatelliteInfo] = useState<JSX.Element | null>(null);
   const [hovered, setHovered] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [nextPass, setNextPass] = useState<Date | null>(null);
+  const [isEarthView, setIsEarthView] = useState<boolean>(true);
 
   useEffect(() => {
     const mainContent = document.querySelector('.main-content');
@@ -266,10 +293,11 @@ const Orbit: FC = () => {
     const render = () => renderer.render(scene, camera);
 
 
-    createControls(camera, renderer, render);
+    controlsRef.current = createControls(camera, renderer, render);
     createLighting(scene);
     createEarth(scene, render);
     createTenerifePoint(scene);
+    lineRef.current = createSatelliteLine(scene);
     scene.add(getStarfield());
     createSatelliteModel(scene, render, satelliteModel);
 
@@ -290,6 +318,7 @@ const Orbit: FC = () => {
         satelliteModel.current.position.set(positionEcf.x, positionEcf.y, positionEcf.z);
         satelliteModel.current.lookAt(0, 0, 0);
       }
+      if (lineRef.current && satelliteModel.current) updateSatelliteLine(lineRef.current, satelliteModel.current.position);
       if (coneRef.current && satelliteModel.current) updateLightCone(coneRef.current, satelliteModel.current!.position);
       if (isOverTenerife(positionGd)) {
         (coneRef.current!.material as THREE.MeshBasicMaterial).color.set(0x00ff00);
@@ -343,6 +372,7 @@ const Orbit: FC = () => {
         setSatelliteInfo(satelliteInfo);
         if (orbitRef.current) sceneRef.current.remove(orbitRef.current);
         orbitRef.current = addOrbit(sceneRef.current, render);
+        if (lineRef.current) lineRef.current.visible = true;
       }
     };
 
@@ -400,18 +430,7 @@ const Orbit: FC = () => {
     if (orbitRef.current && sceneRef.current) {
       sceneRef.current.remove(orbitRef.current);
       orbitRef.current = null;
-    }
-  };
-
-  const handleCenterSatellite = () => {
-    if (cameraRef.current && satelliteModel.current) {
-      const pos = satelliteModel.current.position;
-      const center = new THREE.Vector3(0, 0, 0);
-      const direction = new THREE.Vector3().subVectors(pos, center).normalize();
-      const distance = 3000;
-      const newPos = new THREE.Vector3().addVectors(pos, direction.multiplyScalar(distance));
-      cameraRef.current.position.copy(newPos);
-      cameraRef.current.lookAt(pos);
+      lineRef.current!.visible = false;
     }
   };
 
@@ -431,19 +450,98 @@ const Orbit: FC = () => {
     }
   };
 
+const easeInOutQuad = (t: number) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+const handleToggleView = () => {
+  const center = new THREE.Vector3(0, 0, 0);
+  if (cameraRef.current && controlsRef.current && satelliteModel.current) {
+    if (!isEarthView) {
+      const targetPosition = satelliteModel.current.position.clone();
+      targetPosition.add(satelliteModel.current.position.clone());
+      targetPosition.add(satelliteModel.current.position.clone());
+      const duration = 2000; // Transition duration in ms
+      const startPosition = cameraRef.current.position.clone();
+      const startTime = performance.now();
+
+      const animateTransition = (time: number) => {
+        const elapsed = time - startTime;
+        const t = Math.min(elapsed / duration, 1);
+        const easedT = easeInOutQuad(t);
+
+        cameraRef.current!.position.lerpVectors(startPosition, targetPosition, easedT);
+        cameraRef.current!.lookAt(center);
+        controlsRef.current!.target.copy(center);
+        controlsRef.current!.update();
+
+        if (t < 1) {
+          requestAnimationFrame(animateTransition);
+        } else {
+          controlsRef.current!.rotateSpeed = 1;
+          controlsRef.current!.zoomSpeed = 1;
+          controlsRef.current!.panSpeed = 1;
+          setIsEarthView(true);
+        }
+      };
+
+      requestAnimationFrame(animateTransition);
+    } else {
+      const pos = satelliteModel.current.position;
+      const direction = new THREE.Vector3().subVectors(pos, center).normalize();
+      const distance = 3000;
+      const targetPosition = new THREE.Vector3().addVectors(pos, direction.multiplyScalar(distance));
+      const duration = 2000;
+      const startPosition = cameraRef.current.position.clone();
+      const startTime = performance.now();
+
+      const animateTransition = (time: number) => {
+        const elapsed = time - startTime;
+        const t = Math.min(elapsed / duration, 1);
+        const easedT = easeInOutQuad(t);
+
+        cameraRef.current!.position.lerpVectors(startPosition, targetPosition, easedT);
+        cameraRef.current!.lookAt(pos);
+        controlsRef.current!.target.copy(pos);
+        controlsRef.current!.update();
+
+        if (t < 1) {
+          requestAnimationFrame(animateTransition);
+        } else {
+          controlsRef.current!.rotateSpeed = 0.2;
+          controlsRef.current!.zoomSpeed = 0.2;
+          controlsRef.current!.panSpeed = 0.2;
+          setIsEarthView(false);
+        }
+      };
+
+      requestAnimationFrame(animateTransition);
+    }
+  }
+};
+
+
   return (
     <div className="Orbit" ref={mountRef}>
       {satelliteInfo && (
-        <div className="satellite-info">
-          <button className="close-button" onClick={handleCloseInfo}>X</button>
-          <pre>{satelliteInfo}</pre>
-          <h4>Next Pass Over Tenerife:</h4>
-          <p>{nextPass ? nextPass.toLocaleString() : 'Not available'}</p>
-        </div>
-      )}
-      <button className="center-button" onClick={handleCenterSatellite}>Center Satellite 📍</button>
+  <AnimatePresence>
+    <motion.div
+      className="satellite-info"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
+      <button className="close-button" onClick={handleCloseInfo}>X</button>
+      <pre>{satelliteInfo}</pre>
+      <h4>Next Pass Over Tenerife:</h4>
+      <p>{nextPass ? nextPass.toLocaleString() : 'Not available'}</p>
+    </motion.div>
+  </AnimatePresence>
+)}
       <button className="fullscreen-button" onClick={handleFullscreen}>
         {isFullscreen ? "Exit" : '⛶'}
+      </button>
+      <button className="toggle-view-button" onClick={handleToggleView}>
+        {isEarthView ? '🛰️ View' : '🌎 View'}
       </button>
     </div>
   );
