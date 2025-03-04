@@ -19,6 +19,9 @@ html, body {
     padding-right: 40px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    max-height: 80vh; /* Limit the height */
+  width: 300px; /* Fixed width to prevent stretching */
+  overflow-y: auto; /* Scroll if content overflows */
 }
 
 
@@ -42,7 +45,8 @@ html, body {
     background-color: #333;
 }
 
-.center-button {
+
+.toggle-view-button {
     position: absolute;
     bottom: 20px;
     right: 20px;
@@ -72,12 +76,10 @@ html, body {
     transition: background-color 0.2s;
 }
 
-.center-button:hover {
-    background-color: #0056b3;
-}
 
-.satellite-hover {
-    filter: brightness(1.5);
+
+.toggle-view-button:hover {
+    background-color: #0056b3;
 }
 
 .fullscreen-button:hover {
