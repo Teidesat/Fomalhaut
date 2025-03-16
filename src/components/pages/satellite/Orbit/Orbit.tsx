@@ -260,9 +260,6 @@ const calculateNextPass = () => {
   return nextPass;
 };
 
-
-
-
 // Principal component
 const Orbit: FC = () => {
 
