@@ -116,7 +116,7 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding-right: 15px;
+    padding-right: 25px;
   }
 
   .graphs-title {

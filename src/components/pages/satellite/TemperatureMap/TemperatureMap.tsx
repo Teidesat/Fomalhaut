@@ -350,7 +350,6 @@ interface TemperatureGraphsProps {
   temperatureData: { name: string; temperature: number }[];
 }
 
-const colorMap: Record<string, string> = {}; // Store persistent colors
 
 const predefinedColors: Record<string, string> = {
   "Eps Storage": "#FF0000", // Red
@@ -380,7 +379,7 @@ const TemperatureGraphs: FC<TemperatureGraphsProps> = ({ temperatureData }) => {
   return (
     <div className="temperature-graphs">
   <div className="graphs-title">TEMPERATURE GRAPHS</div>
-  <ResponsiveContainer width="100%" height={300} className="chart-container">
+  <ResponsiveContainer width="100%" height={500} className="chart-container">
     <LineChart data={history}>
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis
