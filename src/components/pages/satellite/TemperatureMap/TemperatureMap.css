@@ -1,1 +1,139 @@
-.TemperatureMap {}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+.temperature-map {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-areas:
+      "canvas graphs"
+      "canvas graphs"
+      "canvas graphs"
+      "indicators graphs"
+      "indicators graphs";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr; 
+    gap: 15px 15px;
+    background: #222;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .canvas-container {
+    position: relative;
+    grid-area: canvas;
+    background: #333;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .canvas-title {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #525050; /* Neon cyan */
+    font-size: 1.3rem;
+    font-weight: bold;
+    font-family: 'Exo', sans-serif;
+    text-transform: uppercase;
+    padding: 8px 15px;
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 10;
+  
+  }
+  
+  .temperature-indicators {
+    grid-area: indicators;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    gap: 10px;
+    padding: 15px;
+    background: rgb(0, 0, 0); /* Slight transparency */
+    border-radius: 10px;
+  }
+  
+  .temp-card {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    font-family: 'Exo', sans-serif;
+  }
+
+  .temp-card:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .temp-card.active {
+    background: linear-gradient(135deg, #4b4b4b, #2b2b2b);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .part-name {
+    flex: 1;
+    color: rgb(125, 125, 125);
+    font-weight: bold;
+  }
+  
+  .temp-bar-container {
+    flex: 2;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.174);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .temp-bar {
+    height: 100%;
+    width: 0%;
+    transition: width 1s ease-in-out, background 1s ease-in-out;
+  }
+  
+  .temp-value {
+    flex: 1;
+    text-align: right;
+    color: rgb(125, 125, 125);
+    font-weight: bold;
+  }
+  
+  .temperature-graphs {
+    grid-area: graphs;
+    background: rgb(0, 0, 0);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-right: 25px;
+  }
+
+  .graphs-title {
+    position: relative;
+    top: 10px;
+    left: 10px;
+    color: #525050; /* Neon cyan */
+    font-size: 1.3rem;
+    font-weight: bold;
+    font-family: 'Exo', sans-serif;
+    text-transform: uppercase;
+    padding: 8px 15px;
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .temperature-graphs .recharts-cartesian-grid line {
+    stroke: rgba(255, 255, 255, 0.324);
+  }
