@@ -11,10 +11,10 @@ interface TemperatureMapProps {}
 const satelliteParts: { [key: string]: any[] } = {};
 
 const initialParts = [
-  { name: "Eps Storage", temperature: 0 },
+  { name: "Eps Storage", temperature: -40 },
   { name: "Obc + Transceptor", temperature: 0 },
-  { name: "Lomoboard", temperature: 0 },
-  { name: "Pyl Controller", temperature: 0 },
+  { name: "Lomoboard", temperature: 30 },
+  { name: "Pyl Controller", temperature: 70 },
 ];
 
 const nameToPart = [
@@ -25,8 +25,8 @@ const nameToPart = [
 ]
 
 const getTemperatureColor = (temp: number) => {
-  const minTemp = 0;
-  const maxTemp = 100;
+  const minTemp = -60;
+  const maxTemp = 80;
   const normalized = (temp - minTemp) / (maxTemp - minTemp);
   return `hsl(${(1 - normalized) * 240}, 100%, 50%)`; // Blue (240°) → Red (0°)
 };
@@ -34,11 +34,10 @@ const getTemperatureColor = (temp: number) => {
 const updateTemperatureEffect = (part: THREE.Mesh, temperature: number) => {
   const material = part.material as THREE.MeshStandardMaterial;
   
-  // Base emissive color for subtle glow
-  if (temperature > 70) {
+  if (temperature > 40) {
     material.emissive.setHex(0xff4500); // Hot (orange glow)
     material.emissiveIntensity = 0.5;
-  } else if (temperature < 30) {
+  } else if (temperature < -20) {
     material.emissive.setHex(0x0000ff); // Cold (blue glow)
     material.emissiveIntensity = 0.3;
   } else {
@@ -51,10 +50,10 @@ const adjustMaterialProperties = (part: THREE.Mesh, temperature: number) => {
   const material = part.material as THREE.MeshStandardMaterial;
 
   // Reduce roughness for heat, increase for cold
-  material.roughness = temperature > 70 ? 0.2 : temperature < 30 ? 0.8 : 0.5;
+  material.roughness = temperature > 40 ? 0.2 : temperature < -20 ? 0.8 : 0.5;
 
   // Slight increase in metalness for hot parts
-  material.metalness = temperature > 70 ? 1.0 : 0.7;
+  material.metalness = temperature > 40 ? 1.0 : 0.7;
 };
 
 const applyHeatOverlay = (part: THREE.Mesh, temperature: number) => {
@@ -62,10 +61,10 @@ const applyHeatOverlay = (part: THREE.Mesh, temperature: number) => {
   
   // Create a red/orange transparent overlay effect
   material.transparent = true;
-  material.opacity = temperature > 70 ? 0.9 : 1.0;
+  material.opacity = temperature > 40 ? 0.9 : 1.0;
 };
 
-const raycaster = new THREE.Raycaster();
+//const raycaster = new THREE.Raycaster(); // Used for mouse interaction
 
 const createScene = () => new THREE.Scene();
 
@@ -171,7 +170,7 @@ const useRandomTemperatures = (
       setTemperatureData((prevData) => {
         const newData = prevData.map((part) => ({
           ...part,
-          temperature: Math.random() * 100,
+          temperature: Math.max(-60, Math.min(80, part.temperature + (Math.random() * 10 - 5))),
         }));
         newData.forEach((part) => {
           const parent = nameToPart.find((p) => p.name === part.name)?.part;
@@ -187,7 +186,7 @@ const useRandomTemperatures = (
         });
         return newData;
       });
-    }, 5000);
+    }, 10000);
     
     return () => clearInterval(interval);
 
@@ -334,8 +333,8 @@ const TemperatureIndicators: FC<TemperatureIndicatorsProps> = ({ temperatureData
             <div
               className="temp-bar"
               style={{
-          width: `${part.temperature}%`,
-          background: getTemperatureColor(part.temperature),
+              width: `${((part.temperature + 60) / 140) * 100}%`,
+              background: getTemperatureColor(part.temperature),
               }}
             ></div>
           </div>
@@ -373,23 +372,33 @@ const TemperatureGraphs: FC<TemperatureGraphsProps> = ({ temperatureData }) => {
       newEntry[part.name] = part.temperature;
     });
 
-    setHistory((prevHistory) => [...prevHistory.slice(-10), newEntry]);
+    setHistory((prevHistory) => [...prevHistory.slice(-15), newEntry]);
   }, [temperatureData]);
+
+  const calculateStats = (partName: string) => {
+    const values = history.map((entry) => entry[partName]).filter((value) => value !== undefined);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const avg = values.reduce((sum, value) => sum + value, 0) / values.length;
+    return { min, max, avg };
+  };
 
   return (
     <div className="temperature-graphs">
-  <div className="graphs-title">TEMPERATURE GRAPHS</div>
-  <ResponsiveContainer width="100%" height={500} className="chart-container">
-    <LineChart data={history}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis
+      <div className="graphs-title">TEMPERATURE GRAPHS</div>
+      <ResponsiveContainer className="chart-container">
+        <LineChart data={history}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
         dataKey="time"
         tickFormatter={(time) => new Date(time).toLocaleTimeString()}
-      />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      {temperatureData.map((part) => (
+          />
+          <YAxis />
+          <Tooltip
+        labelFormatter={(label) => new Date(label).toLocaleTimeString()}
+          />
+          <Legend />
+          {temperatureData.map((part) => (
         <Line
           key={part.name}
           type="monotone"
@@ -398,17 +407,40 @@ const TemperatureGraphs: FC<TemperatureGraphsProps> = ({ temperatureData }) => {
           strokeWidth={2}
           dot={false}
         />
-      ))}
-    </LineChart>
-  </ResponsiveContainer>
-</div>
-
+          ))}
+        </LineChart>
+      </ResponsiveContainer>
+      <div className="temperature-stats">
+      <div className="stats-title">TEMPERATURE STATS</div>
+      <table className="stats-content">
+        <thead>
+        <tr>
+          <th>Part Name</th>
+          <th>Min Temperature</th>
+          <th>Max Temperature</th>
+          <th>Avg Temperature</th>
+        </tr>
+        </thead>
+        <tbody>
+        {temperatureData.map((part) => {
+          const stats = calculateStats(part.name);
+          return (
+          <tr key={part.name} className="stat-item">
+            <td className="stat-label">{part.name}</td>
+            <td className="stat-value">{stats.min.toFixed(1)}°C</td>
+            <td className="stat-value">{stats.max.toFixed(1)}°C</td>
+            <td className="stat-value">{stats.avg.toFixed(1)}°C</td>
+          </tr>
+          );
+        })}
+        </tbody>
+      </table>
+      </div>
+    </div>
   );
 };
 
-
-
-
+// Main component
 const TemperatureMap: FC<TemperatureMapProps> = () => {
   const canvasMountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene>(new THREE.Scene());
@@ -448,6 +480,7 @@ const TemperatureMap: FC<TemperatureMapProps> = () => {
     createSatelliteModel(scene, renderScene, satelliteRef);
     canvasMountRef.current.appendChild(renderer.domElement);
 
+    /* MOUSE MOVE useEffect
     const handleMouseMove = (e: MouseEvent) => {
       if (!cameraRef.current || !sceneRef.current) return;
       const rect = canvasMountRef.current!.getBoundingClientRect();
@@ -464,7 +497,9 @@ const TemperatureMap: FC<TemperatureMapProps> = () => {
         
       }
     };
+    */
 
+    /* MOUSE CLICK useEffect 
     const handleMouseDown = (e: MouseEvent) => {
       if (!cameraRef.current || !sceneRef.current) return;
       const rect = canvasMountRef.current!.getBoundingClientRect();
@@ -482,13 +517,14 @@ const TemperatureMap: FC<TemperatureMapProps> = () => {
         
       }
     };
+    */
 
-    window.addEventListener("pointermove", handleMouseMove);
-    window.addEventListener("pointerdown", handleMouseDown);
+    //window.addEventListener("pointermove", handleMouseMove);
+    //window.addEventListener("pointerdown", handleMouseDown);
 
     return () => {
-      window.removeEventListener("pointermove", handleMouseMove);
-      window.removeEventListener("pointerdown", handleMouseDown);
+      //window.removeEventListener("pointermove", handleMouseMove);
+      //window.removeEventListener("pointerdown", handleMouseDown);
       if (rendererRef.current) {
         canvasMountRef.current?.removeChild(rendererRef.current.domElement);
         rendererRef.current.dispose();
