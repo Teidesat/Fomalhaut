@@ -1,0 +1,52 @@
+.command-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    color: white;
+    font-family: monospace;
+  }
+  
+  .command-form label {
+    font-weight: 600;
+    color: #38bdf8;
+    margin-bottom: 4px;
+    display: block;
+  }
+  
+  .command-form input,
+  .command-form select,
+  .command-form textarea {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: white;
+    font-family: monospace;
+    font-size: 0.95rem;
+  }
+  
+  .command-form input:focus,
+  .command-form select:focus,
+  .command-form textarea:focus {
+    outline: none;
+    border-color: #22d3ee;
+  }
+  
+  .command-form button {
+    align-self: start;
+    padding: 10px 20px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .command-form button:hover {
+    background-color: #2563eb;
+  }
+  

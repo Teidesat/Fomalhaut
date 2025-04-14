@@ -7,7 +7,7 @@ import About from "./components/pages/About/About";
 import TemperatureMap from "./components/pages/satellite/TemperatureMap/TemperatureMap";
 import Orbit from "./components/pages/satellite/Orbit/Orbit";
 import Logs from "./components/pages/Logs/Logs";
-
+import CommunicationsPage from "./components/pages/Communications/CommunicationsPage";
 function App() {
   return (
     <BrowserRouter>
@@ -22,6 +22,7 @@ function App() {
               <Route path="/temperaturemap" element={<TemperatureMap />} />
               <Route path="/location" element={<Orbit />} />
               <Route path="/logs" element={<Logs />} />
+              <Route path="/communications" element={<CommunicationsPage />} />
             </Routes>
           </main>
         </div>
