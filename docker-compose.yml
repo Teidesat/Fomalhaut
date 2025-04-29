@@ -4,7 +4,6 @@ networks:
 
 services:
   fomalhaut-frontend:
-    image: fomalhaut-frontend
     build:
       context: .
       dockerfile: Dockerfile
@@ -16,4 +15,24 @@ services:
       - "20001:20001"
     volumes:
       - ./src:/app/src
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     command: npm run dev
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    hostname: grafana
+    networks:
+      - fomalhaut-network
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/data:/var/lib/grafana
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_NAME=Main Org.
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+

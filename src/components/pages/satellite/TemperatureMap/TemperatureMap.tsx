@@ -11,12 +11,24 @@ import {
   createSatelliteModel,
 } from "./threeUtils";
 import * as TWEEN from "@tweenjs/tween.js";
-import { initialParts} from "./SatelliteModelParts";
-import useRandomTemperatures from "./useRandomTemperatures";
 import TemperatureIndicators from "./TemperatureIndicators";
 import TemperatureGraphs from "./TemperatureGraphs";
+import useAPITemperature, { TemperatureReading} from "./useAPITemperature";
 
 interface TemperatureMapProps {}
+
+const groupByPartName = (data: TemperatureReading[]) => {
+  const grouped: Record<string, { temperature: number; timestamp: string }[]> = {};
+
+  data.forEach(({ part_name, temperature, timestamp }) => {
+    if (!grouped[part_name]) {
+      grouped[part_name] = [];
+    }
+    grouped[part_name].push({ temperature, timestamp: timestamp || "" });
+  });
+
+  return grouped;
+};
 
 // Main component
 const TemperatureMap: FC<TemperatureMapProps> = () => {
@@ -26,6 +38,7 @@ const TemperatureMap: FC<TemperatureMapProps> = () => {
   const cameraRef = useRef<THREE.PerspectiveCamera>();
   const controlsRef = useRef<OrbitControls>();
   const satelliteRef = useRef<THREE.Group | null>(null);
+  
 
   // This render function is used throughout to update the canvas
   const renderScene = () => {
@@ -34,7 +47,13 @@ const TemperatureMap: FC<TemperatureMapProps> = () => {
     }
   };
 
-  const temperatureData = useRandomTemperatures(initialParts);
+  const rawTemperatureData = useAPITemperature(10000);
+  const grouped = groupByPartName(rawTemperatureData);
+
+  const latestTemps = Object.entries(grouped).map(([partName, readings]) => {
+    const latest = readings[readings.length - 1];
+    return { name: partName, temperature: latest.temperature };
+  });
 
   /* INITIALIZATION useEffect */
   useEffect(() => {
@@ -116,8 +135,8 @@ const TemperatureMap: FC<TemperatureMapProps> = () => {
       <div className="canvas-container" ref={canvasMountRef}>
         <div className="canvas-title">TEIDESAT-1 Temperature Map</div>
       </div>
-      <TemperatureIndicators temperatureData={temperatureData}/>
-      <TemperatureGraphs temperatureData={temperatureData}/>
+      <TemperatureIndicators temperatureData={latestTemps}/>
+      <TemperatureGraphs/>
     </div>
   );
 };

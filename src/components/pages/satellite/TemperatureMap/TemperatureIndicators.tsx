@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import { FC, useState } from "react";
 import * as THREE from "three";
 import TWEEN from "@tweenjs/tween.js";
 import { getTemperatureColor } from "./TemperatureFunctions";

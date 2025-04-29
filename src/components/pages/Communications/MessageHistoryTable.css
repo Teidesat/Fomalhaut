@@ -57,39 +57,7 @@
     font-weight: bold;
   }
   
-  .generate-button {
-    margin-bottom: 1rem;
-    padding: 10px 16px;
-    font-weight: bold;
-    background-color: #38bdf8;
-    color: #0f172a;
-    font-family: monospace;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .generate-button:hover {
-    background-color: #0ea5e9;
-  }
-  
-  .clear-button {
-    margin-bottom: 1rem;
-    padding: 10px 16px;
-    font-weight: bold;
-    background-color:rgb(248, 56, 59);
-    color: #0f172a;
-    font-family: monospace;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .clear-button:hover {
-    background-color: #dc2626;
-  }
+
 
   /* Estilo para los filtros */
 .filter-select,
