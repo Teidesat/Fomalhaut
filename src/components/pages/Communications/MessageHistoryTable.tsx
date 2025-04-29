@@ -34,30 +34,6 @@ const MessageHistoryTable: React.FC = () => {
     return () => clearInterval(interval);
   }, [levelFilter, dateFilter]);
 
-  const generateSampleLogs = () => {
-    fetch("http://localhost:8000/api/logvault/generate-sample/", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer holis123",
-      },
-    })
-      .then((res) => res.json())
-      .then(() => fetchLogs())
-      .catch((err) => console.error("Error generating sample logs:", err));
-  };
-
-  const clearLogs = () => {
-    fetch("http://localhost:8000/api/logvault/clear/", {
-      method: "DELETE",
-      headers: {
-        Authorization: "Bearer holis123",
-      },
-    })
-      .then((res) => res.json())
-      .then(() => fetchLogs())
-      .catch((err) => console.error("Error clearing logs:", err));
-  };
-
   const getStatusClass = (level: string) => {
     switch (level) {
       case "DEBUG":
@@ -77,51 +53,6 @@ const MessageHistoryTable: React.FC = () => {
 
   return (
     <div className="message-history-container">
-      <div
-        style={{
-          display: "flex",
-          gap: "1rem",
-          marginBottom: "1rem",
-          alignItems: "center",
-        }}
-      >
-        <button onClick={generateSampleLogs} className="generate-button">
-          Generar Logs de Prueba
-        </button>
-        <button onClick={clearLogs} className="clear-button">
-          Borrar Todos los Logs
-        </button>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          gap: "1rem",
-          marginBottom: "1rem",
-          alignItems: "center",
-        }}
-      >
-        <select
-          value={levelFilter}
-          onChange={(e) => setLevelFilter(e.target.value)}
-          className="filter-select"
-        >
-          <option value="">Todos los niveles</option>
-          <option value="DEBUG">Debug</option>
-          <option value="INFO">Info</option>
-          <option value="WARNING">Warning</option>
-          <option value="ERROR">Error</option>
-          <option value="CRITICAL">Critical</option>
-        </select>
-
-        <input
-          type="date"
-          value={dateFilter}
-          onChange={(e) => setDateFilter(e.target.value)}
-          className="filter-date"
-        />
-      </div>
-
       <table className="message-history-table">
         <thead>
           <tr>
