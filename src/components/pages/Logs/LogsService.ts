@@ -9,13 +9,12 @@ class LogsService {
     this.baseUrl = 'http://localhost:8000/api/logvault/';
   }
 
-  async getAllLogs(query: string = ''): Promise<Log[]> {
-    const response: AxiosResponse<Log[]> = await axios.get(`${this.baseUrl}?${query}`, {
+  async getAllLogs(query: string = ''): AxiosResponse<Log[]> {
+    return axios.get(`${this.baseUrl}?${query}`, {
       headers: {
-        Authorization: 'Bearer holis123', // ajusta si usas otro tipo de token
+        Authorization: 'Bearer holis123'
       },
     });
-    return response.data;
   }
   
   /*
