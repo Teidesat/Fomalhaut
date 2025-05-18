@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from "react";
 import "./Logs.css";
 import LogsService from "./LogsService";
 import { Log } from "./Log.model";
+import { IoSync } from "react-icons/io5";
 
 const Logs: FC = () => {
   const [logs, setLogs] = useState<Log[]>([]);
@@ -10,22 +11,37 @@ const Logs: FC = () => {
   const [levelFilter, setLevelFilter] = useState<string>("");
   const [dateFilter, setDateFilter] = useState<string>("");
 
-  const fetchLogs = async () => {
-    try {
-      const params = new URLSearchParams();
-      if (levelFilter) params.append("level", levelFilter);
-      if (dateFilter) params.append("timestamp", dateFilter);
+  const fetchLogs = () => {
+    LogsService.getAllLogs()
+      .then((response) => {
+        setLogs(response.data);
+        console.log("Lo que se recibe " + response)
+      })
+      .catch((err) => {
+          console.log("Lo que se recibe en error " + err)
+        setError("Error fetching logs. Please try again later. Explanation: " + err);
+        setLogs([]);
+      });
+  };
 
-      const logsData = await LogsService.getAllLogs(params.toString());
-      setLogs(logsData);
-    } catch (err) {
-      setError("Error fetching logs. Please try again later.");
-    }
+  const filterLogs = () => {
+    const params = new URLSearchParams();
+    if (levelFilter) params.append("level", levelFilter);
+    if (dateFilter) params.append("timestamp", dateFilter);
+
+    LogsService.getLogsFilteredBy(params.toString())
+      .then((response) => {
+        setLogs(response.data);
+      })
+      .catch((err) => {
+        setError("Error fetching filtered logs. Please try again later. Explanation: " + err);
+        setLogs([]);
+      });
   };
 
   useEffect(() => {
     fetchLogs();
-    const interval = setInterval(fetchLogs, 10000);
+    const interval = setInterval(fetchLogs, 5000);
     return () => clearInterval(interval);
   }, [levelFilter, dateFilter]);
 
@@ -70,6 +86,10 @@ const Logs: FC = () => {
             onChange={(e) => setDateFilter(e.target.value)}
             className="logs-date"
           />
+
+          <button className="logs-button" onClick={filterLogs}>
+            <IoSync />
+          </button>
        
         {error && <p className="logs-error">{error}</p>}
       </div>
