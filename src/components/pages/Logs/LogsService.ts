@@ -1,21 +1,22 @@
 import axios, { AxiosResponse } from 'axios';
 import { Log } from "./Log.model";
+import {environment} from "../../../environments/environment.ts";
 
 
 class LogsService {
 
-  private baseUrl: string = 'http://localhost:8000/api/logvault/';
+  private baseUrl: string = environment.REST_GSCS + '/logvault';
 
   private baseHeader: any = {
       headers: {
-        Authorization: 'Bearer holis123'
+        Authorization: environment.BEARER_TOKEN
       }
     };
 
   constructor() {}
 
   getAllLogs(): Promise<AxiosResponse<Log[]>> {
-    return axios.get(`${this.baseUrl}all`, this.baseHeader);
+    return axios.get(`${this.baseUrl}`, this.baseHeader);
   }
   
   getLogsFilteredBy(query: string = ''): Promise<AxiosResponse<Log[]>> {
@@ -24,7 +25,7 @@ class LogsService {
       return this.getAllLogs();
 
     }
-    return axios.get(`${this.baseUrl}filter?${query}`, this.baseHeader);
+    return axios.get(`${this.baseUrl}?${query}`, this.baseHeader);
   }
 
   /*
