@@ -22,6 +22,7 @@ class LogsService {
     console.log("Calling " + `${this.baseUrl}?${query}`);
     if (query.length === 0) {
       return this.getAllLogs();
+
     }
     return axios.get(`${this.baseUrl}filter?${query}`, this.baseHeader);
   }
