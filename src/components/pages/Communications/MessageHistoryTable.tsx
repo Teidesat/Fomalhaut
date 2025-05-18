@@ -18,7 +18,7 @@ const MessageHistoryTable: React.FC = () => {
     if (levelFilter) params.append("level", levelFilter);
     if (dateFilter) params.append("timestamp", dateFilter); // formato ISO: yyyy-mm-dd
 
-    fetch(`http://localhost:8000/api/logvault/?${params.toString()}`, {
+    fetch(`http://localhost:8000/api/logvault/filter?${params.toString()}`, {
       headers: {
         Authorization: "Bearer holis123",
       },

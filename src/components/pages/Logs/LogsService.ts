@@ -16,16 +16,16 @@ class LogsService {
   constructor() {}
 
   getAllLogs(): Promise<AxiosResponse<Log[]>> {
+    console.log("Calling " + `${this.baseUrl}`);
     return axios.get(`${this.baseUrl}`, this.baseHeader);
   }
   
   getLogsFilteredBy(query: string = ''): Promise<AxiosResponse<Log[]>> {
-    console.log("Calling " + `${this.baseUrl}?${query}`);
     if (query.length === 0) {
       return this.getAllLogs();
-
     }
-    return axios.get(`${this.baseUrl}?${query}`, this.baseHeader);
+    console.log("Calling " + `${this.baseUrl}/filter?${query}`);
+    return axios.get(`${this.baseUrl}/filter?${query}`, this.baseHeader);
   }
 
   /*
