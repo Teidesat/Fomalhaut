@@ -7,23 +7,28 @@ const About: FC<AboutProps> = () => (
   <div className="About">
     <h1>About</h1>
     <h2>Authors:</h2>
-    <h3>Older vue project</h3>
-    <ul>
-      <li>Jorge Sierra Acosta</li>
-      <li>Fabio Ovidio Bianchini Cano</li>
-      <li>Christopher Medina</li>
-    </ul>
-    <h3>New react project</h3>
-    <ul>
-      <li>Álvaro Rodríguez Gómez</li>
-    </ul>
-    <h2>Technologies used:</h2>
-    <ul>
-      <li>React</li>
-      <li>React Router</li>
-      <li>Bootstrap</li>
-      <li>ThreeJS</li>
-    </ul>
+    <div>
+      <h3>New react project</h3>
+      <p>Mikel Mugica Arregui</p>
+      <p>Álvaro Rodríguez Gómez</p>
+      <p>Sergio Tabares Hernández</p>
+    </div>
+    <div>
+      <h3>Older node/vue project</h3>
+      <p>Jorge Sierra Acosta</p>
+      <p>Andrés Calimero</p>
+      <p>Fabio Ovidio Bianchini Cano</p>
+      {/*ToDo: Add the remaining authors*/}
+    </div>
+    <div>
+      <h2>Technologies used:</h2>
+      <p>React</p>
+      <p>React Router</p>
+      <p>Vite</p>
+      <p>Bootstrap</p>
+      <p>ThreeJS</p>
+      <p>Grafana</p>
+    </div>
   </div>
 );
 
