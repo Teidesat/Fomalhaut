@@ -1,4 +1,4 @@
-import { FC, useRef, useEffect, useState } from "react";
+import { FC, useRef, useEffect } from "react";
 import "./TemperatureMap.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -38,7 +38,7 @@ const TemperatureMap: FC<TemperatureMapProps> = () => {
   const cameraRef = useRef<THREE.PerspectiveCamera>();
   const controlsRef = useRef<OrbitControls>();
   const satelliteRef = useRef<THREE.Group | null>(null);
-  
+
 
   // This render function is used throughout to update the canvas
   const renderScene = () => {

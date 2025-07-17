@@ -1,7 +1,7 @@
-import axios, { AxiosResponse } from "axios";
+// import axios, { AxiosResponse } from "axios";
 
 class SatelliteStatusService {
-  private baseUrl: string = "http://localhost:8080/api/v1/satellite/temperature";
+  // private baseUrl: string = "http://localhost:8080/api/v1/satellite/temperature";
   private mockedData: number[] = [43, 21, 76, 98, 64, 32, 63, 28, 97, 85];
   constructor() {}
 

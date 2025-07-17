@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import "./Home.css";
 
 import { CiGlobe } from "react-icons/ci";

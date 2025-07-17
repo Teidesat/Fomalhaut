@@ -11,7 +11,7 @@ interface TemperatureIndicatorsProps {
 const TemperatureIndicators: FC<TemperatureIndicatorsProps> = ({ temperatureData }) => {
 
 const [activePart, setActivePart] = useState<string | null>(null);
-const [hoveredPart, setHoveredPart] = useState<string | null>(null);
+const [_hoveredPart, setHoveredPart] = useState<string | null>(null);
 
 const togglePart = (partName: string) => {
     setActivePart((prevActivePart) => (prevActivePart === partName ? null : partName));

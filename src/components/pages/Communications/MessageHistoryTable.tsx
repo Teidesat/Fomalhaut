@@ -10,8 +10,8 @@ interface LogEntry {
 
 const MessageHistoryTable: React.FC = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [levelFilter, setLevelFilter] = useState<string>("");
-  const [dateFilter, setDateFilter] = useState<string>("");
+  const [levelFilter, _setLevelFilter] = useState<string>("");
+  const [dateFilter, _setDateFilter] = useState<string>("");
 
   const fetchLogs = () => {
     const params = new URLSearchParams();

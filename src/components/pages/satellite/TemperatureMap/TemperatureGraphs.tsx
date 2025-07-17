@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import "./TemperatureMap.css";
 import GrafanaDashboard from "./utils/GrafanaDashboard";
 
@@ -16,5 +16,3 @@ const TemperatureGraphs: FC<TemperatureGraphsProps> = () => {
 };
 
 export default TemperatureGraphs;
-
-
