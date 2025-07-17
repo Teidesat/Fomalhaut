@@ -10,7 +10,7 @@ const Home: FC<HomeProps> = () => (
   <div className="Home">
     <img
       className="about-logo"
-      src="src/assets/teidesat_logo.png"
+      src="../../../../src/assets/teidesat_logo.png"
       alt="TeideSat Logo"
     />
     <div className="central-text">

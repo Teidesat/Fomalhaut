@@ -37,7 +37,7 @@ const TopPanel: FC<TopPanelProps> = () => {
       <Link to="/">
         <img
           className="corner-icon"
-          src="src\assets\fomalhaut_logo.png"
+          src="../../../src/assets/fomalhaut_logo.png"
           alt="Fomalhaut Logo"
         />
       </Link>
