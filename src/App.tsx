@@ -8,6 +8,7 @@ import TemperatureMap from "./components/pages/satellite/TemperatureMap/Temperat
 import Orbit from "./components/pages/satellite/Orbit/Orbit";
 import Logs from "./components/pages/Logs/Logs";
 import CommunicationsPage from "./components/pages/Communications/CommunicationsPage";
+
 function App() {
   return (
     <BrowserRouter>
@@ -30,6 +31,5 @@ function App() {
     </BrowserRouter>
   );
 }
-
 
 export default App;

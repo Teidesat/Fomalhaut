@@ -5,6 +5,6 @@ const nameToPart = [
   { name: "Obc + Transceptor", part: "21_03_000v2_-_obc_+_transceptor1" },
   { name: "Lomoboard", part: "21_08_010v2_-lomoboard1" },
   { name: "Pyl Controller", part: "21_01_030v2_-_pylcontroller1" },
-]
+];
 
 export { satelliteParts, nameToPart };

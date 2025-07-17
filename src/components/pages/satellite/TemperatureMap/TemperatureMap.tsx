@@ -13,18 +13,19 @@ import {
 import * as TWEEN from "@tweenjs/tween.js";
 import TemperatureIndicators from "./TemperatureIndicators";
 import TemperatureGraphs from "./TemperatureGraphs";
-import useAPITemperature, { TemperatureReading} from "./useAPITemperature";
+import useAPITemperature, { TemperatureReading } from "./useAPITemperature";
 
-interface TemperatureMapProps {}
+type TemperatureMapProps = object;
 
 const groupByPartName = (data: TemperatureReading[]) => {
-  const grouped: Record<string, { temperature: number; timestamp: string }[]> = {};
+  const grouped: Record<string, { temperature: number; timestamp: string }[]> =
+    {};
 
   data.forEach(({ part_name, temperature, timestamp }) => {
     if (!grouped[part_name]) {
       grouped[part_name] = [];
     }
-    grouped[part_name].push({ temperature, timestamp: timestamp || "" });
+    grouped[part_name].push({ temperature, timestamp: timestamp ?? "" });
   });
 
   return grouped;
@@ -38,7 +39,6 @@ const TemperatureMap: FC<TemperatureMapProps> = () => {
   const cameraRef = useRef<THREE.PerspectiveCamera>();
   const controlsRef = useRef<OrbitControls>();
   const satelliteRef = useRef<THREE.Group | null>(null);
-
 
   // This render function is used throughout to update the canvas
   const renderScene = () => {
@@ -58,7 +58,8 @@ const TemperatureMap: FC<TemperatureMapProps> = () => {
   /* INITIALIZATION useEffect */
   useEffect(() => {
     if (!canvasMountRef.current) return;
-    const canvasContainer =  document.querySelector(".canvas-container") || canvasMountRef.current;
+    const canvasContainer =
+      document.querySelector(".canvas-container") || canvasMountRef.current;
     const width = canvasContainer.clientWidth || window.innerWidth;
     const height = canvasContainer.clientHeight || window.innerHeight;
 
@@ -116,8 +117,8 @@ const TemperatureMap: FC<TemperatureMapProps> = () => {
           rendererRef.current.setSize(window.innerWidth, window.innerHeight);
           cameraRef.current.aspect = window.innerWidth / window.innerHeight;
         } else {
-          const width = canvasContainer?.clientWidth || window.innerWidth;
-          const height = canvasContainer?.clientHeight || window.innerHeight;
+          const width = canvasContainer?.clientWidth ?? window.innerWidth;
+          const height = canvasContainer?.clientHeight ?? window.innerHeight;
           rendererRef.current.setSize(width, height);
           cameraRef.current.aspect = width / height;
         }
@@ -135,8 +136,8 @@ const TemperatureMap: FC<TemperatureMapProps> = () => {
       <div className="canvas-container" ref={canvasMountRef}>
         <div className="canvas-title">TEIDESAT-1 Temperature Map</div>
       </div>
-      <TemperatureIndicators temperatureData={latestTemps}/>
-      <TemperatureGraphs/>
+      <TemperatureIndicators temperatureData={latestTemps} />
+      <TemperatureGraphs />
     </div>
   );
 };

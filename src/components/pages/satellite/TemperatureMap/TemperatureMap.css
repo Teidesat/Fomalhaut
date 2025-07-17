@@ -1,211 +1,214 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap");
 
-html, body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 
 .temperature-map {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    display: grid;
-    grid-template-areas:
-      "canvas graphs"
-      "canvas graphs"
-      "canvas graphs"
-      "indicators graphs"
-      "indicators graphs";
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr; 
-    gap: 15px 15px;
-    background: #222;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  
-  .canvas-container {
-    position: relative;
-    grid-area: canvas;
-    background: #333;
-    border-radius: 10px;
-    overflow: hidden;
-  }
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-areas:
+    "canvas graphs"
+    "canvas graphs"
+    "canvas graphs"
+    "indicators graphs"
+    "indicators graphs";
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+  gap: 15px 15px;
+  background: #222;
+  padding: 20px;
+  box-sizing: border-box;
+}
 
-  .canvas-title {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    color: #525050; /* Neon cyan */
-    font-size: 1.3rem;
-    font-weight: bold;
-    font-family: 'Exo', sans-serif;
-    text-transform: uppercase;
-    padding: 8px 15px;
-    border-radius: 8px;
-    pointer-events: none;
-    z-index: 10;
-  
-  }
-  
-  .temperature-indicators {
-    grid-area: indicators;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    gap: 10px;
-    padding: 15px;
-    background: rgb(0, 0, 0); /* Slight transparency */
-    border-radius: 10px;
-  }
-  
-  .temp-card {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    font-family: 'Exo', sans-serif;
-  }
+.canvas-container {
+  position: relative;
+  grid-area: canvas;
+  background: #333;
+  border-radius: 10px;
+  overflow: hidden;
+}
 
-  .temp-card:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
+.canvas-title {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: #525050; /* Neon cyan */
+  font-size: 1.3rem;
+  font-weight: bold;
+  font-family: "Exo", sans-serif;
+  text-transform: uppercase;
+  padding: 8px 15px;
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 10;
+}
 
-  .temp-card.active {
-    background: linear-gradient(135deg, #4b4b4b, #2b2b2b);
-    transition: background 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .part-name {
-    flex: 1;
-    color: rgb(125, 125, 125);
-    font-weight: bold;
-  }
-  
-  .temp-bar-container {
-    flex: 2;
-    height: 10px;
-    background: rgba(255, 255, 255, 0.174);
-    border-radius: 5px;
-    overflow: hidden;
-  }
-  
-  .temp-bar {
-    height: 100%;
-    width: 0%;
-    transition: width 1s ease-in-out, background 1s ease-in-out;
-  }
-  
-  .temp-value {
-    flex: 1;
-    text-align: right;
-    color: rgb(125, 125, 125);
-    font-weight: bold;
-  }
-  
-  .temperature-graphs {
-    grid-area: graphs;
-    background: rgb(0, 0, 0);
-    border-radius: 10px;
-    overflow-y: auto;  /* Enables scrolling inside this div */
-    overflow-x: hidden; /* Prevents unnecessary horizontal scroll */
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    height: 100%;
-    padding-top: 10px;
-    padding-left: 10px;
-    padding-right: 50px;
-    box-sizing: border-box;
+.temperature-indicators {
+  grid-area: indicators;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  gap: 10px;
+  padding: 15px;
+  background: rgb(0, 0, 0); /* Slight transparency */
+  border-radius: 10px;
+}
+
+.temp-card {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-family: "Exo", sans-serif;
+}
+
+.temp-card:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.temp-card.active {
+  background: linear-gradient(135deg, #4b4b4b, #2b2b2b);
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.part-name {
+  flex: 1;
+  color: rgb(125, 125, 125);
+  font-weight: bold;
+}
+
+.temp-bar-container {
+  flex: 2;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.174);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.temp-bar {
+  height: 100%;
+  width: 0;
+  transition:
+    width 1s ease-in-out,
+    background 1s ease-in-out;
+}
+
+.temp-value {
+  flex: 1;
+  text-align: right;
+  color: rgb(125, 125, 125);
+  font-weight: bold;
+}
+
+.temperature-graphs {
+  grid-area: graphs;
+  background: rgb(0, 0, 0);
+  border-radius: 10px;
+  overflow-y: auto; /* Enables scrolling inside this div */
+  overflow-x: hidden; /* Prevents unnecessary horizontal scroll */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 50px;
+  box-sizing: border-box;
 }
 
 /* Ensures the chart takes up available space */
 .chart-container {
-    display: flex;
-    flex-grow: 1;
-    width: 100%;
-    max-height: 450px;
-    overflow: hidden; 
+  display: flex;
+  flex-grow: 1;
+  width: 100%;
+  max-height: 450px;
+  overflow: hidden;
 }
 
 /* Ensures stats fit properly */
 .temperature-stats {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    color: #525050;
-    font-family: 'Exo', sans-serif;
-    padding-left: 20px;
-    min-height: 0;
-    width: 100%;
-    overflow-x: auto;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  color: #525050;
+  font-family: "Exo", sans-serif;
+  padding-left: 20px;
+  min-height: 0;
+  width: 100%;
+  overflow-x: auto;
 }
 
 /* Title styles */
 .graphs-title {
-    position: relative;
-    color: #525050;
-    font-size: 1.3rem;
-    font-weight: bold;
-    font-family: 'Exo', sans-serif;
-    text-transform: uppercase;
-    padding: 8px 15px;
-    border-radius: 8px;
-    pointer-events: none;
-    z-index: 10;
+  position: relative;
+  color: #525050;
+  font-size: 1.3rem;
+  font-weight: bold;
+  font-family: "Exo", sans-serif;
+  text-transform: uppercase;
+  padding: 8px 15px;
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 10;
 }
 
 .stats-title {
-    font-size: 1.3rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    border-radius: 8px;
-    padding-bottom: 10px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 8px;
+  padding-bottom: 10px;
 }
 
+.stats-content {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Exo", sans-serif;
+  color: rgb(125, 125, 125);
+}
 
-  .stats-content {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'Exo', sans-serif;
-    color: rgb(125, 125, 125);
-  }
+.stats-content th,
+.stats-content td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #444;
+}
 
-  .stats-content th, .stats-content td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #444;
-  }
+.stats-content th {
+  background: #333;
+  font-weight: bold;
+  text-transform: uppercase;
+}
 
-  .stats-content th {
-    background: #333;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
+.stats-content tr:nth-child(even) {
+  background: #2b2b2b;
+}
 
-  .stats-content tr:nth-child(even) {
-    background: #2b2b2b;
-  }
+.stats-content tr:hover {
+  background: #3b3b3b;
+}
 
-  .stats-content tr:hover {
-    background: #3b3b3b;
-  }
+.stat-item {
+  transition: background 0.3s ease;
+}
 
-  .stat-item {
-    transition: background 0.3s ease;
-  }
+.stat-label {
+  font-weight: bold;
+}
 
-  .stat-label {
-    font-weight: bold;
-  }
-
-  .stat-value {
-    text-align: right;
-  }
-
+.stat-value {
+  text-align: right;
+}

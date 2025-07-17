@@ -1,7 +1,7 @@
 import { FC } from "react";
 import "./About.css";
 
-interface AboutProps {}
+type AboutProps = object;
 
 const About: FC<AboutProps> = () => (
   <div className="About">

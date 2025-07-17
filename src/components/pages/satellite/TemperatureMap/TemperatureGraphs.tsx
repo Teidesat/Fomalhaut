@@ -2,7 +2,7 @@ import { FC } from "react";
 import "./TemperatureMap.css";
 import GrafanaDashboard from "./utils/GrafanaDashboard";
 
-interface TemperatureGraphsProps {}
+type TemperatureGraphsProps = object;
 
 const TemperatureGraphs: FC<TemperatureGraphsProps> = () => {
   return (
@@ -10,7 +10,7 @@ const TemperatureGraphs: FC<TemperatureGraphsProps> = () => {
       <div className="graphs-title">TEMPERATURE GRAPHS (Grafana)</div>
       <div className="grafana-panels">
         <GrafanaDashboard />
-        </div>
+      </div>
     </div>
   );
 };

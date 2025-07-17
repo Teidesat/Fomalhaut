@@ -1,53 +1,53 @@
 .TopPanel {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: left;
-    background-color: #272a2d;
-    padding: 10px 20px;
-    line-height: 1.5;
-    font-weight: 500;
-    gap: 20px;
-  }
-    
-  .system-status {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 20px;
-    color: white;
-    vertical-align: middle;
-    margin-left: 20px;
-  }
-  
-  .ground-station {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-  }
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  background-color: #272a2d;
+  padding: 10px 20px;
+  line-height: 1.5;
+  font-weight: 500;
+  gap: 20px;
+}
 
-  .ground-station-status {
-    color: #c7ffc2;
-  }
-  
-  .satellite {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-  }
+.system-status {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  color: white;
+  vertical-align: middle;
+  margin-left: 20px;
+}
 
-  .satellite-status {
-    color: #a3f4ff;
-  }
-  
-  .corner-icon {
-    width: 40px;
-    height: 40px;
-    transition: transform 0.4s ease-out;
-  }
-  
-  .corner-icon:hover {
-    transform: rotate(180deg);
-  }
+.ground-station {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.ground-station-status {
+  color: #c7ffc2;
+}
+
+.satellite {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.satellite-status {
+  color: #a3f4ff;
+}
+
+.corner-icon {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.4s ease-out;
+}
+
+.corner-icon:hover {
+  transform: rotate(180deg);
+}

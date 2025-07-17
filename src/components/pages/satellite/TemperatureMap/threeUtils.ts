@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { satelliteParts } from "./SatelliteModelParts";
+import { MutableRefObject } from "react";
 
 const createScene = () => new THREE.Scene();
 
@@ -25,7 +26,7 @@ const createCamera = (width: number, height: number) => {
 
 const createControls = (
   camera: THREE.PerspectiveCamera,
-  renderer: THREE.WebGLRenderer
+  renderer: THREE.WebGLRenderer,
 ) => {
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
@@ -51,11 +52,10 @@ const createLight = (scene: THREE.Scene) => {
   scene.add(pointLight);
 };
 
-
 const createSatelliteModel = (
   scene: THREE.Scene,
   render: () => void,
-  satelliteRef: React.MutableRefObject<THREE.Group | null>
+  satelliteRef: MutableRefObject<THREE.Group | null>,
 ) => {
   const loader = new GLTFLoader();
   loader.load(
@@ -88,13 +88,13 @@ const createSatelliteModel = (
           child.material = child.material.clone();
         }
       });
-      
+
       render();
     },
     undefined,
     (error) => {
       console.error("Error loading model:", error);
-    }
+    },
   );
 };
 

@@ -1,57 +1,56 @@
 .SidePanel {
-    background-color: #272a2d;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow-y: auto;
-  }
-  
-  .family-section {
-    margin-bottom: 20px;
-  }
-  
-  .family-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    color: white;
-  }
-  
-  .family-header p {
-    margin-left: 10px;
-    font-size: 14px;
-  }
-  
-  .family-pages {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .family-pages li {
-    margin-bottom: 10px;
-  }
-  
-  .side-panel-link {
-    color: #a4d0db;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-  }
-  
-  .side-panel-link:hover {
-    color: #3498db;
-  }
-  
-  .side-panel-link svg {
-    margin-right: 10px;
-  }
-  
-  .lonely-pages {
-    margin-top: 20px;
-  }
-  
-  .lonely-page {
-    margin-bottom: 10px;
-  }
-  
+  background-color: #272a2d;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.family-section {
+  margin-bottom: 20px;
+}
+
+.family-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.family-header p {
+  margin-left: 10px;
+  font-size: 14px;
+}
+
+.family-pages {
+  list-style-type: none;
+  padding: 0;
+}
+
+.family-pages li {
+  margin-bottom: 10px;
+}
+
+.side-panel-link {
+  color: #a4d0db;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.side-panel-link:hover {
+  color: #3498db;
+}
+
+.side-panel-link svg {
+  margin-right: 10px;
+}
+
+.lonely-pages {
+  margin-top: 20px;
+}
+
+.lonely-page {
+  margin-bottom: 10px;
+}

@@ -32,7 +32,7 @@ const MessageHistoryTable: React.FC = () => {
     fetchLogs();
     const interval = setInterval(fetchLogs, 10000);
     return () => clearInterval(interval);
-  }, [levelFilter, dateFilter]);
+  }, [levelFilter, dateFilter, fetchLogs]);
 
   const getStatusClass = (level: string) => {
     switch (level) {

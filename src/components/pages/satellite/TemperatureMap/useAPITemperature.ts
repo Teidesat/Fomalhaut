@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import * as THREE from "three";
-import { updateTemperatureEffect, adjustMaterialProperties, applyHeatOverlay } from "./TemperatureFunctions";
+import {
+  updateTemperatureEffect,
+  adjustMaterialProperties,
+  applyHeatOverlay,
+} from "./TemperatureFunctions";
 import { satelliteParts, nameToPart } from "./SatelliteModelParts";
 
 export interface TemperatureReading {
@@ -11,12 +15,15 @@ export interface TemperatureReading {
 }
 
 const useAPITemperature = (pollingInterval = 10000) => {
-  const [temperatureData, setTemperatureData] = useState<TemperatureReading[]>([]);
+  const [temperatureData, setTemperatureData] = useState<TemperatureReading[]>(
+    [],
+  );
 
   useEffect(() => {
     const fetchTemperatureData = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/temperature/", { // Cambia esto si es otro endpoint
+        const response = await fetch("http://localhost:8000/api/temperature/", {
+          // Cambia esto si es otro endpoint
           headers: {
             Authorization: "Bearer holis123",
           },
@@ -26,7 +33,9 @@ const useAPITemperature = (pollingInterval = 10000) => {
 
         // Update visual effects
         fetchedData.forEach((part) => {
-          const parent = nameToPart.find((p) => p.name === part.part_name)?.part;
+          const parent = nameToPart.find(
+            (p) => p.name === part.part_name,
+          )?.part;
           if (parent && satelliteParts[parent]) {
             satelliteParts[parent].forEach((child) => {
               if (child.object instanceof THREE.Mesh) {

@@ -1,7 +1,13 @@
-import * as THREE from 'three';
-import * as satellite from 'satellite.js';
-import { TLE, EARTH_RADIUS, TENERIFE_COORDS, MINUTES_PER_DAY } from './constants';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import * as THREE from "three";
+import * as satellite from "satellite.js";
+import {
+  TLE,
+  EARTH_RADIUS,
+  TENERIFE_COORDS,
+  MINUTES_PER_DAY,
+} from "./constants";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { MutableRefObject } from "react";
 
 const tleLine1 = TLE.line1;
 const tleLine2 = TLE.line2;
@@ -12,24 +18,28 @@ const tenerifeLon = TENERIFE_COORDS.lon;
 const ixpdotp = MINUTES_PER_DAY / (2.0 * 3.141592654);
 const satrec = satellite.twoline2satrec(tleLine1, tleLine2);
 
-const createSatelliteModel = (scene: THREE.Scene, render: () => void, satelliteRef: React.MutableRefObject<THREE.Group | null>) => {
+const createSatelliteModel = (
+  scene: THREE.Scene,
+  render: () => void,
+  satelliteRef: MutableRefObject<THREE.Group | null>,
+) => {
   const loader = new GLTFLoader();
   loader.load(
-    '/cubesat.glb',
+    "/cubesat.glb",
     (gltf) => {
       const model = gltf.scene;
       model.scale.set(1000, 1000, 1000);
 
       // Asignar el modelo a la referencia
       satelliteRef.current = model;
-      
+
       scene.add(model);
       render();
     },
     undefined,
     (error) => {
-      console.error('Error cargando el modelo:', error);
-    }
+      console.error("Error cargando el modelo:", error);
+    },
   );
 };
 
@@ -38,14 +48,22 @@ const addOrbit = (scene: THREE.Scene, render: () => void) => {
   const intervalMinutes = 1;
   const minutes = MINUTES_PER_DAY / revsPerDay;
   const initialDate = new Date();
-  const orbitMaterial = new THREE.LineBasicMaterial({ color: 0x999999, opacity: 1.0, transparent: true });
+  const orbitMaterial = new THREE.LineBasicMaterial({
+    color: 0x999999,
+    opacity: 1.0,
+    transparent: true,
+  });
   const points = [];
 
   for (let i = 0; i <= minutes; i += intervalMinutes) {
     const date = new Date(initialDate.getTime() + i * 60000);
-    const positionEci = satellite.propagate(satrec, date).position as satellite.EciVec3<number>;
-    const positionEcf = satellite.eciToEcf(positionEci, satellite.gstime(date)) as satellite.EcfVec3<number>;
-    if (positionEcf) points.push(new THREE.Vector3(positionEcf.x, positionEcf.y, positionEcf.z));
+    const positionEci = satellite.propagate(satrec, date)
+      .position as satellite.EciVec3<number>;
+    const positionEcf = satellite.eciToEcf(positionEci, satellite.gstime(date));
+    if (positionEcf)
+      points.push(
+        new THREE.Vector3(positionEcf.x, positionEcf.y, positionEcf.z),
+      );
   }
 
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -65,7 +83,10 @@ const createSatelliteLine = (scene: THREE.Scene) => {
   return line;
 };
 
-const updateSatelliteLine = (line: THREE.Line, satellitePosition: THREE.Vector3) => {
+const updateSatelliteLine = (
+  line: THREE.Line,
+  satellitePosition: THREE.Vector3,
+) => {
   const positions = line.geometry.attributes.position.array as Float32Array;
   positions[0] = satellitePosition.x;
   positions[1] = satellitePosition.y;
@@ -78,7 +99,7 @@ const updateSatelliteLine = (line: THREE.Line, satellitePosition: THREE.Vector3)
 
 const createLightCone = (scene: THREE.Scene) => {
   const coneGeometry = new THREE.ConeGeometry(2700, 1100, 32);
-  
+
   const coneMaterial = new THREE.MeshBasicMaterial({
     color: 0xff0000,
     transparent: true,
@@ -97,12 +118,15 @@ const updateLightCone = (cone: THREE.Mesh, position: THREE.Vector3) => {
   cone.position.copy(position);
   cone.lookAt(new THREE.Vector3(0, 0, 0));
 
-  // Aplicar correción de posicion que el vertice del cono este en la posicion 'position'
-  cone.position.addScaledVector(cone.getWorldDirection(new THREE.Vector3()), 600);
-  
+  // Aplicar corrección de posición que el vertice del cono este en la posición 'position'
+  cone.position.addScaledVector(
+    cone.getWorldDirection(new THREE.Vector3()),
+    600,
+  );
+
   // Aplicar la corrección de rotación para que apunte correctamente
-  cone.rotateX(Math.PI + Math.PI / 2); 
-}
+  cone.rotateX(Math.PI + Math.PI / 2);
+};
 
 const createTenerifePoint = (scene: THREE.Scene) => {
   const geometry = new THREE.SphereGeometry(20, 32, 32);
@@ -122,8 +146,10 @@ const createTenerifePoint = (scene: THREE.Scene) => {
 
 const isOverTenerife = (positionGd: satellite.GeodeticLocation) => {
   const latDiff = Math.abs(positionGd.latitude * (180 / Math.PI) - tenerifeLat);
-  const lonDiff = Math.abs(positionGd.longitude * (180 / Math.PI) - tenerifeLon);
-  return (latDiff + lonDiff) < 36;
+  const lonDiff = Math.abs(
+    positionGd.longitude * (180 / Math.PI) - tenerifeLon,
+  );
+  return latDiff + lonDiff < 36;
 };
 
 const calculateNextPass = () => {
@@ -133,8 +159,12 @@ const calculateNextPass = () => {
 
   for (let i = 0; i < MINUTES_PER_DAY; i++) {
     const date = new Date(now.getTime() + i * step);
-    const positionEci = satellite.propagate(satrec, date).position as satellite.EciVec3<number>;
-    const positionGd = satellite.eciToGeodetic(positionEci, satellite.gstime(date));
+    const positionEci = satellite.propagate(satrec, date)
+      .position as satellite.EciVec3<number>;
+    const positionGd = satellite.eciToGeodetic(
+      positionEci,
+      satellite.gstime(date),
+    );
 
     if (isOverTenerife(positionGd)) {
       nextPass = date;
@@ -145,4 +175,14 @@ const calculateNextPass = () => {
   return nextPass;
 };
 
-export { createSatelliteModel, addOrbit, createSatelliteLine, updateSatelliteLine, createLightCone, updateLightCone, createTenerifePoint, calculateNextPass, isOverTenerife };
+export {
+  createSatelliteModel,
+  addOrbit,
+  createSatelliteLine,
+  updateSatelliteLine,
+  createLightCone,
+  updateLightCone,
+  createTenerifePoint,
+  calculateNextPass,
+  isOverTenerife,
+};

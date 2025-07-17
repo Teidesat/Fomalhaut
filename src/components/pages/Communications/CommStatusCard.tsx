@@ -20,7 +20,13 @@ const CommStatusCard: React.FC = () => {
           <h2>Radio Link 📡</h2>
           <p>
             <span className="comm-label">Status:</span>
-            <span className={radioStatus.isActive ? "comm-status-active" : "comm-status-inactive"}>
+            <span
+              className={
+                radioStatus.isActive
+                  ? "comm-status-active"
+                  : "comm-status-inactive"
+              }
+            >
               {radioStatus.isActive ? "Active" : "Inactive"}
             </span>
           </p>
@@ -35,7 +41,13 @@ const CommStatusCard: React.FC = () => {
           <h2>Optical Link 💡</h2>
           <p>
             <span className="comm-label">Status:</span>
-            <span className={opticalStatus.isActive ? "comm-status-active" : "comm-status-inactive"}>
+            <span
+              className={
+                opticalStatus.isActive
+                  ? "comm-status-active"
+                  : "comm-status-inactive"
+              }
+            >
               {opticalStatus.isActive ? "Active" : "Inactive"}
             </span>
           </p>

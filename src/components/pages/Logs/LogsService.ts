@@ -1,26 +1,24 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from "axios";
 import { Log } from "./Log.model";
-import {environment} from "../../../environments/environment.ts";
-
+import { environment } from "../../../environments/environment.ts";
 
 class LogsService {
+  private readonly baseUrl: string = environment.REST_GSCS + "/logvault";
 
-  private baseUrl: string = environment.REST_GSCS + '/logvault';
+  private readonly baseHeader: { headers: { Authorization: string } } = {
+    headers: {
+      Authorization: environment.BEARER_TOKEN,
+    },
+  };
 
-  private baseHeader: any = {
-      headers: {
-        Authorization: environment.BEARER_TOKEN
-      }
-    };
-
-  constructor() {}
+  // constructor() {}
 
   getAllLogs(): Promise<AxiosResponse<Log[]>> {
     console.log("Calling " + `${this.baseUrl}`);
     return axios.get(`${this.baseUrl}`, this.baseHeader);
   }
-  
-  getLogsFilteredBy(query: string = ''): Promise<AxiosResponse<Log[]>> {
+
+  getLogsFilteredBy(query: string = ""): Promise<AxiosResponse<Log[]>> {
     if (query.length === 0) {
       return this.getAllLogs();
     }
@@ -38,7 +36,7 @@ class LogsService {
     return response.data;
   }
 
-  
+
   async createLog(log: Log): Promise<Log> {
     const response: AxiosResponse<Log> = await axios.post(this.baseUrl, log, {
       headers: {
@@ -74,7 +72,6 @@ class LogsService {
   }
 
   */
-
 }
 
 export default new LogsService();

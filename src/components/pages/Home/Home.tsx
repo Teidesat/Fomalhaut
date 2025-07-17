@@ -4,7 +4,7 @@ import "./Home.css";
 import { CiGlobe } from "react-icons/ci";
 import { FaGithub, FaHeart } from "react-icons/fa";
 
-interface HomeProps {}
+type HomeProps = object;
 
 const Home: FC<HomeProps> = () => (
   <div className="Home">
@@ -46,12 +46,12 @@ const Home: FC<HomeProps> = () => (
       </div>
       <div className="button-link">
         <a href="https://hyperspacegroup.com/">
-          <CiGlobe color="blue"/>
+          <CiGlobe color="blue" />
         </a>
       </div>
       <div className="button-link">
         <a href="https://donorbox.org/hyperspace-canarias">
-          <FaHeart color="red"/>
+          <FaHeart color="red" />
         </a>
       </div>
     </div>

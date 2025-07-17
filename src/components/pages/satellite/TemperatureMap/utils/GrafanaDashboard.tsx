@@ -1,6 +1,5 @@
 // import React, { useState } from "react";
 
-
 const GrafanaDashboard = () => {
   const baseUrl = "http://grafana:3000<<YOUR_GRAFANA_DASHBOARD_URL>>"; // Aquí la URL de tu dashboard de Grafana
   const iframeUrl = `${baseUrl}?orgId=1&theme=dark&fullscreen&kiosk&refresh=10s&panelId=1`;
@@ -12,7 +11,6 @@ const GrafanaDashboard = () => {
         src={iframeUrl}
         width="100%"
         height="650"
-        frameBorder="0"
         title="Grafana Dashboard"
       />
       <div style={{ textAlign: "right" }}>

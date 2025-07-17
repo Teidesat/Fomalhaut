@@ -5,7 +5,7 @@ import "./TopPanel.css";
 import { FaSatelliteDish } from "react-icons/fa";
 import { MdSatelliteAlt } from "react-icons/md";
 
-interface TopPanelProps {}
+type TopPanelProps = object;
 
 const TopPanel: FC<TopPanelProps> = () => {
   const formatCurrentTime = (): string => {

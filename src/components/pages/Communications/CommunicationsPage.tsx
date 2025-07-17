@@ -6,8 +6,8 @@ import CommandForm from "./CommandForm";
 import "./CommunicationsPage.css";
 
 const CommunicationsPage: React.FC = () => {
-return (
-  <div className="communications-page">
+  return (
+    <div className="communications-page">
       <div className="commStatus">
         <h2 className="section-title">Communication Status</h2>
         <CommStatusCard />
@@ -22,9 +22,8 @@ return (
         <h2 className="section-title">Send Command</h2>
         <CommandForm />
       </div>
-      
-  </div>
-);
+    </div>
+  );
 };
 
 export default CommunicationsPage;

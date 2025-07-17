@@ -20,12 +20,7 @@ const CommandForm: React.FC = () => {
 
       <div>
         <label htmlFor="key">Key</label>
-        <input
-          type="text"
-          id="key"
-          name="key"
-          placeholder="e.g. EPS_RESET"
-        />
+        <input type="text" id="key" name="key" placeholder="e.g. EPS_RESET" />
       </div>
 
       <div>

@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -67,7 +68,10 @@ html, body {
   padding: 10px;
   border-radius: 6px;
   align-items: center;
-  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    transform 0.2s ease;
 }
 
 .logs-row:hover {
@@ -75,7 +79,6 @@ html, body {
   background-color: #273549;
   transform: scale(1.01);
 }
-
 
 .logs-id {
   color: #64748b;
@@ -91,8 +94,6 @@ html, body {
   color: #94a3b8;
   text-align: right;
 }
-
-
 
 /* Level indicators */
 .status-debug {

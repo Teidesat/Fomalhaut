@@ -1,91 +1,85 @@
 .Orbit {
-    position: absolute;
+  position: absolute;
 }
 
-html, body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-}  
-
-.main-content {
-    
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
+
+/*.main-content {}*/
 
 .satellite-info {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 10px;
-    padding-right: 40px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    max-height: 80vh; /* Limit the height */
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px 40px 10px 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  max-height: 80vh; /* Limit the height */
   width: 300px; /* Fixed width to prevent stretching */
   overflow-y: auto; /* Scroll if content overflows */
 }
 
-
 .close-button {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: #000;
-    font-size: 16px;
-    cursor: pointer;
-    width: 25px;
-    height: 25px;
-    border: 1px solid #000;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #000;
+  font-size: 16px;
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .close-button:hover {
-    background-color: #333;
+  background-color: #333;
 }
 
-
 .toggle-view-button {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    font-size: large;
-    transition: background-color 0.2s;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  font-size: large;
+  transition: background-color 0.2s;
 }
 
 .fullscreen-button {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    font-size: large;
-    transition: background-color 0.2s;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  font-size: large;
+  transition: background-color 0.2s;
 }
 
-
-
 .toggle-view-button:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .fullscreen-button:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
