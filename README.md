@@ -19,6 +19,12 @@ This software is designed as a general purpose cross-platform application for th
 will connect to the local server (`java-spring`) by default or any other remote server (_note, for debugging purposes, the
 interface can be accessed through the browser_).
 
+## Developed Features
+
+![Communications screen shot](src/assets/CommunicationsScreenShot.png)
+
+![Location screen shot](src/assets/LocationScreenShot.png)
+
 ## Usage
 
 `git clone https://github.com/Teidesat/Fomalhaut.git`

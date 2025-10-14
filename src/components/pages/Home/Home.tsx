@@ -4,13 +4,15 @@ import "./Home.css";
 import { CiGlobe } from "react-icons/ci";
 import { FaGithub, FaHeart } from "react-icons/fa";
 
+import teidesatLogo from '../../../assets/teidesat_logo.png';
+
 type HomeProps = object;
 
 const Home: FC<HomeProps> = () => (
   <div className="Home">
     <img
       className="about-logo"
-      src="../../../../src/assets/teidesat_logo.png"
+      src={teidesatLogo}
       alt="TeideSat Logo"
     />
     <div className="central-text">
