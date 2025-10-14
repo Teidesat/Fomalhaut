@@ -37,10 +37,6 @@ interface can be accessed through the browser_).
 
 ## Usage (Docker)
 
-### 0. Requisitos previos
-
-- Tener instalado **Docker** (y **Docker Desktop** si estás en Windows o Mac).
-
 `git clone https://github.com/Teidesat/Fomalhaut.git`
 
 `cd Fomalhaut`
