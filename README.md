@@ -46,5 +46,3 @@ interface can be accessed through the browser_).
 `docker build -t fomalhaut-frontend .`
 
 `docker run -it --rm -p 20001:20001 fomalhaut-frontend npm run dev -- --host 0.0.0.0`
-
-Presiona **`Ctrl + C`** en la terminal donde se está ejecutando el contenedor.
