@@ -21,8 +21,10 @@ interface can be accessed through the browser_).
 
 ## Developed Features
 
+### Communications page
 ![Communications screen shot](src/assets/CommunicationsScreenShot.png)
 
+### Location page
 ![Location screen shot](src/assets/LocationScreenShot.png)
 
 ## Usage
