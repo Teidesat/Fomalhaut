@@ -1,0 +1,642 @@
+{
+  "modes": [
+    "TEST",
+    "OFF",
+    "AWAITING_LAUNCH",
+    "DEPLOYMENT",
+    "INITIALIZATION",
+    "PERIPHERAL_CHECK",
+    "NOMINAL",
+    "LOW_POWER",
+    "EXP__COMMS",
+    "RADIO_BEACON",
+    "OPTIC_BEACON",
+    "CAREFUL",
+    "MODE_F"
+  ],
+  "components": [
+    {
+      "id": "solar_panel_1",
+      "label": "Solar Panel",
+      "type": "power_source",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "not working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "solar_panel_2",
+      "label": "Solar Panel",
+      "type": "power_source",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "not working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "solar_panel_3",
+      "label": "Solar Panel",
+      "type": "power_source",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "solar_panel_4",
+      "label": "Solar Panel",
+      "type": "power_source",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "solar_panel_5",
+      "label": "Solar Panel",
+      "type": "power_source",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "solar_panel_6",
+      "label": "Solar Panel",
+      "type": "power_source",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "solar_panel_7",
+      "label": "Solar Panel",
+      "type": "power_source",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "solar_panel_8",
+      "label": "Solar Panel",
+      "type": "power_source",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "solar_panel_9",
+      "label": "Solar Panel",
+      "type": "power_source",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "mppt_1",
+      "label": "MPPT",
+      "type": "power_converter",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "not working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "mppt_2",
+      "label": "MPPT",
+      "type": "power_converter",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "not working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "mppt_3",
+      "label": "MPPT",
+      "type": "power_converter",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "mppt_4",
+      "label": "MPPT",
+      "type": "power_converter",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "mppt_5",
+      "label": "MPPT",
+      "type": "power_converter",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "mppt_6",
+      "label": "MPPT",
+      "type": "power_converter",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "mppt_7",
+      "label": "MPPT",
+      "type": "power_converter",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "mppt_8",
+      "label": "MPPT",
+      "type": "power_converter",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "mppt_9",
+      "label": "MPPT",
+      "type": "power_converter",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "bms",
+      "label": "BMS",
+      "type": "power_management",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "eps_payload",
+      "label": "EPS Payload",
+      "type": "eps",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "off" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "off" },
+        "LOW_POWER": { "state": "off" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "not working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "off" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "eps_ttc",
+      "label": "EPS TTC",
+      "type": "eps",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "off" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "not working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "eps_general",
+      "label": "EPS General",
+      "type": "eps",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "led_drivers",
+      "label": "LED Drivers",
+      "type": "power_converter",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "off" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "off" },
+        "LOW_POWER": { "state": "off" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "not working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "off" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "leds",
+      "label": "LEDs",
+      "type": "power_sink",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "off" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "off" },
+        "LOW_POWER": { "state": "off" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "not working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "off" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "imu",
+      "label": "IMU",
+      "type": "power_sink",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "microcontroller",
+      "label": "Microcontroller",
+      "type": "power_sink",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "off" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "obc",
+      "label": "OBC",
+      "type": "power_sink",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "working" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "working" },
+        "LOW_POWER": { "state": "working" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "memories",
+      "label": "Memories",
+      "type": "power_sink",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "off" },
+        "INITIALIZATION": { "state": "off" },
+        "PERIPHERAL_CHECK": { "state": "working" },
+        "NOMINAL": { "state": "off" },
+        "LOW_POWER": { "state": "off" },
+        "EXP__COMMS": { "state": "working" },
+        "RADIO_BEACON": { "state": "working" },
+        "OPTIC_BEACON": { "state": "working" },
+        "CAREFUL": { "state": "working" },
+        "MODE_F": { "state": "not working" }
+      }
+    },
+    {
+      "id": "temporizador",
+      "label": "Temporizador por hardware",
+      "type": "temporizador",
+      "expected": {
+        "TEST": { "state": "working" },
+        "OFF": { "state": "off" },
+        "AWAITING_LAUNCH": { "state": "off" },
+        "DEPLOYMENT": { "state": "working" },
+        "INITIALIZATION": { "state": "off" },
+        "PERIPHERAL_CHECK": { "state": "off" },
+        "NOMINAL": { "state": "off" },
+        "LOW_POWER": { "state": "off" },
+        "EXP__COMMS": { "state": "off" },
+        "RADIO_BEACON": { "state": "off" },
+        "OPTIC_BEACON": { "state": "off" },
+        "CAREFUL": { "state": "off" },
+        "MODE_F": { "state": "off" }
+      }
+    }
+  ],
+  "connections": [
+    { "from": "solar_panel_1", "to": "mppt_1" },
+    { "from": "solar_panel_2", "to": "mppt_2" },
+    { "from": "solar_panel_3", "to": "mppt_3" },
+    { "from": "solar_panel_4", "to": "mppt_4" },
+    { "from": "solar_panel_5", "to": "mppt_5" },
+    { "from": "solar_panel_6", "to": "mppt_6" },
+    { "from": "solar_panel_7", "to": "mppt_7" },
+    { "from": "solar_panel_8", "to": "mppt_8" },
+    { "from": "solar_panel_9", "to": "mppt_9" },
+
+    { "from": "mppt_1", "to": "bms" },
+    { "from": "mppt_2", "to": "bms" },
+    { "from": "mppt_3", "to": "bms" },
+    { "from": "mppt_4", "to": "bms" },
+    { "from": "mppt_5", "to": "bms" },
+    { "from": "mppt_6", "to": "bms" },
+    { "from": "mppt_7", "to": "bms" },
+    { "from": "mppt_8", "to": "bms" },
+    { "from": "mppt_9", "to": "bms" },
+
+    { "from": "bms", "to": "eps_payload" },
+    { "from": "bms", "to": "eps_ttc" },
+    { "from": "bms", "to": "eps_general" },
+
+    { "from": "eps_payload", "to": "led_drivers" },
+    { "from": "led_drivers", "to": "leds" },
+    { "from": "eps_ttc", "to": "obc" },
+    { "from": "led_drivers", "to": "obc" },
+    { "from": "obc", "to": "led_drivers" },
+
+    { "from": "eps_general", "to": "obc" },
+    { "from": "eps_general", "to": "microcontroller" },
+    { "from": "eps_general", "to": "imu" },
+    { "from": "eps_general", "to": "memories" },
+
+    { "from": "obc", "to": "memories" },
+    { "from": "memories", "to": "obc" },
+    { "from": "microcontroller", "to": "obc" },
+    { "from": "obc", "to": "microcontroller" },
+    { "from": "imu", "to": "microcontroller" },
+    { "from": "microcontroller", "to": "imu" }
+  ]
+}

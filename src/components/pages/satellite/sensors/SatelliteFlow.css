@@ -1,0 +1,58 @@
+.custom-node {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid white;
+  color: #fff;
+  min-width: 100px;
+  text-align: center;
+  position: relative;
+  overflow: visible;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  font-family: "Inter", sans-serif;
+}
+
+/* --- Handles (entradas/salidas) --- */
+.custom-node__handle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Contenedor principal del flujo satelital */
+.satellite-flow {
+  flex: 1;
+  height: 600px;
+  overflow: visible;
+  position: relative;
+}
+
+.satellite-flow-controls {
+  background-color: #222;
+  color: #fff;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  gap: 20px;
+  padding: 5px;
+  border-bottom: #fff 1px solid;
+}
+
+.satellite-flow-select {
+  background-color: white;
+  padding: 3px;
+  border-radius: 3px;
+  color: #000;
+}
+
+.node-tooltip {
+  transition: opacity 0.2s ease;
+  font-size: 13px;
+  background-color: #333;
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 6px;
+  pointer-events: none;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}

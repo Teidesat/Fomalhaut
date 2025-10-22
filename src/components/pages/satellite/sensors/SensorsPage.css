@@ -1,0 +1,34 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.sensors-page-background {
+  background-color: #222;
+  min-height: 100%;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #22d3ee;
+  padding: 5px;
+}
+
+.sensors-page {
+  background-color: #222;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.satellite-visualizer {
+  flex: 1;
+  background-color: #222;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}

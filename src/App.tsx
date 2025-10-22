@@ -8,6 +8,7 @@ import TemperatureMap from "./components/pages/satellite/TemperatureMap/Temperat
 import Orbit from "./components/pages/satellite/Orbit/Orbit";
 import Logs from "./components/pages/Logs/Logs";
 import CommunicationsPage from "./components/pages/Communications/CommunicationsPage";
+import SensorsPage from "./components/pages/satellite/sensors/SensorsPage";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
               <Route path="/location" element={<Orbit />} />
               <Route path="/logs" element={<Logs />} />
               <Route path="/communications" element={<CommunicationsPage />} />
+              <Route path="/sensors" element={<SensorsPage />} />
             </Routes>
           </main>
         </div>
