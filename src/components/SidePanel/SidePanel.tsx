@@ -11,6 +11,7 @@ import {
   FaQuestion,
   FaSatellite,
   FaMicrochip,
+  FaCloudSun,
 } from "react-icons/fa";
 import "./SidePanel.css";
 
@@ -67,6 +68,12 @@ const SidePanel: FC<SidePanelProps> = () => (
           <Link to="/decoder" className="side-panel-link">
             <FaUnlock size={20} />
             Station Decoder
+          </Link>
+        </li>
+        <li>
+          <Link to="/weather" className="side-panel-link" aria-disabled>
+            <FaCloudSun size={20} />
+            Weather Station
           </Link>
         </li>
       </ul>

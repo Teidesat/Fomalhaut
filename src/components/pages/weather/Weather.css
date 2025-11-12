@@ -1,0 +1,59 @@
+html, body, #root, .main-content {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #22d3ee;
+  padding: 5px;
+}
+
+.weather-page {
+  background-color: #222;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.stations-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.station-btn {
+  width: 90%;
+  margin-bottom: 20px; /* Separación entre botones */
+  padding: 1rem 0;
+  font-size: 1.2rem;
+  background: #2580d7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.station-btn:last-child {
+  margin-bottom: 0;
+}
+
+.station-btn:hover {
+  background: #1861b0;
+}
+
+.iframe-container {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+

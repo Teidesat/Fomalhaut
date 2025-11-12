@@ -1,0 +1,42 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
+  "type": "panel",
+  "name": "Operato Windrose",
+  "id": "operato-windrose-panel",
+  "info": {
+    "keywords": ["panel"],
+    "description": "Wind parameter visualization panel",
+    "author": {
+      "name": "Operato"
+    },
+    "logos": {
+      "small": "img/operato-windrose-logo.svg",
+      "large": "img/operato-windrose-logo.svg"
+    },
+    "links": [],
+    "screenshots": [
+      {
+        "name": "Example of Operato Windrose panel.",
+        "path": "img/screenshots/screenshow_windrose_default.jpg"
+      },
+      {
+        "name": "Operato Windrose panel using Operato color theme.",
+        "path": "img/screenshots/screenshow_windrose_operatotheme.jpg"
+      },
+      {
+        "name": "Operato Windrose panel using Blue scale color theme.",
+        "path": "img/screenshots/screenshow_windrose_bluescale.jpg"
+      },
+      {
+        "name": "Operato Windrose panel using Blue-Red color theme.",
+        "path": "img/screenshots/screenshow_windrose_bluered.jpg"
+      }
+    ],
+    "version": "1.2.0",
+    "updated": "2024-04-02"
+  },
+  "dependencies": {
+    "grafanaDependency": ">=9.3.8",
+    "plugins": []
+  }
+}

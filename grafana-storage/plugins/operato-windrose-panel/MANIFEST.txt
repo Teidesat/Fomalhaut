@@ -1,0 +1,39 @@
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+{
+  "manifestVersion": "2.0.0",
+  "signatureType": "community",
+  "signedByOrg": "operato",
+  "signedByOrgName": "operato",
+  "plugin": "operato-windrose-panel",
+  "version": "1.2.0",
+  "time": 1712040614280,
+  "keyId": "7e4d0c6a708866e7",
+  "files": {
+    "LICENSE": "80bfb8afc743746f908010901a9d1c00df3b15c0ff3ff4c61a66be95e70e556a",
+    "CHANGELOG.md": "28d5c6936d29d232013bc380cf04eaaa4ffc9cc166e7e30ba3ab168673777399",
+    "module.js.map": "c1e843f7f83bd3211efd47b159d39e106ff948044f159f3738c9a5483229ec48",
+    "plugin.json": "bcd2afe093b3d616ff0347040ee34c4fe9933c02bf5dc99e89e21f6d4daf170d",
+    "README.md": "78f83fa17f8db80063199512df4d0d92721da872487da6e5ca4d532795136d8e",
+    "img/operato-windrose-logo-small.svg": "f2c80f33a75e8672cd6b7a894cd975d513b7141b06ce646df23f1398be70f173",
+    "img/screenshots/screenshow_windrose_bluescale.jpg": "727dba6c22d9711cc32ad628351ac8704806ddd9c3ed30b59ba832b94b64b0ea",
+    "img/screenshots/screenshow_windrose_bluered.jpg": "41bee43fbc1da399175afd2ce83cf1e370544190093266a7307cf04925f78039",
+    "img/screenshots/screenshow_windrose_operatotheme.jpg": "a61dee73aa7009c05d63bf0c420f69d6fc00c3100e16e97306aff548d5498fcc",
+    "img/screenshots/screenshow_windrose_default.jpg": "ae9e4f9a85e0f4575da26d9a5af5f6d0d2c907281bdb4a968c03c3cf7fbf0612",
+    "img/operato-windrose-logo.svg": "edefedbe42d9a71752b3583a5323e4806faa9a927663f13024d91cdc850e68b2",
+    "module.js": "f5270d9452e4364864b9ce10be911903bfe458bab9639a2078817e81bef50d45"
+  }
+}
+-----BEGIN PGP SIGNATURE-----
+Version: OpenPGP.js v4.10.11
+Comment: https://openpgpjs.org
+
+wrkEARMKAAYFAmYLqqYAIQkQfk0ManCIZucWIQTzOyW2kQdOhGNlcPN+TQxq
+cIhm54pyAgkAjPQPIV17stPtlFUN5sc8wUZj5UI1yPUjmW1sBIGOQpsocNfb
+tGQ/dCCl4xVXavXmGWyhp0BGK2Zaz/9NvutU0a8CCQHtBXy+dGdT8KuWYH5R
+LNFq+DHBclY8D68W228lWTXQTFAyRENPPHYBhpNZIA9NldKJdw7coizgpgjV
+atvpz8yO1Q==
+=DRW9
+-----END PGP SIGNATURE-----

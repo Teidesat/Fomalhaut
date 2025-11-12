@@ -43,6 +43,8 @@ interface can be accessed through the browser_).
 
 `cd Fomalhaut`
 
-`docker build -t fomalhaut-frontend .`
+`docker network create fomalhaut-network`
 
-`docker run -it --rm -p 20001:20001 fomalhaut-frontend npm run dev -- --host 0.0.0.0`
+`chmod -R 777 grafana-storage`
+
+`docker compose up -d`

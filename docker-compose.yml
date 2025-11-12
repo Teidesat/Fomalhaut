@@ -22,17 +22,17 @@ services:
   grafana:
     image: grafana/grafana
     container_name: grafana
-    hostname: grafana
-    networks:
-      - fomalhaut-network
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
-      - ./grafana/data:/var/lib/grafana
+    restart: unless-stopped
     environment:
+      - GF_SECURITY_ALLOW_EMBEDDING=true
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_NAME=Main Org.
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
-      - GF_SECURITY_ALLOW_EMBEDDING=true
-
+      - GF_INSTALL_PLUGINS=yesoreyeram-infinity-datasource,operato-windrose-panel
+    ports:
+      - '3000:3000'
+    privileged: true
+    volumes:
+      - ./grafana-storage:/var/lib/grafana
+volumes:
+  grafana-storage: {}

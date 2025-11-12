@@ -1,0 +1,42 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+{
+  "manifestVersion": "2.0.0",
+  "signatureType": "grafana",
+  "signedByOrg": "grafana",
+  "signedByOrgName": "Grafana Labs",
+  "plugin": "yesoreyeram-infinity-datasource",
+  "version": "3.6.0",
+  "time": 1758632444802,
+  "keyId": "7e4d0c6a708866e7",
+  "files": {
+    "go_plugin_build_manifest": "d295d0f8dbe6def921486849c4fba8315955c65e6bd50b1ef717a084afa1941a",
+    "LICENSE": "85fb2c20b586ef9dc00ee5c41140e1cd59fdded9a0b24a9054b04e9f0f6b2977",
+    "module.js.LICENSE.txt": "99c2a3e174dd5e46ac78787c5d7965079f788f7edf923e0868a3505826b0e34d",
+    "CHANGELOG.md": "2340587c9ed939018b06161785401917da96415d0139884d0cf139fc831120cc",
+    "plugin.json": "363d6a2bf4c53cc80e52bfb49b30cdf6f5f7db71381b8ebd30d83d169d7b5a53",
+    "gpx_infinity_linux_amd64": "9d08cc5246a1051a0c6f2daf36a3a34e89948d24b51fe985b672ba5cd76db855",
+    "img/homepage-bg.svg": "97ec32b2c542bcb63b7fa7659e42a876a5b9ec00aef7a486f2dc41b83d7d9eb8",
+    "img/slide-rest-api.png": "cf72349768e0ccf19a856d86e97c8e67dcdadfcee49e73ae5acbe781c3ae0c79",
+    "img/slide-features.png": "58aba3b2f2d73ee99945cba9746463f0039d8afb5366ed8d42db62145b914d0f",
+    "img/slide-variables.png": "8ed0cd7b1ac00bd2c7fa6e72c513b678c39ba7d63030f06e8695cb1d352e3b34",
+    "img/aws.jpg": "e682ccc794708fd3eb32a3fb5e2bcccd8ff3b54f30eba2086fd1b28a82020d81",
+    "img/oauth-2-sm.png": "9945bb307d5545369d50381acc97d48b4a98433831f14e99eb839f0970a91258",
+    "img/icon.svg": "e498b00e1cc3c9e8b65a2b8320b7d170c6da61d424fe5f3f3fdf9963204449ae",
+    "img/slide-series.png": "f7d523c39f9d4567974c37432f047e4e8944cb92dc2c9a4424757ce5e54dc3a7",
+    "module.js": "6cf586a20f290516c6c71f6f1476beb1cbd3a66b00726361f859fd8e5925a51b",
+    "README.md": "4a99cb657e9b9ba6976edf42480d79c083709e5c5ea2b96965c56c318f64bf0e",
+    "module.js.map": "84511c4ee03ee2de837ebc3a385b98528c677571bb7f19aebc0b88986be73d81"
+  }
+}
+-----BEGIN PGP SIGNATURE-----
+
+wsA+BAETCgBtBYJo0pn8CZB+TQxqcIhm50UUAAAAAAAcACBzYWx0QG5vdGF0
+aW9ucy5vcGVucGdwanMub3Jn6RLD1hEX8MlLG0EfNHmXb/6BrY4gmos+14cg
+0em3BFwWIQTzOyW2kQdOhGNlcPN+TQxqcIhm5wAAGKYCBj4bRDwEqBFBScXf
+FYWRhosBizZmZaUkm+CvHNZbm75YKNWCmqW47XXUL3I9bVLAZOsWf/RC16ne
+IpriNNPeumssAgkBzYQ/UCIyfbwAmykVv94e95xihfTm1ujRAd0qVx1DLlLR
+K8hA1pv3KSJi6Dx6glPeeYRYDGnrsd5gdwhT9pFt1Mo=
+=Ldtw
+-----END PGP SIGNATURE-----
