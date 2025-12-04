@@ -82,17 +82,17 @@ const Orbit: FC = () => {
         .position as satellite.EciVec3<number>;
       const positionEcf = satellite.eciToEcf(
         positionEci,
-        satellite.gstime(date),
+        satellite.gstime(date)
       );
       const positionGd = satellite.eciToGeodetic(
         positionEci,
-        satellite.gstime(date),
+        satellite.gstime(date)
       );
       if (satelliteModel.current) {
         satelliteModel.current.position.set(
           positionEcf.x,
           positionEcf.y,
-          positionEcf.z,
+          positionEcf.z
         );
         satelliteModel.current.lookAt(0, 0, 0);
       }
@@ -102,11 +102,11 @@ const Orbit: FC = () => {
         updateLightCone(coneRef.current, satelliteModel.current.position);
       if (isOverTenerife(positionGd)) {
         (coneRef.current!.material as THREE.MeshBasicMaterial).color.set(
-          0x00ff00,
+          0x00ff00
         );
       } else {
         (coneRef.current!.material as THREE.MeshBasicMaterial).color.set(
-          0xff0000,
+          0xff0000
         );
       }
       render();
@@ -119,17 +119,17 @@ const Orbit: FC = () => {
       const rect = mountRef.current!.getBoundingClientRect();
       const mouse = new THREE.Vector2(
         ((e.clientX - rect.left) / rect.width) * 2 - 1,
-        -((e.clientY - rect.top) / rect.height) * 2 + 1,
+        -((e.clientY - rect.top) / rect.height) * 2 + 1
       );
       raycaster.setFromCamera(mouse, cameraRef.current);
       const intersects = raycaster.intersectObjects(
         sceneRef.current.children,
-        true,
+        true
       );
       setHovered(
         intersects.length > 0 &&
           (intersects[0].object.parent?.type === "Group" ||
-            intersects[0].object.parent?.type === "Object3D"),
+            intersects[0].object.parent?.type === "Object3D")
       );
     };
 
@@ -138,12 +138,12 @@ const Orbit: FC = () => {
       const rect = mountRef.current!.getBoundingClientRect();
       const mouse = new THREE.Vector2(
         ((e.clientX - rect.left) / rect.width) * 2 - 1,
-        -((e.clientY - rect.top) / rect.height) * 2 + 1,
+        -((e.clientY - rect.top) / rect.height) * 2 + 1
       );
       raycaster.setFromCamera(mouse, cameraRef.current);
       const intersects = raycaster.intersectObjects(
         sceneRef.current.children,
-        true,
+        true
       );
       if (
         intersects.length > 0 &&
@@ -159,7 +159,7 @@ const Orbit: FC = () => {
         const positionGd = satellite.eciToGeodetic(positionEci, gmst);
         const altitude = positionGd.height;
         const velocity = Math.sqrt(
-          velocityEci.x ** 2 + velocityEci.y ** 2 + velocityEci.z ** 2,
+          velocityEci.x ** 2 + velocityEci.y ** 2 + velocityEci.z ** 2
         );
         const nextPassDate = calculateNextPass();
         setNextPass(nextPassDate);
@@ -230,11 +230,70 @@ const Orbit: FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!satelliteInfo) return;
+
+    const interval = setInterval(() => {
+      const now = new Date();
+      const gmst = satellite.gstime(now);
+      const positionAndVelocity = satellite.propagate(satrec, now);
+
+      const positionEci = positionAndVelocity.position;
+      const velocityEci = positionAndVelocity.velocity;
+
+      if (
+        positionEci &&
+        typeof positionEci === "object" &&
+        "x" in positionEci &&
+        velocityEci &&
+        typeof velocityEci === "object" &&
+        "x" in velocityEci
+      ) {
+        const positionGd = satellite.eciToGeodetic(positionEci, gmst);
+        const altitude = positionGd.height;
+        const velocity = Math.sqrt(
+          velocityEci.x ** 2 + velocityEci.y ** 2 + velocityEci.z ** 2
+        );
+
+        setSatelliteInfo(
+          <div>
+            <h3>Satellite Information: TEIDESAT-1</h3>
+            <img
+              src={cubesatImage}
+              alt="Satellite"
+              style={{ width: "230px", height: "130px" }}
+            />
+            <p>
+              <strong>Position (Lat, Lon):</strong>
+            </p>
+            <ul>
+              <li>
+                Latitude: {(positionGd.latitude * (180 / Math.PI)).toFixed(2)}°
+              </li>
+              <li>
+                Longitude: {(positionGd.longitude * (180 / Math.PI)).toFixed(2)}
+                °
+              </li>
+            </ul>
+            <p>
+              <strong>Altitude:</strong> {altitude.toFixed(2)} km
+            </p>
+            <p>
+              <strong>Velocity:</strong> {velocity.toFixed(2)} km/s
+            </p>
+          </div>
+        );
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [satelliteInfo]);
+
+  useEffect(() => {
     if (satelliteModel.current) {
       satelliteModel.current.scale.set(
         hovered ? 1200 : 1000,
         hovered ? 1200 : 1000,
-        hovered ? 1200 : 1000,
+        hovered ? 1200 : 1000
       );
       satelliteModel.current.traverse((child) => {
         if (child instanceof THREE.Mesh) {
@@ -292,7 +351,7 @@ const Orbit: FC = () => {
           cameraRef.current!.position.lerpVectors(
             startPosition,
             targetPosition,
-            easedT,
+            easedT
           );
           cameraRef.current!.lookAt(center);
           controlsRef.current!.target.copy(center);
@@ -317,7 +376,7 @@ const Orbit: FC = () => {
         const distance = 3000;
         const targetPosition = new THREE.Vector3().addVectors(
           pos,
-          direction.multiplyScalar(distance),
+          direction.multiplyScalar(distance)
         );
         const duration = 2000;
         const startPosition = cameraRef.current.position.clone();
@@ -331,7 +390,7 @@ const Orbit: FC = () => {
           cameraRef.current!.position.lerpVectors(
             startPosition,
             targetPosition,
-            easedT,
+            easedT
           );
           cameraRef.current!.lookAt(pos);
           controlsRef.current!.target.copy(pos);
