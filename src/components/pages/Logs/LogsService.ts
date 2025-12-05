@@ -1,9 +1,9 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosResponse, AxiosError } from "axios";
 import { Log } from "./Log.model";
 import { environment } from "../../../environments/environment.ts";
 
 class LogsService {
-  private readonly baseUrl: string = environment.REST_GSCS + "/logvault";
+  private readonly baseUrl: string = environment.REST_GSCS + "/telemetry";
 
   private readonly baseHeader: { headers: { Authorization: string } } = {
     headers: {
@@ -11,67 +11,52 @@ class LogsService {
     },
   };
 
-  // constructor() {}
-
   getAllLogs(): Promise<AxiosResponse<Log[]>> {
-    console.log("Calling " + `${this.baseUrl}`);
-    return axios.get(`${this.baseUrl}`, this.baseHeader);
+    const url = `${this.baseUrl}`;
+    console.log("📡 Fetching logs from: " + url);
+    return axios.get(url, this.baseHeader).catch((err: AxiosError) => {
+      console.error("❌ Error fetching logs:", err);
+      // Retornar lista vacía en caso de error para no romper la UI
+      return { data: [] } as unknown as AxiosResponse<Log[]>;
+    });
   }
 
   getLogsFilteredBy(query: string = ""): Promise<AxiosResponse<Log[]>> {
     if (query.length === 0) {
       return this.getAllLogs();
     }
-    console.log("Calling " + `${this.baseUrl}/filter?${query}`);
-    return axios.get(`${this.baseUrl}/filter?${query}`, this.baseHeader);
+    
+    // Parsear el query para filtrar por tipo
+    const params = new URLSearchParams(query);
+    const type = params.get("level");
+    
+    if (type) {
+      const url = `${this.baseUrl}/${type}`;
+      console.log("📡 Fetching filtered logs from: " + url);
+      return axios.get(url, this.baseHeader).catch((err: AxiosError) => {
+        console.error("❌ Error fetching filtered logs:", err);
+        return { data: [] } as unknown as AxiosResponse<Log[]>;
+      });
+    }
+    
+    return this.getAllLogs();
   }
 
-  /*
-  async getLogById(id: number): Promise<Log> {
-    const response: AxiosResponse<Log> = await axios.get(`${this.baseUrl}${id}/`, {
-      headers: {
-        Authorization: 'Bearer holis123',
-      },
-    });
-    return response.data;
-  }
-
-
-  async createLog(log: Log): Promise<Log> {
-    const response: AxiosResponse<Log> = await axios.post(this.baseUrl, log, {
-      headers: {
-        Authorization: 'Bearer holis123',
-      },
-    });
-    return response.data;
-  }
-
-  async updateLog(id: number, log: Log): Promise<Log> {
-    const response: AxiosResponse<Log> = await axios.put(`${this.baseUrl}${id}/`, log, {
-      headers: {
-        Authorization: 'Bearer holis123',
-      },
-    });
-    return response.data;
-  }
-
-  async deleteLog(id: number): Promise<void> {
-    await axios.delete(`${this.baseUrl}${id}/`, {
-      headers: {
-        Authorization: 'Bearer holis123',
-      },
+  getLatestLogs(count: number = 50): Promise<AxiosResponse<Log[]>> {
+    const url = `${this.baseUrl}/latest/${count}`;
+    console.log("📡 Fetching latest logs from: " + url);
+    return axios.get(url, this.baseHeader).catch((err: AxiosError) => {
+      console.error("❌ Error fetching latest logs:", err);
+      return { data: [] } as unknown as AxiosResponse<Log[]>;
     });
   }
 
-  async deleteAllLogsBeforeDate(): Promise<void> {
-    await axios.delete(this.baseUrl, {
-      headers: {
-        Authorization: 'Bearer holis123',
-      },
-    });
+  clearAllLogs(): Promise<AxiosResponse> {
+    const url = `${this.baseUrl}/clear`;
+    console.log("🗑️  Clearing logs from: " + url);
+    return axios.delete(url, this.baseHeader);
   }
-
-  */
 }
 
 export default new LogsService();
+
