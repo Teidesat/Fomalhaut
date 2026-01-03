@@ -59,7 +59,7 @@ const createSatelliteModel = (
 ) => {
   const loader = new GLTFLoader();
   loader.load(
-    "/cubesat.glb",
+    import.meta.env.BASE_URL + "/cubesat.glb",
     (gltf) => {
       const model = gltf.scene;
       model.scale.set(10, 10, 10);

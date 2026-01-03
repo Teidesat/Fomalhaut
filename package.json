@@ -1,5 +1,6 @@
 {
   "name": "fomalhaut-frontend",
+  "homepage": "https://alejandro-cruz-q.github.io/Fomalhaut",
   "private": true,
   "version": "0.0.0",
   "type": "module",

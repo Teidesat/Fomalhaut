@@ -25,7 +25,14 @@ interface can be accessed through the browser_).
 ![Communications screen shot](src/assets/CommunicationsScreenShot.png)
 
 ### Location page
-![Location screen shot](src/assets/LocationScreenShot.png)
+![Location screen shot](src/assets/LocationScreenShot2.png)
+
+### Sensors page
+![Sensors screen shot](src/assets/SensorsPage.png)
+
+### Weather Stations page
+![Weather screen shot](src/assets/WeatherPage.png)
+![Panel screen shot](src/assets/LaLagunaPanel.png)
 
 ## Usage
 

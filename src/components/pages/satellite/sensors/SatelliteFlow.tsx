@@ -26,7 +26,9 @@ interface ComponentType {
   expected?: Record<string, { state: string }>;
 }
 
-/* Copia valores de auxiliares (_aux, _aux2...) */
+/* Copia valores de señales auxiliares (_aux, _aux2...) desde la señal principal.
+   Uso típico: cuando en telemetría se tienen claves derivadas o duplicadas y se
+   quiere mantener consistencia visual sin depender de que vengan todas rellenadas. */
 const resolveAuxTelemetry = (telemetry: Telemetry): Telemetry => {
   const resolvedTelemetry: Telemetry = { ...telemetry };
   Object.keys(telemetry).forEach((key) => {
@@ -41,7 +43,7 @@ const resolveAuxTelemetry = (telemetry: Telemetry): Telemetry => {
   return resolvedTelemetry;
 };
 
-/** Colores de estados */
+/** Mapa de colores por estado lógico del componente en el diagrama. */
 const NODE_COLORS: Record<string, string> = {
   working: "#4caf50",
   notWorking: "#f44336",
@@ -49,7 +51,7 @@ const NODE_COLORS: Record<string, string> = {
   unknown: "#9e9e9e",
 };
 
-/** Convierte estado a etiqueta legible */
+/** Convierte un estado interno a una etiqueta legible para interfaz. */
 const formatStateLabel = (state?: string) => {
   switch (state) {
     case "notWorking":
@@ -64,7 +66,7 @@ const formatStateLabel = (state?: string) => {
   }
 };
 
-/** Color de nodo */
+/** Obtiene el color del nodo en función del estado actual de telemetría. */
 const getNodeColor = (
   component: ComponentType,
   telemetry: Telemetry
@@ -73,7 +75,7 @@ const getNodeColor = (
   return NODE_COLORS[state] ?? NODE_COLORS.unknown;
 };
 
-/** Tooltip flotante */
+/** Tooltip flotante para mostrar estado esperado vs actual de un nodo. */
 const PortalTooltip = ({
   x,
   y,
@@ -93,6 +95,7 @@ const PortalTooltip = ({
   currentStateColor: string;
   onClose: () => void;
 }) => {
+  // Cierre del tooltip con tecla Escape para mejorar la usabilidad.
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -135,12 +138,22 @@ const PortalTooltip = ({
   );
 };
 
+// Diagrama de flujo del satélite basado en React Flow.
+// Representa los componentes del satélite como nodos, coloreados según telemetría,
+// y las dependencias entre ellos como edges. El modo actual afecta a los estados esperados.
 const SatelliteFlow = (): JSX.Element => {
+  // Telemetría actual, normalizada para incluir señales auxiliares.
+  // En esta versión se carga desde JSON estático; si se conecta a telemetría en
+  // tiempo real, este estado sería actualizado desde un hook o contexto.
   const [telemetry] = useState<Telemetry>(() =>
     resolveAuxTelemetry(telemetryData)
   );
 
+  // Modo de operación actual del satélite (por ejemplo SAFE, NOMINAL, etc.).
+  // Se usa para calcular el estado esperado de cada componente.
   const [mode] = useState(() => modeData?.mode ?? "UNKNOWN");
+
+  // Nodo seleccionado para mostrar tooltip contextual con estado esperado/actual.
   const [selectedNode, setSelectedNode] = useState<{
     id: string;
     data: BaseNodeData & {
@@ -153,8 +166,10 @@ const SatelliteFlow = (): JSX.Element => {
     y: number;
   } | null>(null);
 
-  /** Crear nodos */
+  /** Crear nodos del diagrama a partir de la definición de sateliteStates.json. */
   const nodes: Node<BaseNodeData>[] = useMemo(() => {
+    // Mapea el tipo lógico del componente (definido en JSON) a posiciones
+    // de entrada/salida en React Flow (para controlar de dónde salen y a dónde llegan las aristas).
     const nodeTypeMap: Record<string, { source: Position; target: Position }> =
       {
         br: { source: Position.Bottom, target: Position.Right },
@@ -174,6 +189,7 @@ const SatelliteFlow = (): JSX.Element => {
         const currentStateRaw = telemetry[component.id] ?? "unknown";
         const expectedStateRaw = component.expected?.[mode]?.state ?? "unknown";
 
+        // Cada nodo incluye la info necesaria para colorear y mostrar el tooltip.
         return {
           id: component.id,
           type: "base",
@@ -186,6 +202,7 @@ const SatelliteFlow = (): JSX.Element => {
             expectedStateLabel: formatStateLabel(expectedStateRaw),
             currentStateLabel: formatStateLabel(currentStateRaw),
           },
+          // Si no hay posición definida en el JSON, se genera una por defecto en línea.
           position: component.position ?? { x: 150 * index, y: 50 },
           sourcePosition: nodeConfig.source,
           targetPosition: nodeConfig.target,
@@ -194,10 +211,11 @@ const SatelliteFlow = (): JSX.Element => {
     );
   }, [telemetry, mode]);
 
-  /** Crear edges */
+  /** Crear edges del diagrama a partir de las conexiones definidas en JSON. */
   const edges: Edge[] = useMemo(() => {
     return satelliteData.connections.map((conn: any) => {
       const sourceNode = nodes.find((node) => node.id === conn.from);
+      // El color del edge hereda el color del nodo origen para visualizar el estado.
       const sourceColor = sourceNode?.data?.color ?? "white";
 
       return {
@@ -211,7 +229,7 @@ const SatelliteFlow = (): JSX.Element => {
     });
   }, [nodes]);
 
-  /** Manejar clic en nodo */
+  /** Maneja el clic sobre un nodo para abrir el tooltip en la posición del ratón. */
   const handleNodeClick = (
     event: React.MouseEvent,
     node: Node<BaseNodeData>
@@ -225,15 +243,17 @@ const SatelliteFlow = (): JSX.Element => {
     });
   };
 
-  // Cerrar tooltip al hacer clic fuera
+  // Cierra el tooltip cuando se hace clic fuera del diagrama (pane o cualquier parte de la ventana).
   useEffect(() => {
     const handleClickOutside = () => setSelectedNode(null);
     window.addEventListener("click", handleClickOutside);
     return () => window.removeEventListener("click", handleClickOutside);
   }, []);
+
   return (
     <div className="satellite-flow-container">
       <div className="satellite-flow-controls">
+        {/* Muestra el modo actual de operación, clave para interpretar los estados esperados. */}
         <h2>Current Mode: {mode}</h2>
       </div>
 
@@ -241,6 +261,7 @@ const SatelliteFlow = (): JSX.Element => {
         className="satellite-flow"
         style={{ position: "relative", overflow: "visible" }}
       >
+        {/* Lienzo principal del diagrama de React Flow. */}
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -249,6 +270,7 @@ const SatelliteFlow = (): JSX.Element => {
           onNodeClick={handleNodeClick}
           onPaneClick={() => setSelectedNode(null)}
         >
+          {/* Fondo cuadriculado para mejorar la lectura del diagrama. */}
           <Background
             color="#9e9e9e"
             gap={18}
@@ -257,6 +279,7 @@ const SatelliteFlow = (): JSX.Element => {
           />
         </ReactFlow>
 
+        {/* Tooltip contextual que aparece cuando hay un nodo seleccionado. */}
         {selectedNode && (
           <PortalTooltip
             x={selectedNode.x}
