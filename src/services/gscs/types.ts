@@ -1,6 +1,4 @@
 // Tipos que reflejan los schemas de la API del Ground Station Central Server.
-// Fuente: ground-stations-central-server/apps/bridge/schemas.py,
-//         apps/control/models.py y apps/audit/schemas.py
 
 /* ---------- Enumerados (apps/control/models.py y apps/bridge/schemas.py) ---------- */
 
