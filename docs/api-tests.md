@@ -31,3 +31,8 @@
   - request_user llega como "" (usuario anónimo), no null.
   - request_client_ip = 172.18.0.1 (gateway de Docker), no la IP real del cliente.
   - Cada consulta a /audit/ genera un log nuevo → con refresco automático la tabla crece sin parar.
+
+## Integración Fomalhaut → GSCS (GscsService)
+- getHealth() desde el navegador → OK, CORS permitido para http://localhost:20001 
+- getLogs({level:"INFO"}) → 12 logs, orden más reciente primero 
+- Servidor parado → mensaje "No se pudo conectar con el servidor central" 
